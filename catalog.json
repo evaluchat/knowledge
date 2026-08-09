@@ -1,0 +1,36 @@
+[
+  {
+    "id": "apparatus-recipe",
+    "type": "Playbook",
+    "languages": [
+      "en"
+    ],
+    "status": "draft",
+    "description": "Given a research question, specify the intervention and the measurement apparatus: the canonical form, an eight-primitive design checklist, a worked example (Essays), and the rules for recording version and configuration.",
+    "updated": "2026-08-09T16:40:00+00:00",
+    "canonical_resource": "https://github.com/evaluchat/knowledge/blob/main/playbooks/apparatus-recipe.en.md"
+  },
+  {
+    "id": "essays-workflow",
+    "type": "Concept",
+    "languages": [
+      "en",
+      "es"
+    ],
+    "status": "stable",
+    "description": "How the Evaluchat essays feature gates drafting support behind dialogic contribution (CAMDLE), as implemented in Canvas — the implementation source of truth.",
+    "updated": "2026-08-09T14:00:00+00:00",
+    "canonical_resource": "https://github.com/evaluchat/knowledge/blob/main/concepts/essays-workflow.en.md"
+  },
+  {
+    "id": "research-apparatus",
+    "type": "Concept",
+    "languages": [
+      "en"
+    ],
+    "status": "draft",
+    "description": "A research apparatus is a reproducible configuration of Canvas capabilities, workflows, and measurements designed to investigate one or more research questions and produce specified evidence — the four-dimension invariant, epistemic spine, versioning and configuration model.",
+    "updated": "2026-08-09T16:40:00+00:00",
+    "canonical_resource": "https://github.com/evaluchat/knowledge/blob/main/concepts/research-apparatus.en.md"
+  }
+]

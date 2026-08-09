@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Research apparatus — reproducible research on Canvas</title>
+<style>
+  :root { --fg:#1a1a1a; --muted:#555; --link:#0b57d0; --bg:#fafafa; --border:#ddd; }
+  body { font-family: Georgia, "Times New Roman", serif; line-height:1.55; color:var(--fg);
+         max-width: 52rem; margin: 0 auto; padding: 1.5rem; background: var(--bg); }
+  a { color: var(--link); }
+  header { border-bottom: 1px solid var(--border); margin-bottom: 1.5rem; padding-bottom: .75rem; }
+  header .brand { font-size: 1.25rem; font-weight: bold; }
+  .muted { color: var(--muted); font-size: .95rem; }
+  table.facts { border-collapse: collapse; width: 100%; margin: 1rem 0; font-size: .95rem; }
+  table.facts th, table.facts td { border: 1px solid var(--border); padding: .35rem .6rem; text-align: left; vertical-align: top; }
+  table.facts th { width: 8rem; background: #f0f0f0; }
+  .lang-badges a { margin-right: .4rem; }
+  .catalog { width: 100%; border-collapse: collapse; }
+  .catalog th, .catalog td { border-bottom: 1px solid var(--border); padding: .45rem .3rem; text-align: left; vertical-align: top; }
+  .catalog th { font-size: .85rem; color: var(--muted); }
+  pre { background: #f3f3f3; padding: .75rem; overflow-x: auto; }
+  code { font-family: ui-monospace, Menlo, Consolas, monospace; font-size: .9em; }
+</style>
+</head>
+<body>
+<header>
+  <div class="brand"><a href="index.html">evaluchat research</a></div>
+  <p class="muted">Open Knowledge Format catalog ·
+    <a href="https://github.com/evaluchat/research">GitHub</a> ·
+    <a href="https://github.com/evaluchat/research/blob/main/README.md">README</a>
+  </p>
+  
+</header>
+<main>
+<h1>Research apparatus — reproducible research on Canvas</h1>
+<table class="facts"><tr><th>type</th><td>Concept</td></tr><tr><th>id</th><td>research-apparatus</td></tr><tr><th>status</th><td>draft</td></tr><tr><th>lang</th><td>en</td></tr><tr><th>origin</th><td>native</td></tr><tr><th>generated</th><td>by=opencode-go/deepseek-v4-flash, at=2026-08-09T16:40:00Z</td></tr><tr><th>sources</th><td>{&#x27;id&#x27;: &#x27;apparatus-method&#x27;, &#x27;resource&#x27;: &#x27;https://github.com/evaluchat/research/blob/main/methods/apparatus.en.md&#x27;, &#x27;title&#x27;: &#x27;The apparatus as research instrument — measurement, observation, evidence (research catalog)&#x27;}, {&#x27;id&#x27;: &#x27;camdle-theory&#x27;, &#x27;resource&#x27;: &#x27;https://github.com/evaluchat/research/blob/main/theory/camdle.en.md&#x27;, &#x27;title&#x27;: &#x27;CAMDLE — research question and theory (unproven)&#x27;}, {&#x27;id&#x27;: &#x27;threshold-calibration&#x27;, &#x27;resource&#x27;: &#x27;https://github.com/evaluchat/research/blob/main/theory/threshold-calibration.en.md&#x27;, &#x27;title&#x27;: &#x27;Threshold calibration — research question (open)&#x27;}</td></tr></table>
+
+<article class="body"><h1 id="research-apparatus-reproducible-research-on-canvas">Research apparatus — reproducible research on Canvas</h1>
+<blockquote>
+<p><strong>Applies to:</strong> Canvas apps/web <strong>0.5.9</strong> (dev line). Draft concept — the pattern is defined here and instantiated by the Essays apparatus (see <a href="essays-workflow.en.md">essays-workflow</a>).</p>
+</blockquote>
+<h2 id="definition">Definition</h2>
+<blockquote>
+<p><strong>A Research Apparatus is a reproducible configuration of Canvas capabilities, workflows, and measurements designed to investigate one or more research questions and produce specified evidence.</strong></p>
+</blockquote>
+<p>An apparatus is <strong>not</strong> "a configured surface". The user-interface surface is an implementation consequence, not the definition. The common denominator of an apparatus is <strong>instrumentation + workflow</strong>: what the learner experiences is a workflow, what the apparatus records is a measurement, and what the researcher receives is specified evidence.</p>
+<p>An apparatus may address one research question, several related questions, or one question through several experimental variants — there is no one-to-one constraint between apparatus and question. The Essays apparatus, for example, investigates the threshold-calibration question; a future apparatus may address two.</p>
+<h2 id="the-four-dimensions">The four dimensions</h2>
+<p>An apparatus has four distinct dimensions. Never conflate them:</p>
+<table>
+<thead>
+<tr>
+<th>Dimension</th>
+<th>Representation</th>
+<th>Answers</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Knowledge</strong></td>
+<td>OKF knowledge concept (<code>research-apparatus</code> + a per-apparatus concept)</td>
+<td>What is this apparatus?</td>
+</tr>
+<tr>
+<td><strong>Manifest</strong></td>
+<td>Catalog manifest (<code>apparatus.json</code>)</td>
+<td>How does the platform enable and version it?</td>
+</tr>
+<tr>
+<td><strong>Research method</strong></td>
+<td>OKF research method (per-apparatus method in the research catalog)</td>
+<td>What does it measure?</td>
+</tr>
+<tr>
+<td><strong>Code</strong></td>
+<td>Canvas implementation</td>
+<td>How does it actually run?</td>
+</tr>
+</tbody>
+</table>
+<pre><code>                    Research Question
+                          │
+             ┌────────────┴────────────┐
+             ↓                         ↓
+       Knowledge concept         Research method
+        &quot;what it is&quot;             &quot;what it measures&quot;
+             │                         │
+             └────────────┬────────────┘
+                          ↓
+                    Apparatus
+                          │
+                    ┌─────┴─────┐
+                    ↓           ↓
+                 Manifest      Code
+                &quot;enable it&quot;  &quot;run it&quot;
+</code></pre>
+<p><strong>Guardrail: the manifest must never become a second knowledge system.</strong> The manifest carries only what the platform needs to enable and version the apparatus. Description, meaning, and measurement semantics live in the OKF concepts — no duplicated prose in JSON.</p>
+<h2 id="the-epistemic-spine">The epistemic spine</h2>
+<p>Four terms are easy to conflate. Keeping them distinct is central to how evidence is produced:</p>
+<table>
+<thead>
+<tr>
+<th>Term</th>
+<th>What it is</th>
+<th>Example</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Apparatus</strong></td>
+<td>What is intended to be investigated (the configured workflow)</td>
+<td>Essays apparatus: dialogic constraint before drafting</td>
+</tr>
+<tr>
+<td><strong>Intervention</strong></td>
+<td>What the apparatus actually does to the user's workflow</td>
+<td>Drafting unlocks after N dialogic contributions</td>
+</tr>
+<tr>
+<td><strong>Measurement</strong></td>
+<td>What the apparatus records (mechanism, not evidence)</td>
+<td>Engagement Metrics / process signals</td>
+</tr>
+<tr>
+<td><strong>Evidence</strong></td>
+<td>What can subsequently be submitted to Research</td>
+<td>"Student spent 12 min in Socratic phase" (observation)</td>
+</tr>
+</tbody>
+</table>
+<p>"Engagement Metrics" is a <em>measurement mechanism</em>, not evidence. "Student spent 12 minutes in Socratic phase" is an <em>observation</em>. "Students who spent 12 minutes learned more" is a <em>claim</em> — and claims need the findings machinery of the research catalog. This separation is enforced in the evidence-bundle shape (observations/results vs reflection vs limitations).</p>
+<h2 id="composition-primitives-and-capabilities">Composition: primitives and capabilities</h2>
+<p>Canvas primitives — documents, workspaces, AI sessions, knowledge context, workflows, activities — are the substrate an apparatus composes. Class and student management, assignments, and submission are <strong>capabilities</strong> an apparatus may or may not use; they are optional modules, not part of the definition.</p>
+<p>The apparatus contract is expressed in capabilities, roles, and workflow phases:</p>
+<ul>
+<li><strong>Capabilities, not routes.</strong> <code>student-workspace</code>, <code>teacher-assignment-management</code>, <code>evidence-export</code> — NOT <code>/student</code>, <code>/teacher</code>. Routes are implementation details; the Canvas host decides how capabilities map onto UI, routes, and APIs. Otherwise the contract would couple to a specific web framework — exactly the coupling Canvas should abstract away.</li>
+<li><strong>Workflow phases, not agent nodes.</strong> <code>phases: [socratic, drafting, defense]</code> — NOT <code>nodes: [assess-thesis]</code>. The contract describes observable behaviour; agent-graph node names are implementation. This preserves freedom to rewrite the agent architecture later.</li>
+</ul>
+<h2 id="versioning-the-behaviour-and-evidence-contract">Versioning: the behaviour and evidence contract</h2>
+<p>What is versioned is the <strong>behaviour and evidence contract</strong> — not the UI, not the code layout:</p>
+<table>
+<thead>
+<tr>
+<th>Version</th>
+<th>Changes when</th>
+<th>Examples</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>major</strong></td>
+<td>Changes that make previous experiments difficult or impossible to compare</td>
+<td>What counts as "sufficient dialogic contribution" changes; phase semantics change</td>
+</tr>
+<tr>
+<td><strong>minor</strong></td>
+<td>New capabilities that don't alter existing semantics</td>
+<td>A new assignment type is added; a role gains a surface</td>
+</tr>
+<tr>
+<td><strong>patch</strong></td>
+<td>Implementation fixes with no change to experimental semantics</td>
+<td>A rendering bug fix; copy changes</td>
+</tr>
+</tbody>
+</table>
+<p>Consequence: <strong>apparatus version ≠ canvas version.</strong> Canvas 0.5.9 may ship the Essays apparatus at 0.5.9; later the Essays apparatus may be 0.6 (a research measurement changed) while Canvas stays 0.5.9 — or vice versa. That decoupling is valuable for longitudinal research: the apparatus version is what evidence must cite.</p>
+<h2 id="configuration-apparatus-version-configuration-experiment">Configuration: Apparatus → Version → Configuration → Experiment</h2>
+<p>Two teachers using "Essays v0.5.9" may run materially different interventions:</p>
+<table>
+<thead>
+<tr>
+<th>Teacher A</th>
+<th>Teacher B</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>threshold = 3 contributions</td>
+<td>threshold = 5 contributions</td>
+</tr>
+<tr>
+<td>defense = required</td>
+<td>defense = optional</td>
+</tr>
+<tr>
+<td>AI mode = Socratic</td>
+<td>AI mode = Socratic + adversarial</td>
+</tr>
+</tbody>
+</table>
+<p>Same apparatus, same version — <strong>different configurations</strong>. Treating both as "Essays v0.5.9" would corrupt any comparison. The model is:</p>
+<pre><code>Apparatus → Version → Configuration → Experiment
+</code></pre>
+<p>Configuration is a first-class concept in the manifest vocabulary (<code>configuration: {threshold, defense_required, ai_modes, ...}</code>), defined per apparatus in its manifest or concept — not a universal schema.</p>
+<h3 id="configuration-is-part-of-provenance">Configuration is part of provenance</h3>
+<p>An evidence contribution must record the actual apparatus configuration used:</p>
+<pre><code class="language-yaml">apparatus:
+  id: essays
+  version: 0.5.9
+  configuration:
+    threshold: 3
+    defense_required: true
+    ai_modes: [socratic, critique]
+  canvas:
+    version: 0.5.9
+</code></pre>
+<p>The evidence graph becomes: <code>Question → Apparatus → Version → Configuration → Intervention → Evidence</code>. Because the pre-registered question, apparatus, and configuration all predate the evidence, this strengthens the research catalog's direction-of-fit machinery.</p>
+<h2 id="the-recipe">The recipe</h2>
+<p>The <a href="../playbooks/apparatus-recipe.en.md">apparatus recipe</a> is a design checklist for specifying a new apparatus from a research question: workspace, assistant role, knowledge context, class and student management, assignment/submission, workflow, evidence output, and consent/privacy. The recipe provides a consistent way to describe and build research apparatuses on Canvas. It is an experimental framework, not a universal schema — a second apparatus is expected to diverge from the checklist where its questions demand different instrumentation.</p>
+<h2 id="status">Status</h2>
+<p><code>status: draft</code>. The pattern is defined here and instantiated by the Essays apparatus (<a href="essays-workflow.en.md">essays-workflow</a>) as <strong>Apparatus #1</strong>; the instrument view lives in the research catalog ([apparatus-method]). Nothing in this document describes a plugin framework — apparatuses are enabled and versioned by the platform, not installed as independently loadable artifacts.</p></article>
+
+</main>
+</body>
+</html>

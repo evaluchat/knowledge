@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Flujo de trabajo de ensayos — desbloqueo proporcional de la redacción (es)</title>
+<style>
+  :root { --fg:#1a1a1a; --muted:#555; --link:#0b57d0; --bg:#fafafa; --border:#ddd; }
+  body { font-family: Georgia, "Times New Roman", serif; line-height:1.55; color:var(--fg);
+         max-width: 52rem; margin: 0 auto; padding: 1.5rem; background: var(--bg); }
+  a { color: var(--link); }
+  header { border-bottom: 1px solid var(--border); margin-bottom: 1.5rem; padding-bottom: .75rem; }
+  header .brand { font-size: 1.25rem; font-weight: bold; }
+  .muted { color: var(--muted); font-size: .95rem; }
+  table.facts { border-collapse: collapse; width: 100%; margin: 1rem 0; font-size: .95rem; }
+  table.facts th, table.facts td { border: 1px solid var(--border); padding: .35rem .6rem; text-align: left; vertical-align: top; }
+  table.facts th { width: 8rem; background: #f0f0f0; }
+  .lang-badges a { margin-right: .4rem; }
+  .catalog { width: 100%; border-collapse: collapse; }
+  .catalog th, .catalog td { border-bottom: 1px solid var(--border); padding: .45rem .3rem; text-align: left; vertical-align: top; }
+  .catalog th { font-size: .85rem; color: var(--muted); }
+  pre { background: #f3f3f3; padding: .75rem; overflow-x: auto; }
+  code { font-family: ui-monospace, Menlo, Consolas, monospace; font-size: .9em; }
+</style>
+</head>
+<body>
+<header>
+  <div class="brand"><a href="index.html">evaluchat research</a></div>
+  <p class="muted">Open Knowledge Format catalog ·
+    <a href="https://github.com/evaluchat/research">GitHub</a> ·
+    <a href="https://github.com/evaluchat/research/blob/main/README.md">README</a>
+  </p>
+  <p class="muted"><a href="essays-workflow.html">Canonical (en)</a></p>
+</header>
+<main>
+<h1>Flujo de trabajo de ensayos — desbloqueo proporcional de la redacción</h1>
+<table class="facts"><tr><th>type</th><td>Concept</td></tr><tr><th>id</th><td>essays-workflow</td></tr><tr><th>status</th><td>stable</td></tr><tr><th>lang</th><td>es</td></tr><tr><th>origin</th><td>translation</td></tr><tr><th>generated</th><td>by=opencode-go/deepseek-v4-flash, at=2026-08-09T14:00:00Z</td></tr></table>
+<article class="body"><blockquote>
+<p><strong>Apparatus #1.</strong> Este es el source of truth de implementación para <strong>Apparatus #1 (ensayos / apparatus CAMDLE)</strong> — véase <a href="research-apparatus.en.md">research-apparatus</a>.</p>
+</blockquote>
+<h1 id="flujo-de-trabajo-de-ensayos-desbloqueo-proporcional-de-la-redaccion">Flujo de trabajo de ensayos — desbloqueo proporcional de la redacción</h1>
+<blockquote>
+<p><strong>Se aplica a:</strong> Canvas apps/web <strong>0.5.9</strong> (línea de desarrollo), el prototipo de enseñanza de Evaluchat construido sobre el fork de open-canvas. Este concepto documenta la función de ensayos tal como se distribuye en esa versión.</p>
+</blockquote>
+<h2 id="vision-general">Visión general</h2>
+<p>El flujo de trabajo de ensayos es la experiencia de escritura de Evaluchat orientada al estudiante: un chat de IA restringido combinado con un lienzo de redacción. Los estudiantes trabajan en una interfaz de pantalla dividida — un panel de diálogo junto a un documento Markdown editable — que imita deliberadamente los hábitos de interacción de las herramientas de IA de consumo. Es una experiencia familiar, conversacional e impulsada por indicaciones, no un navegador de examen bloqueado.</p>
+<p>La restricción central: el modelo no puede generar la asignación completa a partir de una sola indicación. El soporte de redacción se libera de forma condicional, después de que el estudiante haya aportado suficientes ideas, evidencia, preguntas y lenguaje a través del diálogo — el diseño CAMDLE (véase <a href="https://github.com/evaluchat/research/blob/main/theory/camdle.en.md">camdle-theory</a>). El flujo de trabajo mantiene el trabajo conceptual y lingüístico del estudiante visible y relevante: lo que el estudiante hace en el diálogo determina qué asistencia queda disponible.</p>
+<h2 id="fases-de-la-sesion">Fases de la sesión</h2>
+<p>Una sesión avanza por tres fases, controladas en tiempo de ejecución por un valor <code>phase_state</code>: <code>socratic</code>, <code>drafting</code>, <code>defense</code>.</p>
+<h3 id="fase-1-puerta-socratica">Fase 1 — Puerta socrática</h3>
+<p>La IA entrevista al estudiante para establecer su comprensión antes de que cualquier texto del ensayo llegue al lienzo. Las peticiones directas de «escríbeme el ensayo» se rechazan; en su lugar, el asistente extrae la intuición inicial del estudiante y la convierte en una tesis estructurada. Tras cada turno, el asistente evalúa la tesis (<code>assessThesis</code>); cuando la contribución es suficiente, <code>phase_state</code> pasa a <code>drafting</code> y la asistencia de redacción queda disponible.</p>
+<h3 id="fase-2-co-creacion-con-hitos">Fase 2 — Co-creación con hitos</h3>
+<p>En la fase de redacción, el estudiante trabaja en el lienzo de pantalla dividida con la IA actuando como editor de desarrollo, no como escritor fantasma. El documento registra una línea de tiempo de revisiones («ADN del documento») que distingue el contenido escrito por el estudiante de las ediciones sugeridas por la IA, de modo que quién aportó qué permanece visible. Una vez que existe suficiente material de tesis, la IA puede redactar el texto introductorio o secciones hito en el lienzo para que el estudiante las revise, acepte o modifique.</p>
+<h3 id="fase-3-defensa-viva">Fase 3 — Defensa (viva)</h3>
+<p>Antes de la entrega, la IA cuestiona un argumento clave del ensayo del estudiante — una defensa de abogado del diablo basada en el chat. La entrega solo se desbloquea después de que el estudiante haya defendido con éxito el argumento.</p>
+<h2 id="reglas-de-sesion-y-asignacion">Reglas de sesión y asignación</h2>
+<ul>
+<li>Una sesión activa por estudiante y asignación.</li>
+<li>Estados de sesión: <code>not_started</code>, <code>in_progress</code>, <code>submitted</code>, <code>abandoned</code>.</li>
+<li>La selección del hilo activo prefiere el hilo incompleto no abandonado; después, el hilo entregado no abandonado; los hilos abandonados se omiten. Abrir una asignación se adjunta a ese hilo en lugar de crear duplicados.</li>
+<li><code>/student</code> lista las asignaciones del estudiante con acciones según su estado (reanudar, revisar, empezar).</li>
+</ul>
+<p>Las asignaciones se resuelven a partir de dos fuentes:</p>
+<ol>
+<li><strong>Asignaciones personalizadas</strong> — asignaciones propiedad del docente, creadas y listadas en el lado del profesor y asignadas a estudiantes concretos.</li>
+<li><strong>Catálogo de semillas</strong> — plantillas iniciales compartidas que se cargan en tiempo de ejecución desde un archivo JSON (<code>data/teaching/seed-assignments.json</code>), no incrustadas en el paquete de la aplicación. Las semillas aparecen en <code>/student</code> solo cuando están registradas para ese estudiante.</li>
+</ol>
+<h2 id="evidencia-de-proceso">Evidencia de proceso</h2>
+<p>Un agregador de seguimiento del lado del cliente recoge señales de proceso y emite eventos <code>session_summary</code> compactos (~300 bytes) periódicamente y al cerrar la sesión — no tráfico API por cada pulsación de tecla. Los resúmenes incluyen:</p>
+<ul>
+<li>pulsaciones de teclas y ráfagas de escritura (grupos de pulsaciones muy próximas, recuento de palabras y duración de las ráfagas)</li>
+<li>eventos de pegar, copiar y cortar (volumen de pegado, contenido copiado o cortado)</li>
+<li>ediciones del lienzo (inserciones, eliminaciones, reemplazos)</li>
+<li>recuentos de foco y desenfoque, eventos de visibilidad oculta</li>
+</ul>
+<p>Los docentes lo ven como <strong>Métricas de participación</strong> en la vista de entrega. Una proporción alta de pegado (p. ej., más de ~30 % pegado) puede aparecer como una insignia descriptiva — un punto de partida para la conversación, no un veredicto.</p>
+<p><strong>Límite: la evidencia de proceso no es detección de autoría.</strong> Son observaciones mecánicas sobre cómo se construyó el trabajo; no demuestran quién escribió una frase ni si hubo aprendizaje. Evaluchat no produce ninguna puntuación de integridad, ni marca de «trampa», ni ningún veredicto automatizado de integridad. Las señales son contexto para el juicio humano: los docentes las leen junto con la transcripción, el borrador y el contexto de la asignación, y deciden si hay algo que merezca la pena comentar con el estudiante. Métricas de participación, no indicadores de integridad; señales de proceso, no indicadores de trampa. El producto no realiza supervisión (sin cámara web, bloqueo del sistema ni grabación de pantalla) y no puede detectar comportamientos fuera del dispositivo o mediados, como volver a teclear, el dictado, las notas en papel o la asistencia desde un segundo dispositivo.</p>
+<h2 id="andamiaje-proporcional-y-umbral-de-desbloqueo">Andamiaje proporcional y umbral de desbloqueo</h2>
+<p>El soporte de redacción se libera de forma condicional según la contribución dialógica — andamiaje proporcional. La cantidad de contribución necesaria para desbloquear la asistencia (el umbral) es una <strong>variable empírica</strong>, no un valor establecido: qué cuenta como contribución suficiente y cómo varía según el tipo de tarea, el nivel de competencia, la lengua de origen y la estrategia del alumno es una pregunta de investigación abierta (<a href="https://github.com/evaluchat/research/blob/main/theory/threshold-calibration.en.md">threshold-calibration</a>). El propósito del mecanismo es exigir tiempo e interacción con el material antes de que se desbloquee la generación; si eso produce resultados de aprendizaje es una hipótesis en investigación, no una afirmación de producto.</p>
+<h2 id="estado-y-versionado">Estado y versionado</h2>
+<p>Este concepto fija <code>applies_to: 0.5.9</code> — la versión de Canvas apps/web en la línea de desarrollo en el momento de redactarse (0.5.8 era el despliegue de producción). Describe el comportamiento tal como se distribuye en esa versión; las versiones más recientes pueden cambiar el comportamiento. Considere este concepto <strong>obsoleto</strong> una vez que la versión fijada quede superada por una versión más reciente que cambie el comportamiento aquí descrito.</p>
+<p>Cuando la versión fijada quede superada, actualice este concepto mediante una pull request al repositorio de conocimiento: actualice <code>applies_to</code> a la nueva versión, ajuste el cuerpo para reflejar el comportamiento más reciente y anote el cambio. Mantenga <code>status: stable</code> solo mientras la descripción coincida con una versión distribuida.</p></article>
+
+</main>
+</body>
+</html>
