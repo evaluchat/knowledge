@@ -11,7 +11,7 @@ Open, multilingual, PR-able knowledge about what Evaluchat Canvas does and how i
 |---------|---------|
 | [Concepts](/concepts/index.md) | What the product is and how its features work (implementation source of truth) |
 | Prompts | Exact wording of prompts as shipped, versioned (Phase 2 — planned) |
-| Playbooks | Teacher setup, self-hosting, and operational guides (Phase 2 — planned) |
+| [Playbooks](/playbooks/index.md) | How to specify and build on Canvas capabilities — the research apparatus recipe (draft) |
 | References | Pointer concepts linking to the research catalog (Phase 2 — planned) |
 
 ## Language note
@@ -29,6 +29,12 @@ Frontmatter is the machine/catalogue layer and is **always English**. Content bo
 | `AGENTS.md` | Contributor-agent contract (for AI editors) |
 | `AGENT.md` | Consumer-agent contract (for AI readers) |
 | `LICENSE` | MIT (docs + scripts) |
+
+## Research apparatus
+
+- [Research apparatus — reproducible research on Canvas](/concepts/research-apparatus.en.md) — the apparatus pattern (concept).
+- [The apparatus recipe — from research question to built apparatus](/playbooks/apparatus-recipe.en.md) — how to specify an apparatus (playbook).
+- Research instrument view (research truth): https://github.com/evaluchat/research/blob/main/methods/apparatus.en.md
 
 ## Related
 

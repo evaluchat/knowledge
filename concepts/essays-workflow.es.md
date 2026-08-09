@@ -24,6 +24,8 @@ generated:
   at: 2026-08-09T14:00:00Z
 ---
 
+> **Apparatus #1.** Este es el source of truth de implementación para **Apparatus #1 (ensayos / apparatus CAMDLE)** — véase [research-apparatus](research-apparatus.en.md).
+
 # Flujo de trabajo de ensayos — desbloqueo proporcional de la redacción
 
 > **Se aplica a:** Canvas apps/web **0.5.9** (línea de desarrollo), el prototipo de enseñanza de Evaluchat construido sobre el fork de open-canvas. Este concepto documenta la función de ensayos tal como se distribuye en esa versión.

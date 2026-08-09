@@ -23,6 +23,8 @@ generated:
   at: 2026-08-09T14:00:00Z
 ---
 
+> **Apparatus #1.** This is the implementation source of truth for **Apparatus #1 (Essays / CAMDLE apparatus)** — see [research-apparatus](research-apparatus.en.md).
+
 # Essays workflow — proportional drafting unlock
 
 > **Applies to:** Canvas apps/web **0.5.9** (dev line), the Evaluchat teaching prototype built on the open-canvas fork. This concept documents the essays feature as shipped in that version.

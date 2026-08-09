@@ -1,4 +1,7 @@
 # Knowledge Catalog — Update Log
 
 ## 2026-08-09
-* **Initialisation**: Scaffolded OKF v0.2 knowledge catalog (index, log, README, CONTRIBUTING, AGENTS.md, AGENT.md, PR/issue templates). Added `concepts/essays-workflow.en.md` (implementation source of truth, applies_to 0.5.9) and `concepts/essays-workflow.es.md` (machine-confirmed translation).
+* **Addition**: Added `concepts/research-apparatus.en.md` (Concept, draft, applies_to 0.5.9) — the research apparatus pattern: definition, four-dimension invariant (knowledge / manifest / research method / code), epistemic spine (apparatus / intervention / measurement / evidence), capabilities-and-phases contract, versioning as behaviour/evidence contract, Apparatus → Version → Configuration → Experiment, configuration-in-provenance.
+* **Addition**: Added `playbooks/apparatus-recipe.en.md` (Playbook, draft) + `playbooks/index.md` — the canonical form, eight-primitive design checklist, worked example (Essays), checklist-not-schema guidance, version/configuration recording rules, and the "what is not built yet" note (no DSL, no builder framework, no plugin runtime).
+* **Positioning**: `concepts/essays-workflow.en.md` + `.es.md` gained a top-of-file positioning block naming them the implementation source of truth for **Apparatus #1 (Essays / CAMDLE apparatus)** with a link to research-apparatus. Implementation facts byte-identical apart from the block; the `.es.md` remains `origin: translation`, no `verified`.
+* **Indexes**: `concepts/index.md`, root `index.md` (new Research apparatus section) updated.

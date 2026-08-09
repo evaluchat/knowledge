@@ -1,0 +1,66 @@
+name: pages
+
+# Build the OKF catalog site and publish to the gh-pages branch.
+# One-time owner action required: enable GitHub Pages in repo settings
+# (Source: Deploy from a branch → gh-pages / root).
+
+on:
+  push:
+    branches:
+      - main
+      - dev
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install markdown
+        run: python3 -m pip install markdown
+
+      - name: Lint OKF catalog
+        run: python3 scripts/okf_lint.py
+
+      - name: Build site
+        run: python3 scripts/build_site.py
+
+      - name: Publish site/ to gh-pages
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          git config user.name "evaluchat-bot"
+          git config user.email "hello@evaluchat.com"
+
+          WORK=$(mktemp -d)
+          cp -a site/. "$WORK/"
+
+          if git fetch origin gh-pages:gh-pages 2>/dev/null; then
+            git checkout gh-pages
+          else
+            git checkout --orphan gh-pages
+          fi
+
+          # Remove old published files (keep .git)
+          find . -mindepth 1 -maxdepth 1 ! -name '.git' -exec rm -rf {} +
+          cp -a "$WORK"/. .
+          touch .nojekyll
+
+          git add -A
+          if git diff --cached --quiet; then
+            echo "No site changes to publish."
+          else
+            git commit -m "Publish site from ${GITHUB_SHA:-local}"
+            git push origin gh-pages
+          fi
