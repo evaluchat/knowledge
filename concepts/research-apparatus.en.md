@@ -124,7 +124,7 @@ An evidence contribution must record the actual apparatus configuration used:
 
 ```yaml
 apparatus:
-  id: essays
+  id: ai-assisted-essay
   version: 0.5.9
   configuration:
     threshold: 3
