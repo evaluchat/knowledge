@@ -33,6 +33,7 @@ Frontmatter is the machine/catalogue layer and is **always English**. Content bo
 ## Research apparatus
 
 - [Research apparatus — reproducible research on Canvas](/concepts/research-apparatus.en.md) — the apparatus pattern (concept).
+- [Platform capabilities — knob vocabulary as shipped](/concepts/platform-capabilities.en.md) — AI modes, drafting gates, telemetry boundary (concept, `applies_to: 0.5.9`).
 - [The apparatus recipe — from research question to built apparatus](/playbooks/apparatus-recipe.en.md) — how to specify an apparatus (playbook).
 - Research instrument view (research truth): https://github.com/evaluchat/research/blob/main/methods/apparatus.en.md
 
