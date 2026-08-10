@@ -7,6 +7,21 @@ Usage (from repo root):
 Uses the `markdown` package when importable; otherwise a minimal fallback
 renderer (fenced code + headings). Output → site/ (local artifact; Pages
 workflow publishes site/ to the gh-pages branch).
+
+Rendering model:
+- index.html — the repo's human-maintained index.md rendered as the landing
+  page (frontmatter stripped, relative .md links rewritten to generated
+  pages), plus a compact "Recently updated" strip.
+- <dir>/index.html — one section page per top-level content directory
+  (theory/, methods/, ...): the directory's own index.md (if any), a compact
+  list of its concept groups, an empty-state block for empty sections, and
+  that section's "Recently updated" strip.
+- /{id}.html — one page per concept group (canonical language), plus
+  /{id}.{lang}.html for non-en representations.
+- Evidence contributions are grouped per bundle (evidence/<slug>/ or
+  apparatus/<id>/evidence/<contribution>/): the bundle's index.md becomes the
+  page; role files (question/results/...) are not separate concepts.
+- catalog.json — derived from frontmatter for agent consumers.
 """
 
 from __future__ import annotations
@@ -14,6 +29,7 @@ from __future__ import annotations
 import html
 import json
 import os
+import posixpath
 import re
 import sys
 from collections import defaultdict
@@ -50,9 +66,16 @@ SITE_LABEL = "Knowledge catalog"
 SKIP_DIR_NAMES = {".github", "templates", ".git", "scripts", "site"}
 CSS = (Path(__file__).parent / "theme" / "style.css").read_text(encoding="utf-8")
 
+# Site-root-relative registries, filled by build() before rendering:
+#   CONCEPT_PAGES: repo file path → page path (e.g. "theory/camdle.en.md" → "camdle.html")
+#   SECTION_PAGES: top-level dir → section page path (e.g. "theory" → "theory/index.html")
+CONCEPT_PAGES: dict[str, str] = {}
+SECTION_PAGES: dict[str, str] = {}
+
 ISO_RE = re.compile(
     r"(\d{4}-\d{2}-\d{2}(?:[T ]\d{2}:\d{2}:\d{2}(?:\.\d+)?(?:Z|[+-]\d{2}:?\d{2})?)?)"
 )
+LINK_RE = re.compile(r"\[([^\]]*)\]\(([^)\s]+)(?:\s+[\"'][^\"']*[\"'])?\)")
 
 
 def under_skip_dir(path: Path) -> bool:
@@ -155,9 +178,60 @@ def meta_updated(meta: dict) -> datetime | None:
     return max(times) if times else None
 
 
-def collect_concepts() -> dict[str, list[tuple[Path, dict, str]]]:
-    """id → list of (path, meta, body)."""
+def resolve_target(base_dir: Path, target: str, out_dir: str) -> str:
+    """Map a markdown link target to a rendered page (or GitHub fallback URL).
+
+    base_dir: source file's directory (repo-relative resolution base).
+    out_dir:  site-root-relative directory of the OUTPUT page ("." for root
+              pages, e.g. "theory" for theory/index.html).
+    """
+    if target.startswith(("http://", "https://", "mailto:")):
+        return target
+    anchor = ""
+    if "#" in target:
+        target, anchor = target.split("#", 1)
+        anchor = "#" + anchor
+    if not target:
+        return anchor or "#"
+    base_rel = rel(base_dir)  # "." for the repo root
+    raw = target.lstrip("/")  # leading slash = repo-root relative
+    if raw.endswith("/"):
+        raw = raw[:-1]
+    resolved = (
+        posixpath.normpath(raw)
+        if base_rel == "."
+        else posixpath.normpath(posixpath.join(base_rel, raw))
+    )
+    if not resolved or resolved == ".":
+        dest = "index.html"
+    elif resolved in CONCEPT_PAGES:
+        dest = CONCEPT_PAGES[resolved]
+    elif resolved in SECTION_PAGES:
+        dest = SECTION_PAGES[resolved]
+    elif resolved.endswith(".md"):
+        d, f = posixpath.split(resolved)
+        if f == "index.md" and d in SECTION_PAGES:
+            dest = SECTION_PAGES[d]
+        else:
+            return GITHUB_BLOB + resolved + anchor
+    else:
+        return REPO_URL + "/tree/main/" + resolved + anchor
+    link = posixpath.relpath(dest, out_dir) if out_dir else dest
+    return link + anchor
+
+
+def rewrite_links(md: str, base_dir: Path, out_dir: str = "") -> str:
+    def sub(m: re.Match) -> str:
+        text, target = m.group(1), m.group(2)
+        return f"[{text}]({resolve_target(base_dir, target, out_dir)})"
+
+    return LINK_RE.sub(sub, md)
+
+
+def collect_concepts() -> tuple[dict[str, list[tuple[Path, dict, str]]], dict[Path, list[tuple[Path, dict, str]]]]:
+    """id → reps, and evidence bundle root → reps (bundle index.md + role files)."""
     by_id: dict[str, list[tuple[Path, dict, str]]] = defaultdict(list)
+    bundles: dict[Path, list[tuple[Path, dict, str]]] = defaultdict(list)
     for dirpath, dirnames, filenames in os.walk(ROOT):
         dirnames[:] = [d for d in dirnames if d not in SKIP_DIR_NAMES]
         for name in filenames:
@@ -173,11 +247,19 @@ def collect_concepts() -> dict[str, list[tuple[Path, dict, str]]]:
             meta = parse_simple_yaml(raw)
             if meta is None:
                 continue
+            if "evidence" in path.parts:
+                # Registry/collection index.md (evidence/index.md,
+                # apparatus/<id>/evidence/index.md) is not a concept; role
+                # files belong to the bundle dir that carries an index.md.
+                parent = path.parent
+                if parent.name != "evidence" and (parent / "index.md").is_file():
+                    bundles[parent].append((path, meta, body or ""))
+                continue
             cid = meta.get("id")
             if not isinstance(cid, str) or not cid.strip():
                 continue
             by_id[cid.strip()].append((path, meta, body or ""))
-    return by_id
+    return by_id, bundles
 
 
 def pick_canonical(reps: list[tuple[Path, dict, str]]) -> tuple[Path, dict, str]:
@@ -198,9 +280,10 @@ def fmt_meta_value(v) -> str:
 
 
 def page_shell(
-    title: str, body_html: str, *, nav: str = "", breadcrumbs: bool = True
+    title: str, body_html: str, *, nav: str = "", breadcrumbs: bool = True, base: str = ""
 ) -> str:
     esc_title = html.escape(title)
+    home = f"{base}index.html"
     if not breadcrumbs:
         crumbs = ""
     elif nav:
@@ -208,7 +291,7 @@ def page_shell(
     else:
         crumbs = (
             '<div class="breadcrumbs">'
-            f'<a href="index.html">{SITE_LABEL}</a>'
+            f'<a href="{home}">{SITE_LABEL}</a>'
             "<span>/</span>"
             f"<span>{esc_title}</span>"
             "</div>"
@@ -236,6 +319,7 @@ table.catalog th {{ font-size: .85rem; color: var(--muted); }}
 .muted {{ color: var(--muted); font-size: .95rem; }}
 .lang-badges a {{ margin-right: .4rem; font-size: .85rem; }}
 .intro {{ margin-bottom: 1.5rem; }}
+.empty-state {{ border: 1px dashed var(--line); border-radius: 10px; padding: 1.1rem 1.3rem; color: var(--muted); margin: 1.5rem 0; }}
 .breadcrumbs {{ max-width: 900px; margin: 0 auto 28px; display: flex; gap: 10px; color: #8a8997; font-size: 13px; font-weight: 600; }}
 .breadcrumbs a {{ color: #68677a; }}
 .site-footer {{ border-top: 1px solid var(--line); padding: 40px 0; margin-top: 40px; }}
@@ -249,12 +333,12 @@ table.catalog th {{ font-size: .85rem; color: var(--muted); }}
 <body>
 <header class="site-header">
   <div class="shell header-inner">
-    <a class="brand" href="index.html" aria-label="{SITE_LABEL}">
+    <a class="brand" href="{home}" aria-label="{SITE_LABEL}">
       <span class="brand-mark">e</span>
       <span>evaluchat</span>
     </a>
     <nav class="top-nav" aria-label="Primary navigation">
-      <a href="index.html">{SITE_LABEL}</a>
+      <a href="{home}">{SITE_LABEL}</a>
       <a href="{REPO_URL}">GitHub</a>
       <a href="{GITHUB_BLOB}README.md">README</a>
     </nav>
@@ -273,7 +357,7 @@ table.catalog th {{ font-size: .85rem; color: var(--muted); }}
       <span>{SITE_LABEL} · Open Knowledge Format</span>
     </div>
     <div class="footer-links">
-      <a href="index.html">{SITE_LABEL}</a>
+      <a href="{home}">{SITE_LABEL}</a>
       <a href="{REPO_URL}">GitHub</a>
     </div>
   </div>
@@ -284,26 +368,26 @@ table.catalog th {{ font-size: .85rem; color: var(--muted); }}
 
 
 def build() -> int:
-    by_id = collect_concepts()
+    by_id, bundles = collect_concepts()
     OUT.mkdir(parents=True, exist_ok=True)
     (OUT / ".nojekyll").write_text("", encoding="utf-8")
 
-    catalog: list[dict] = []
-    index_rows: list[str] = []
+    global CONCEPT_PAGES, SECTION_PAGES
 
-    for cid in sorted(by_id.keys()):
-        reps = by_id[cid]
+    catalog: list[dict] = []
+    groups: list[dict] = []
+
+    def register(cid: str, reps, is_bundle: bool, extra_files=()) -> dict:
         langs = sorted(
-            {
-                str(m.get("lang"))
-                for _p, m, _b in reps
-                if m.get("lang")
-            }
+            {str(m.get("lang")) for _p, m, _b in reps if m.get("lang")}
         )
         canon_path, canon_meta, canon_body = pick_canonical(reps)
-        status = str(canon_meta.get("status") or "")
-        typ = str(canon_meta.get("type") or "")
+        status = str(canon_meta.get("status") or ("draft" if is_bundle else ""))
+        typ = str(canon_meta.get("type") or ("Evidence" if is_bundle else ""))
         desc = str(canon_meta.get("description") or "")
+        if not desc and is_bundle:
+            m = re.search(r"\n\n(.+?)(?:\n\n|\Z)", "\n" + canon_body, re.S)
+            desc = m.group(1).strip()[:200] if m else ""
         title = str(canon_meta.get("title") or cid)
         tier = ""
         if typ == "Finding":
@@ -313,11 +397,25 @@ def build() -> int:
                 tier = {"low": "provisional", "medium": "tentative", "high": "supported"}.get(
                     conf, ""
                 )
-
-        updates = [meta_updated(m) for _p, m, _b in reps]
+        updates = [meta_updated(m) for _p, m, _b in list(reps) + list(extra_files)]
         updates = [u for u in updates if u]
         updated = max(updates).isoformat() if updates else ""
-
+        g = {
+            "cid": cid,
+            "type": typ,
+            "status": status,
+            "tier": tier,
+            "desc": desc,
+            "title": title,
+            "langs": langs,
+            "updated": updated,
+            "canon_path": canon_path,
+            "canon_meta": canon_meta,
+            "canon_body": canon_body,
+            "reps": reps,
+            "page": f"{cid}.html",
+        }
+        groups.append(g)
         catalog.append(
             {
                 "id": cid,
@@ -329,25 +427,100 @@ def build() -> int:
                 "canonical_resource": GITHUB_BLOB + rel(canon_path),
             }
         )
+        return g
 
-        lang_badges = " ".join(
-            f'<a href="{html.escape(cid if lang == "en" else f"{cid}.{lang}")}.html">{html.escape(lang)}</a>'
-            for lang in langs
+    for cid in sorted(by_id.keys()):
+        register(cid, by_id[cid], False)
+    for root in sorted(bundles.keys()):
+        breps = bundles[root]
+        idx = [r for r in breps if r[0].name == "index.md"]
+        register(root.name, idx or breps, True, extra_files=breps)
+
+    # Registries for link rewriting.
+    for g in groups:
+        for path, meta, _b in g["reps"]:
+            lang = str(meta.get("lang") or "")
+            CONCEPT_PAGES[rel(path)] = (
+                g["page"] if lang.lower() == "en" else f"{g['cid']}.{lang}.html"
+            )
+        CONCEPT_PAGES[rel(g["canon_path"])] = g["page"]  # canonical wins
+
+    section_dirs: set[str] = set()
+    for g in groups:
+        parts = rel(g["canon_path"]).split("/")
+        if len(parts) > 1:
+            section_dirs.add(parts[0])
+    for d in os.listdir(ROOT):
+        p = ROOT / d
+        if p.is_dir() and d not in SKIP_DIR_NAMES and not d.startswith(".") and (p / "index.md").is_file():
+            section_dirs.add(d)
+    SECTION_PAGES = {d: f"{d}/index.html" for d in sorted(section_dirs)}
+
+    def lang_badges_html(g: dict, prefix: str = "") -> str:
+        out = []
+        for lang in g["langs"]:
+            href = g["page"] if lang.lower() == "en" else f"{g['cid']}.{lang}.html"
+            out.append(f'<a href="{prefix}{html.escape(href)}">{html.escape(lang)}</a>')
+        return " ".join(out)
+
+    def table_html(headers: list[str], rows_html: str) -> str:
+        return (
+            '<table class="catalog"><thead><tr>'
+            + "".join(f"<th>{h}</th>" for h in headers)
+            + "</tr></thead><tbody>"
+            + rows_html
+            + "</tbody></table>"
         )
-        tier_cell = html.escape(tier) if tier else "—"
-        index_rows.append(
+
+    def row_section(g: dict, prefix: str) -> str:
+        return (
             "<tr>"
-            f'<td><a href="{html.escape(cid)}.html">{html.escape(title)}</a><br/>'
-            f'<span class="muted"><code>{html.escape(cid)}</code></span></td>'
-            f"<td>{html.escape(typ)}</td>"
-            f"<td>{html.escape(desc)}</td>"
-            f"<td>{html.escape(status)}</td>"
-            f"<td>{tier_cell}</td>"
-            f'<td class="lang-badges">{lang_badges}</td>'
+            f'<td><a href="{prefix}{html.escape(g["page"])}">{html.escape(g["title"])}</a><br/>'
+            f'<span class="muted"><code>{html.escape(g["cid"])}</code></span></td>'
+            f'<td>{html.escape(g["type"])}</td>'
+            f'<td>{html.escape(g["status"])}</td>'
+            f'<td class="lang-badges">{lang_badges_html(g, prefix)}</td>'
             "</tr>"
         )
 
-        # Per-group canonical page (en body)
+    def row_recent(g: dict, prefix: str) -> str:
+        return (
+            "<tr>"
+            f'<td><a href="{prefix}{html.escape(g["page"])}">{html.escape(g["title"])}</a><br/>'
+            f'<span class="muted"><code>{html.escape(g["cid"])}</code></span></td>'
+            f'<td>{html.escape(g["type"])}</td>'
+            f'<td>{html.escape(g["status"])}</td>'
+            f'<td class="muted">{html.escape(g["updated"][:10])}</td>'
+            "</tr>"
+        )
+
+    def recent_strip(gs: list[dict], limit: int, prefix: str) -> str:
+        recent = sorted(gs, key=lambda g: g["updated"], reverse=True)
+        recent = [g for g in recent if g["updated"]][:limit]
+        if not recent:
+            return ""
+        return (
+            "<h2>Recently updated</h2>"
+            + table_html(
+                ["Title / id", "Type", "Status", "Updated"],
+                "".join(row_recent(g, prefix) for g in recent),
+            )
+        )
+
+    def section_label(d: str) -> str:
+        p = ROOT / d / "index.md"
+        if p.is_file():
+            _raw, body = split_frontmatter(p.read_text(encoding="utf-8", errors="replace"))
+            m = re.match(r"^#\s+(.+)$", body or "", re.M)
+            if m:
+                return m.group(1).strip()
+        return d[:1].upper() + d[1:]
+
+    # --- Concept pages (canonical + language variants) ---
+    for g in groups:
+        cid, title = g["cid"], g["title"]
+        canon_path, canon_meta, canon_body = g["canon_path"], g["canon_meta"], g["canon_body"]
+        langs, status, typ, tier = g["langs"], g["status"], g["type"], g["tier"]
         facts = [
             ("type", typ),
             ("id", cid),
@@ -363,16 +536,13 @@ def build() -> int:
             facts.insert(4, ("confidence", str(canon_meta.get("confidence") or "")))
             if tier:
                 facts.insert(2, ("tier", tier))
-
         facts_html = "<table class=\"facts\">" + "".join(
             f"<tr><th>{html.escape(k)}</th><td>{html.escape(v)}</td></tr>"
             for k, v in facts
             if v
         ) + "</table>"
 
-        other_langs = [
-            lang for lang in langs if lang != str(canon_meta.get("lang") or "en")
-        ]
+        other_langs = [lang for lang in langs if lang != str(canon_meta.get("lang") or "en")]
         other_html = ""
         if other_langs:
             links = " · ".join(
@@ -385,18 +555,15 @@ def build() -> int:
             f"<h1>{html.escape(title)}</h1>\n"
             f"{facts_html}\n"
             f"{other_html}\n"
-            f'<article class="body">{render_markdown(canon_body)}</article>\n'
+            f'<article class="body">{render_markdown(rewrite_links(canon_body, canon_path.parent))}</article>\n'
         )
-        (OUT / f"{cid}.html").write_text(
-            page_shell(title, body_html), encoding="utf-8"
-        )
+        (OUT / g["page"]).write_text(page_shell(title, body_html), encoding="utf-8")
 
         # Non-en representations
-        for path, meta, body in reps:
+        for path, meta, body in g["reps"]:
             lang = str(meta.get("lang") or "")
             if not lang or lang == "en":
                 continue
-            # skip if this is the canonical already written as {id}.html
             if path == canon_path:
                 continue
             t = str(meta.get("title") or title)
@@ -418,46 +585,62 @@ def build() -> int:
             page = page_shell(
                 f"{t} ({lang})",
                 f"<h1>{html.escape(t)}</h1>\n{facts_l_html}\n"
-                f'<article class="body">{render_markdown(body)}</article>\n',
+                f'<article class="body">{render_markdown(rewrite_links(body, path.parent))}</article>\n',
                 nav=nav,
             )
             (OUT / f"{cid}.{lang}.html").write_text(page, encoding="utf-8")
 
-    # Index
-    readme_blurb = ""
-    readme = ROOT / "README.md"
-    if readme.is_file():
-        raw = readme.read_text(encoding="utf-8", errors="replace")
-        # strip a leading H1 if present; keep first ~paragraphs as intro
-        lines = raw.splitlines()
-        if lines and lines[0].startswith("# "):
-            lines = lines[1:]
-        intro = "\n".join(lines).strip()
-        # keep it short
-        paras = intro.split("\n\n")
-        readme_blurb = render_markdown("\n\n".join(paras[:3]))
+    # --- Section pages: <dir>/index.html ---
+    for d in sorted(section_dirs):
+        sgroups = [g for g in groups if rel(g["canon_path"]).startswith(d + "/")]
+        label = section_label(d)
+        parts: list[str] = []
+        idx_path = ROOT / d / "index.md"
+        if idx_path.is_file():
+            _raw, body = split_frontmatter(idx_path.read_text(encoding="utf-8", errors="replace"))
+            parts.append(
+                f'<article class="body">{render_markdown(rewrite_links(body or "", idx_path.parent, out_dir=d))}</article>'
+            )
+        else:
+            parts.append(f"<h1>{html.escape(label)}</h1>")
+        if not sgroups:
+            parts.append(
+                '<div class="empty-state">No entries in this section yet — the first contribution lands here.</div>'
+            )
+        else:
+            parts.append(
+                table_html(
+                    ["Title / id", "Type", "Status", "Languages"],
+                    "".join(row_section(g, "../") for g in sgroups),
+                )
+            )
+        parts.append(recent_strip(sgroups, 5, "../"))
+        (OUT / d).mkdir(parents=True, exist_ok=True)
+        (OUT / d / "index.html").write_text(
+            page_shell(label, "\n".join(parts), base="../"), encoding="utf-8"
+        )
 
-    index_body = f"""
-<h1>{SITE_LABEL}</h1>
-<div class="intro muted">{readme_blurb}</div>
-<p class="muted">{len(catalog)} concept groups · generated by build_site.py</p>
-<table class="catalog">
-<thead>
-<tr><th>Title / id</th><th>Type</th><th>Description</th><th>Status</th><th>Tier</th><th>Languages</th></tr>
-</thead>
-<tbody>
-{"".join(index_rows)}
-</tbody>
-</table>
-"""
+    # --- Landing page: index.md + recently updated strip ---
+    index_md = ROOT / "index.md"
+    landing_body = ""
+    if index_md.is_file():
+        _raw, body = split_frontmatter(index_md.read_text(encoding="utf-8", errors="replace"))
+        landing_body = render_markdown(rewrite_links(body or "", ROOT))
+    landing_body += recent_strip(groups, 8, "")
+    landing_body += (
+        f'\n<p class="muted">{len(groups)} concept groups · generated by build_site.py</p>'
+    )
     (OUT / "index.html").write_text(
-        page_shell(f"evaluchat {SITE_LABEL.lower()}", index_body, breadcrumbs=False),
+        page_shell(f"evaluchat {SITE_LABEL.lower()}", landing_body, breadcrumbs=False),
         encoding="utf-8",
     )
     (OUT / "catalog.json").write_text(
         json.dumps(catalog, indent=2, ensure_ascii=False) + "\n", encoding="utf-8"
     )
-    print(f"Built {len(catalog)} concept groups → site/")
+    print(
+        f"Built {len(groups)} concept groups ({len(bundles)} evidence bundles) + "
+        f"{len(section_dirs)} section pages → site/"
+    )
     return 0
 
 

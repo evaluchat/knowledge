@@ -30,15 +30,19 @@ jobs:
         run: |
           set -euo pipefail
           REF="${GITHUB_REF_NAME:-dev}"
-          BASE="https://raw.githubusercontent.com/evaluchat/research/${REF}"
-          curl -fsSL "${BASE}/scripts/build_site.py" -o /tmp/research_build_site.py || {
-            echo "ERROR: cannot fetch ${BASE}/scripts/build_site.py — refusing to publish with an unverifiable mirror."
-            exit 1
+          API="https://api.github.com/repos/evaluchat/research/contents"
+          # Fetch via the API (strongly consistent) — raw.githubusercontent.com
+          # CDN-caches fresh pushes and can serve stale blobs for minutes.
+          fetch_file() {
+            curl -fsSL "${API}/$1?ref=${REF}" | python3 -c \
+              "import json,sys,base64; sys.stdout.write(base64.b64decode(json.load(sys.stdin)['content']).decode())" \
+              > "/tmp/$2" || {
+                echo "ERROR: cannot fetch evaluchat/research@${REF} $1 — refusing to publish with an unverifiable mirror."
+                exit 1
+              }
           }
-          curl -fsSL "${BASE}/scripts/theme/style.css" -o /tmp/research_style.css || {
-            echo "ERROR: cannot fetch ${BASE}/scripts/theme/style.css — refusing to publish with an unverifiable mirror."
-            exit 1
-          }
+          fetch_file "scripts/build_site.py" research_build_site.py
+          fetch_file "scripts/theme/style.css" research_style.css
           sed -e 's|evaluchat/knowledge/blob/main|evaluchat/research/blob/main|' \
               -e 's|SITE_LABEL = "Knowledge catalog"|SITE_LABEL = "Research catalog"|' \
               scripts/build_site.py > /tmp/local_build_site.norm.py
