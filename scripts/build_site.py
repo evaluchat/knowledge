@@ -45,7 +45,10 @@ except ImportError:
 ROOT = Path(".").resolve()
 OUT = ROOT / "site"
 GITHUB_BLOB = "https://github.com/evaluchat/knowledge/blob/main/"
+REPO_URL = GITHUB_BLOB[: GITHUB_BLOB.index("/blob/")]
+SITE_LABEL = "Knowledge catalog"
 SKIP_DIR_NAMES = {".github", "templates", ".git", "scripts", "site"}
+CSS = (Path(__file__).parent / "theme" / "style.css").read_text(encoding="utf-8")
 
 ISO_RE = re.compile(
     r"(\d{4}-\d{2}-\d{2}(?:[T ]\d{2}:\d{2}:\d{2}(?:\.\d+)?(?:Z|[+-]\d{2}:?\d{2})?)?)"
@@ -194,44 +197,87 @@ def fmt_meta_value(v) -> str:
     return str(v)
 
 
-def page_shell(title: str, body_html: str, *, nav: str = "") -> str:
+def page_shell(
+    title: str, body_html: str, *, nav: str = "", breadcrumbs: bool = True
+) -> str:
+    esc_title = html.escape(title)
+    if not breadcrumbs:
+        crumbs = ""
+    elif nav:
+        crumbs = f'<div class="breadcrumbs">{nav}</div>'
+    else:
+        crumbs = (
+            '<div class="breadcrumbs">'
+            f'<a href="index.html">{SITE_LABEL}</a>'
+            "<span>/</span>"
+            f"<span>{esc_title}</span>"
+            "</div>"
+        )
     return f"""<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>{html.escape(title)}</title>
+<title>{esc_title}</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&amp;family=Space+Grotesk:wght@500;600;700&amp;display=swap" rel="stylesheet">
 <style>
-  :root {{ --fg:#1a1a1a; --muted:#555; --link:#0b57d0; --bg:#fafafa; --border:#ddd; }}
-  body {{ font-family: Georgia, "Times New Roman", serif; line-height:1.55; color:var(--fg);
-         max-width: 52rem; margin: 0 auto; padding: 1.5rem; background: var(--bg); }}
-  a {{ color: var(--link); }}
-  header {{ border-bottom: 1px solid var(--border); margin-bottom: 1.5rem; padding-bottom: .75rem; }}
-  header .brand {{ font-size: 1.25rem; font-weight: bold; }}
-  .muted {{ color: var(--muted); font-size: .95rem; }}
-  table.facts {{ border-collapse: collapse; width: 100%; margin: 1rem 0; font-size: .95rem; }}
-  table.facts th, table.facts td {{ border: 1px solid var(--border); padding: .35rem .6rem; text-align: left; vertical-align: top; }}
-  table.facts th {{ width: 8rem; background: #f0f0f0; }}
-  .lang-badges a {{ margin-right: .4rem; }}
-  .catalog {{ width: 100%; border-collapse: collapse; }}
-  .catalog th, .catalog td {{ border-bottom: 1px solid var(--border); padding: .45rem .3rem; text-align: left; vertical-align: top; }}
-  .catalog th {{ font-size: .85rem; color: var(--muted); }}
-  pre {{ background: #f3f3f3; padding: .75rem; overflow-x: auto; }}
-  code {{ font-family: ui-monospace, Menlo, Consolas, monospace; font-size: .9em; }}
+{CSS}
+/* OKF catalog additions — theme-consistent styling for generator-specific elements */
+:root {{ --fg: var(--ink); }}
+body {{ background: var(--surface); }}
+main.page {{ padding: 68px 0 100px; }}
+.content {{ max-width: 900px; margin: 0 auto; }}
+table.facts, table.catalog {{ border-collapse: collapse; width: 100%; margin: 1.2rem 0; font-size: .95rem; }}
+table.facts th, table.facts td, table.catalog th, table.catalog td {{ border-bottom: 1px solid var(--line); padding: .5rem .6rem; text-align: left; vertical-align: top; }}
+table.facts th {{ width: 8rem; color: var(--muted); font-weight: 600; }}
+table.catalog th {{ font-size: .85rem; color: var(--muted); }}
+.muted {{ color: var(--muted); font-size: .95rem; }}
+.lang-badges a {{ margin-right: .4rem; font-size: .85rem; }}
+.intro {{ margin-bottom: 1.5rem; }}
+.breadcrumbs {{ max-width: 900px; margin: 0 auto 28px; display: flex; gap: 10px; color: #8a8997; font-size: 13px; font-weight: 600; }}
+.breadcrumbs a {{ color: #68677a; }}
+.site-footer {{ border-top: 1px solid var(--line); padding: 40px 0; margin-top: 40px; }}
+.footer-inner {{ display: flex; justify-content: space-between; align-items: center; gap: 20px; flex-wrap: wrap; color: var(--muted); font-size: .9rem; }}
+.footer-inner strong {{ color: var(--ink); font-family: "Space Grotesk", sans-serif; }}
+.footer-links {{ display: flex; gap: 18px; }}
+.footer-links a {{ color: var(--muted); }}
+.eyebrow {{ color: var(--accent-dark); font-size: 11px; font-weight: 700; letter-spacing: .12em; }}
 </style>
 </head>
 <body>
-<header>
-  <div class="brand"><a href="index.html">evaluchat research</a></div>
-  <p class="muted">Open Knowledge Format catalog ·
-    <a href="https://github.com/evaluchat/research">GitHub</a> ·
-    <a href="https://github.com/evaluchat/research/blob/main/README.md">README</a>
-  </p>
-  {nav}
+<header class="site-header">
+  <div class="shell header-inner">
+    <a class="brand" href="index.html" aria-label="{SITE_LABEL}">
+      <span class="brand-mark">e</span>
+      <span>evaluchat</span>
+    </a>
+    <nav class="top-nav" aria-label="Primary navigation">
+      <a href="index.html">{SITE_LABEL}</a>
+      <a href="{REPO_URL}">GitHub</a>
+      <a href="{GITHUB_BLOB}README.md">README</a>
+    </nav>
+  </div>
 </header>
-<main>
+<main class="shell page">
+{crumbs}
+  <article class="content">
 {body_html}
+  </article>
 </main>
+<footer class="site-footer">
+  <div class="shell footer-inner">
+    <div>
+      <strong>evaluchat</strong>
+      <span>{SITE_LABEL} · Open Knowledge Format</span>
+    </div>
+    <div class="footer-links">
+      <a href="index.html">{SITE_LABEL}</a>
+      <a href="{REPO_URL}">GitHub</a>
+    </div>
+  </div>
+</footer>
 </body>
 </html>
 """
@@ -392,7 +438,7 @@ def build() -> int:
         readme_blurb = render_markdown("\n\n".join(paras[:3]))
 
     index_body = f"""
-<h1>Research catalog</h1>
+<h1>{SITE_LABEL}</h1>
 <div class="intro muted">{readme_blurb}</div>
 <p class="muted">{len(catalog)} concept groups · generated by build_site.py</p>
 <table class="catalog">
@@ -405,7 +451,8 @@ def build() -> int:
 </table>
 """
     (OUT / "index.html").write_text(
-        page_shell("evaluchat research catalog", index_body), encoding="utf-8"
+        page_shell(f"evaluchat {SITE_LABEL.lower()}", index_body, breadcrumbs=False),
+        encoding="utf-8",
     )
     (OUT / "catalog.json").write_text(
         json.dumps(catalog, indent=2, ensure_ascii=False) + "\n", encoding="utf-8"
