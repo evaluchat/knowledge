@@ -23,6 +23,17 @@
     "canonical_resource": "https://github.com/evaluchat/knowledge/blob/main/concepts/essays-workflow.en.md"
   },
   {
+    "id": "platform-capabilities",
+    "type": "Concept",
+    "languages": [
+      "en"
+    ],
+    "status": "draft",
+    "description": "The Canvas platform's configurable surface for research apparatuses: AI modes, drafting gates, and telemetry, pinned to a shipped platform version. Apparatus specs reference this vocabulary for their knobs.",
+    "updated": "2026-08-10T10:45:00+00:00",
+    "canonical_resource": "https://github.com/evaluchat/knowledge/blob/main/concepts/platform-capabilities.en.md"
+  },
+  {
     "id": "research-apparatus",
     "type": "Concept",
     "languages": [

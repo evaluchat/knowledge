@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Platform capabilities — knob vocabulary as shipped</title>
+<style>
+  :root { --fg:#1a1a1a; --muted:#555; --link:#0b57d0; --bg:#fafafa; --border:#ddd; }
+  body { font-family: Georgia, "Times New Roman", serif; line-height:1.55; color:var(--fg);
+         max-width: 52rem; margin: 0 auto; padding: 1.5rem; background: var(--bg); }
+  a { color: var(--link); }
+  header { border-bottom: 1px solid var(--border); margin-bottom: 1.5rem; padding-bottom: .75rem; }
+  header .brand { font-size: 1.25rem; font-weight: bold; }
+  .muted { color: var(--muted); font-size: .95rem; }
+  table.facts { border-collapse: collapse; width: 100%; margin: 1rem 0; font-size: .95rem; }
+  table.facts th, table.facts td { border: 1px solid var(--border); padding: .35rem .6rem; text-align: left; vertical-align: top; }
+  table.facts th { width: 8rem; background: #f0f0f0; }
+  .lang-badges a { margin-right: .4rem; }
+  .catalog { width: 100%; border-collapse: collapse; }
+  .catalog th, .catalog td { border-bottom: 1px solid var(--border); padding: .45rem .3rem; text-align: left; vertical-align: top; }
+  .catalog th { font-size: .85rem; color: var(--muted); }
+  pre { background: #f3f3f3; padding: .75rem; overflow-x: auto; }
+  code { font-family: ui-monospace, Menlo, Consolas, monospace; font-size: .9em; }
+</style>
+</head>
+<body>
+<header>
+  <div class="brand"><a href="index.html">evaluchat research</a></div>
+  <p class="muted">Open Knowledge Format catalog ·
+    <a href="https://github.com/evaluchat/research">GitHub</a> ·
+    <a href="https://github.com/evaluchat/research/blob/main/README.md">README</a>
+  </p>
+  
+</header>
+<main>
+<h1>Platform capabilities — knob vocabulary as shipped</h1>
+<table class="facts"><tr><th>type</th><td>Concept</td></tr><tr><th>id</th><td>platform-capabilities</td></tr><tr><th>status</th><td>draft</td></tr><tr><th>lang</th><td>en</td></tr><tr><th>origin</th><td>native</td></tr><tr><th>generated</th><td>by=evaluchat-continuation, at=2026-08-10T10:45:00Z</td></tr><tr><th>sources</th><td>{&#x27;id&#x27;: &#x27;essays-workflow&#x27;, &#x27;resource&#x27;: &#x27;https://github.com/evaluchat/knowledge/blob/main/concepts/essays-workflow.en.md&#x27;, &#x27;title&#x27;: &#x27;Essays workflow — proportional drafting unlock (knowledge catalog)&#x27;}, {&#x27;id&#x27;: &#x27;apparatus-recipe&#x27;, &#x27;resource&#x27;: &#x27;https://github.com/evaluchat/knowledge/blob/main/playbooks/apparatus-recipe.en.md&#x27;, &#x27;title&#x27;: &#x27;The apparatus recipe (knowledge catalog)&#x27;}, {&#x27;id&#x27;: &#x27;apparatus-method&#x27;, &#x27;resource&#x27;: &#x27;https://github.com/evaluchat/research/blob/main/methods/apparatus.en.md&#x27;, &#x27;title&#x27;: &#x27;The apparatus as research instrument (research catalog)&#x27;}</td></tr></table>
+
+<article class="body"><h1 id="platform-capabilities-knob-vocabulary-as-shipped">Platform capabilities — knob vocabulary as shipped</h1>
+<blockquote>
+<p><code>applies_to: 0.5.9</code>. This concept defines the <strong>knob vocabulary</strong> that research apparatus specs
+reference in their frontmatter (<code>knobs:</code>). An apparatus spec says <code>ai_mode: constrained</code>; this
+concept says what that <em>mechanically means</em> in the pinned platform version. When the platform
+changes, bump <code>applies_to</code> and adjust the tables below — old evidence stays interpretable because
+provenance records the version its configuration ran under.</p>
+</blockquote>
+<h2 id="ai-modes">AI modes</h2>
+<table>
+<thead>
+<tr>
+<th>Mode</th>
+<th>Chat</th>
+<th>Canvas edits</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>none</code></td>
+<td>—</td>
+<td>—</td>
+<td>no AI panel in the workspace</td>
+</tr>
+<tr>
+<td><code>chat-only</code></td>
+<td>✓</td>
+<td>—</td>
+<td>advisor; cannot touch the document</td>
+</tr>
+<tr>
+<td><code>constrained</code></td>
+<td>✓</td>
+<td>gated</td>
+<td>drafting unlocks per <code>drafting_gate</code> policy</td>
+</tr>
+<tr>
+<td><code>full</code></td>
+<td>✓</td>
+<td>✓</td>
+<td>unconstrained co-editing</td>
+</tr>
+</tbody>
+</table>
+<p><code>constrained</code> is the CAMDLE-relevant mode: the AI participates in dialogue freely, but its
+contribution to the canvas document is gated behind the drafting policy.</p>
+<h2 id="drafting-gates">Drafting gates</h2>
+<table>
+<thead>
+<tr>
+<th>Gate</th>
+<th>Unlock condition</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>none</code></td>
+<td>immediate</td>
+<td>drafting available from the start</td>
+</tr>
+<tr>
+<td><code>discussion-first</code></td>
+<td>prior dialogic contribution</td>
+<td>the current shipped behaviour (see <a href="https://github.com/evaluchat/knowledge/blob/main/concepts/essays-workflow.en.md">essays-workflow</a>)</td>
+</tr>
+<tr>
+<td><code>thesis-approved</code></td>
+<td>assess-thesis pass</td>
+<td>planned; not shipped in 0.5.9</td>
+</tr>
+</tbody>
+</table>
+<p>The gate is the mechanism that turns a pedagogical constraint into a research variable: the
+drafting-unlock threshold is configurable and pre-registerable per experiment (see
+<a href="https://github.com/evaluchat/research/blob/main/theory/threshold-calibration.en.md">threshold-calibration</a>).</p>
+<h2 id="telemetry-boundary">Telemetry boundary</h2>
+<table>
+<thead>
+<tr>
+<th>Stream</th>
+<th>Records</th>
+<th>Explicitly NOT</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>process_signals</code></td>
+<td>keystroke bursts, paste volume, canvas edit types</td>
+<td>authorship detection; no integrity score</td>
+</tr>
+<tr>
+<td><code>transcript</code></td>
+<td>full LLM agent conversation</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>output</code></td>
+<td>final submission</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p>Process evidence describes <em>how</em> work happened, never <em>who</em> did it. There is no
+integrity/authorship scoring in the platform (see <a href="https://github.com/evaluchat/knowledge/blob/main/concepts/essays-workflow.en.md">essays-workflow</a>); apparatuses that want to
+argue about authorship must build their case from the transcript and process signals as evidence,
+not from a platform verdict.</p>
+<h2 id="versioning-contract">Versioning contract</h2>
+<ul>
+<li><code>applies_to</code> pins the platform version whose behaviour this vocabulary describes.</li>
+<li>Apparatus specs carry their own <code>version</code> and <code>min_platform</code> — the apparatus version is
+  independent of the canvas version.</li>
+<li>Evidence provenance records <code>apparatus: {id, version, configuration}</code> + <code>canvas: {version}</code> so a
+  given result is reproducible against the exact platform and knob set that produced it.</li>
+</ul></article>
+
+</main>
+</body>
+</html>
