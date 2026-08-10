@@ -47,6 +47,7 @@ jobs:
           fetch_file "scripts/theme/favicon.ico" research_favicon.ico
           sed -e 's|evaluchat/knowledge/blob/main|evaluchat/research/blob/main|' \
               -e 's|SITE_LABEL = "Knowledge catalog"|SITE_LABEL = "Research catalog"|' \
+              -e 's|SITE_DOMAIN = "knowledge.evaluchat.org"|SITE_DOMAIN = "research.evaluchat.org"|' \
               scripts/build_site.py > /tmp/local_build_site.norm.py
           if ! diff -q /tmp/research_build_site.py /tmp/local_build_site.norm.py >/dev/null; then
             echo "ERROR: scripts/build_site.py diverged from evaluchat/research@${REF}."

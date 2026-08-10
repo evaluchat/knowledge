@@ -63,6 +63,7 @@ OUT = ROOT / "site"
 GITHUB_BLOB = "https://github.com/evaluchat/knowledge/blob/main/"
 REPO_URL = GITHUB_BLOB[: GITHUB_BLOB.index("/blob/")]
 SITE_LABEL = "Knowledge catalog"
+SITE_DOMAIN = "knowledge.evaluchat.org"
 SKIP_DIR_NAMES = {".github", "templates", ".git", "scripts", "site"}
 
 # Site-root-relative registries, filled by build() before rendering:
@@ -373,6 +374,7 @@ def build() -> int:
     by_id, bundles = collect_concepts()
     OUT.mkdir(parents=True, exist_ok=True)
     (OUT / ".nojekyll").write_text("", encoding="utf-8")
+    (OUT / "CNAME").write_text(SITE_DOMAIN + "\n", encoding="utf-8")
     copy_theme_assets()
 
     global CONCEPT_PAGES, SECTION_PAGES
