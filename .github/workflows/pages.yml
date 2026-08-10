@@ -22,6 +22,40 @@ jobs:
         with:
           fetch-depth: 0
 
+      # Divergence guard: build_site.py + scripts/theme/ must track
+      # evaluchat/research on the same branch (dev now, main after merge).
+      # Only GITHUB_BLOB + SITE_LABEL may differ. A diverged generator fails
+      # here so a stale render can never be published.
+      - name: Check site generator sync with research
+        run: |
+          set -euo pipefail
+          REF="${GITHUB_REF_NAME:-dev}"
+          BASE="https://raw.githubusercontent.com/evaluchat/research/${REF}"
+          curl -fsSL "${BASE}/scripts/build_site.py" -o /tmp/research_build_site.py || {
+            echo "ERROR: cannot fetch ${BASE}/scripts/build_site.py — refusing to publish with an unverifiable mirror."
+            exit 1
+          }
+          curl -fsSL "${BASE}/scripts/theme/style.css" -o /tmp/research_style.css || {
+            echo "ERROR: cannot fetch ${BASE}/scripts/theme/style.css — refusing to publish with an unverifiable mirror."
+            exit 1
+          }
+          sed -e 's|evaluchat/knowledge/blob/main|evaluchat/research/blob/main|' \
+              -e 's|SITE_LABEL = "Knowledge catalog"|SITE_LABEL = "Research catalog"|' \
+              scripts/build_site.py > /tmp/local_build_site.norm.py
+          if ! diff -q /tmp/research_build_site.py /tmp/local_build_site.norm.py >/dev/null; then
+            echo "ERROR: scripts/build_site.py diverged from evaluchat/research@${REF}."
+            echo "Fix: copy research's build_site.py, swap GITHUB_BLOB + SITE_LABEL for knowledge, and re-commit."
+            diff /tmp/research_build_site.py /tmp/local_build_site.norm.py | head -40
+            exit 1
+          fi
+          if ! diff -q /tmp/research_style.css scripts/theme/style.css >/dev/null; then
+            echo "ERROR: scripts/theme/style.css diverged from evaluchat/research@${REF}."
+            echo "Fix: copy research's scripts/theme/style.css and re-commit."
+            diff /tmp/research_style.css scripts/theme/style.css | head -40
+            exit 1
+          fi
+          echo "Site generator in sync with evaluchat/research@${REF}"
+
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
