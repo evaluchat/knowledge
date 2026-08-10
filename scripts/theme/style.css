@@ -1,323 +1,374 @@
-
-/*
- * Evaluchat-inspired GitHub Pages Jekyll theme.
- * The theme is intentionally self-contained so it works without a third-party
- * Jekyll theme dependency.
- */
+/* Evaluchat catalog site — brand-aligned with docs.evaluchat.com.
+   Tokens ported verbatim from docs/assets/style.css (source of truth:
+   knowledge-catalog branding-guideline.md): brand blue #2c3e56,
+   Source Sans 3 body, Inter wordmark, Fira Code mono. */
+@import url("https://fonts.googleapis.com/css2?family=Fira+Code&family=Inter:wght@400;500;600;700&family=Source+Sans+3:wght@400;500;600;700&display=swap");
 
 :root {
-  --ink: #17172b;
-  --muted: #68687b;
-  --line: #e8e7ef;
+  --brand: #2c3e56; /* matches Login.tsx hero panel */
+  --brand-deep: #243548;
+  --brand-soft: #3a5272;
+  --brand-mist: #e8eef6;
+  --brand-foreground: #ffffff;
+  --background: #fafbfc;
   --surface: #ffffff;
-  --soft: #f7f7fb;
-  --soft-2: #f0eff8;
-  --accent: #6657e8;
-  --accent-dark: #5143cf;
-  --accent-soft: #eeecff;
-  --shadow: 0 12px 40px rgba(29, 26, 62, .07);
-  --radius: 18px;
-  --shell: 1120px;
+  --foreground: #141a22;
+  --muted: #f0f3f7;
+  --muted-foreground: #5c6675;
+  --border: #dde3eb;
+  --link: #2a6fdb;
+  --radius: 10px;
+  --max-width: 920px;
+  --content-width: 720px;
+  --header-height: 60px;
 }
 
-* { box-sizing: border-box; }
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
 
-html { scroll-behavior: smooth; }
+html {
+  font-size: 16px;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  scroll-behavior: smooth;
+}
 
 body {
-  margin: 0;
-  color: var(--ink);
-  background: var(--surface);
-  font-family: "DM Sans", system-ui, sans-serif;
-  font-size: 17px;
-  line-height: 1.72;
-  -webkit-font-smoothing: antialiased;
+  font-family: "Source Sans 3", -apple-system, BlinkMacSystemFont, "Segoe UI",
+    Roboto, Helvetica, Arial, sans-serif;
+  color: var(--foreground);
+  background: var(--background);
+  line-height: 1.65;
 }
 
-a {
-  color: var(--accent-dark);
-  text-decoration: none;
-}
-
-a:hover { text-decoration: underline; }
-
-.shell {
-  width: min(calc(100% - 40px), var(--shell));
-  margin-inline: auto;
-}
-
+/* --- Brand header (blue + white lettering) — docs-identical --- */
 .site-header {
-  border-bottom: 1px solid var(--line);
-  background: rgba(255,255,255,.94);
+  background: var(--brand);
+  color: var(--brand-foreground);
   position: sticky;
   top: 0;
-  z-index: 20;
-  backdrop-filter: blur(12px);
+  z-index: 50;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 .header-inner {
-  min-height: 72px;
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 0 1.5rem;
+  height: var(--header-height);
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 24px;
+  gap: 1rem;
 }
 
-.brand {
+.logo a {
+  /* Match evaluchat.com login wordmark: Inter semibold, tracking-tight */
   display: inline-flex;
   align-items: center;
-  gap: 10px;
-  color: var(--ink);
-  font-family: "Space Grotesk", sans-serif;
-  font-weight: 700;
-  font-size: 18px;
-  letter-spacing: -.02em;
+  gap: 0.55rem;
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    Helvetica, Arial, sans-serif;
+  font-weight: 600;
+  font-size: 1.35rem;
+  color: var(--brand-foreground);
+  text-decoration: none;
+  letter-spacing: -0.025em;
 }
 
-.brand:hover { text-decoration: none; }
-
-.brand-mark {
-  display: grid;
-  place-items: center;
-  width: 31px;
-  height: 31px;
-  border-radius: 10px;
-  color: white;
-  background: var(--ink);
-  font-size: 20px;
+.logo a:hover {
+  opacity: 0.9;
+  text-decoration: none;
 }
 
-.top-nav {
+.logo-mark {
+  width: 32px;
+  height: 32px;
+  border-radius: 7px;
+  display: block;
+  flex-shrink: 0;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+.main-nav {
   display: flex;
+  gap: 0.25rem 1.25rem;
   align-items: center;
-  gap: 25px;
-  font-size: 14px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.main-nav a {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.78);
+  text-decoration: none;
+  transition: color 0.15s;
+}
+
+.main-nav a:hover,
+.main-nav a.active {
+  color: #ffffff;
+  text-decoration: none;
+}
+
+.main-nav .nav-cta {
+  margin-left: 0.25rem;
+  padding: 0.35rem 0.85rem;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  color: #ffffff;
   font-weight: 600;
 }
 
-.top-nav a { color: #48485a; }
-.top-nav a:hover { color: var(--ink); text-decoration: none; }
-
-.nav-cta {
-  color: white !important;
-  background: var(--ink);
-  border-radius: 999px;
-  padding: 9px 15px;
+.main-nav .nav-cta:hover {
+  background: rgba(255, 255, 255, 0.12);
+  text-decoration: none;
 }
 
-.page { padding: 68px 0 100px; }
+/* --- Page layout --- */
+.page-wrap {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 2.75rem 1.5rem 1rem;
+}
 
 .content {
-  max-width: 900px;
-  margin: 0 auto;
+  max-width: var(--content-width);
 }
 
-.content > h1:first-child {
-  margin-top: 0;
+.content .intro {
+  font-size: 1.1rem;
+  color: var(--muted-foreground);
+  margin-bottom: 2rem;
 }
 
-h1, h2, h3 {
-  font-family: "Space Grotesk", sans-serif;
-  letter-spacing: -.035em;
-  line-height: 1.12;
-  color: var(--ink);
+.content ul,
+.content ol {
+  margin: 0 0 1.25rem 1.5rem;
 }
 
+.content li {
+  margin-bottom: 0.375rem;
+}
+
+.content strong {
+  font-weight: 600;
+}
+
+.content hr {
+  border: none;
+  border-top: 1px solid var(--border);
+  margin: 2.5rem 0;
+}
+
+/* --- Typography — docs-identical --- */
 h1 {
-  font-size: clamp(2.7rem, 6vw, 4.5rem);
-  max-width: 850px;
-  margin: 0 0 25px;
+  font-family: "Source Sans 3", -apple-system, BlinkMacSystemFont, "Segoe UI",
+    Roboto, Helvetica, Arial, sans-serif;
+  font-size: 2.1rem;
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: -0.03em;
+  margin-bottom: 0.75rem;
+  color: var(--brand);
 }
 
 h2 {
-  font-size: clamp(1.7rem, 3vw, 2.25rem);
-  margin: 58px 0 18px;
+  font-family: "Source Sans 3", -apple-system, BlinkMacSystemFont, "Segoe UI",
+    Roboto, Helvetica, Arial, sans-serif;
+  font-size: 1.45rem;
+  font-weight: 700;
+  line-height: 1.3;
+  letter-spacing: -0.02em;
+  margin-top: 2.5rem;
+  margin-bottom: 0.5rem;
+  color: var(--foreground);
 }
 
 h3 {
-  font-size: 1.25rem;
-  margin-top: 35px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  line-height: 1.4;
+  margin-top: 1.75rem;
+  margin-bottom: 0.375rem;
+  color: var(--foreground);
 }
 
-.content > p:first-of-type {
-  font-size: 1.22rem;
-  color: var(--muted);
-  max-width: 760px;
+p,
+li {
+  font-size: 0.98rem;
+  line-height: 1.7;
+  color: var(--foreground);
 }
 
-p { margin: 0 0 20px; }
-
-ul, ol { padding-left: 1.4rem; }
-
-li { margin: 7px 0; }
-
-strong { font-weight: 700; }
-
-blockquote {
-  margin: 34px 0;
-  padding: 22px 28px;
-  border-left: 4px solid var(--accent);
-  border-radius: 0 var(--radius) var(--radius) 0;
-  background: var(--accent-soft);
-  color: #302b5c;
-  font-size: 1.12rem;
-  font-weight: 500;
+p {
+  margin-bottom: 1rem;
 }
 
+a {
+  color: var(--link);
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* --- Code / tables — docs-identical --- */
 code {
-  padding: .15em .4em;
-  border-radius: 6px;
-  background: var(--soft-2);
-  font-size: .9em;
+  font-family: "Fira Code", ui-monospace, SFMono-Regular, Menlo, Monaco,
+    Consolas, "Liberation Mono", "Courier New", monospace;
+  font-size: 0.8125rem;
+  background: var(--muted);
+  padding: 2px 6px;
+  border-radius: 4px;
 }
 
 pre {
+  background: var(--muted);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1rem 1.25rem;
   overflow-x: auto;
-  padding: 20px;
-  border-radius: 14px;
-  background: #17172b;
-  color: #f7f6ff;
+  margin: 1rem 0 1.5rem;
 }
 
 pre code {
+  background: none;
   padding: 0;
-  background: transparent;
+  font-size: 0.8125rem;
+  line-height: 1.55;
 }
 
-.breadcrumbs {
-  max-width: 900px;
-  margin: 0 auto 28px;
-  display: flex;
-  gap: 10px;
-  color: #8a8997;
-  font-size: 13px;
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1rem 0 1.5rem;
+  font-size: 0.875rem;
+  background: var(--surface);
+}
+
+th,
+td {
+  text-align: left;
+  padding: 0.625rem 0.75rem;
+  border-bottom: 1px solid var(--border);
+  vertical-align: top;
+}
+
+th {
   font-weight: 600;
+  background: var(--muted);
 }
 
-.breadcrumbs a { color: #68677a; }
-
-.doc-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 16px;
-  margin: 52px 0 80px;
+/* --- Slim hero band (section pages) — docs page-hero-slim --- */
+.page-hero-slim {
+  background: var(--brand);
+  color: #fff;
+  padding: 2rem 1.5rem 2.25rem;
 }
 
-.doc-card {
-  display: flex;
-  flex-direction: column;
-  min-height: 245px;
-  padding: 27px;
-  border: 1px solid var(--line);
-  border-radius: var(--radius);
-  background: white;
-  color: var(--ink);
-  box-shadow: var(--shadow);
-  transition: transform .18s ease, border-color .18s ease, box-shadow .18s ease;
+.page-hero-slim-inner {
+  max-width: var(--max-width);
+  margin: 0 auto;
 }
 
-.doc-card:hover {
-  text-decoration: none;
-  transform: translateY(-3px);
-  border-color: #d9d5ff;
-  box-shadow: 0 18px 50px rgba(29, 26, 62, .11);
+.page-hero-slim .breadcrumb {
+  color: rgba(255, 255, 255, 0.65);
+  margin-bottom: 0.75rem;
 }
 
-.doc-card h2 {
-  margin: 8px 0 10px;
-  font-size: 1.55rem;
+.page-hero-slim .breadcrumb a {
+  color: rgba(255, 255, 255, 0.75);
 }
 
-.doc-card p {
-  color: var(--muted);
-  font-size: .95rem;
-  line-height: 1.6;
+.page-hero-slim .breadcrumb a:hover {
+  color: #fff;
 }
 
-.eyebrow {
-  color: var(--accent-dark);
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: .12em;
+.page-hero-slim h1 {
+  color: #fff;
+  margin-bottom: 0;
 }
 
-.card-link {
-  margin-top: auto;
-  font-size: 14px;
-  font-weight: 700;
-  color: var(--accent-dark);
+/* --- Breadcrumb (non-hero) — docs-identical --- */
+.breadcrumb {
+  font-size: 0.8125rem;
+  color: var(--muted-foreground);
+  margin-bottom: 1.5rem;
 }
 
-.callout {
-  margin: 35px 0;
-  padding: 24px 27px;
-  border: 1px solid var(--line);
-  border-radius: var(--radius);
-  background: var(--soft);
+.breadcrumb a {
+  color: var(--muted-foreground);
 }
 
-.callout-accent {
-  border-color: #ddd8ff;
-  background: var(--accent-soft);
+.breadcrumb a:hover {
+  color: var(--brand);
 }
 
+.breadcrumb .sep {
+  margin: 0 0.375rem;
+}
+
+/* --- Footer — docs-identical --- */
 .site-footer {
-  border-top: 1px solid var(--line);
-  background: var(--soft);
+  background: var(--brand-deep);
+  color: rgba(255, 255, 255, 0.7);
+  margin-top: 3rem;
+  padding: 2rem 1.5rem;
+  text-align: center;
+  font-size: 0.85rem;
 }
 
-.footer-inner {
-  min-height: 130px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 25px;
-  color: var(--muted);
-  font-size: 13px;
+.site-footer a {
+  color: rgba(255, 255, 255, 0.85);
+  text-decoration: underline;
 }
 
-.footer-inner strong {
-  display: block;
-  color: var(--ink);
-  font-family: "Space Grotesk", sans-serif;
-  font-size: 15px;
+.site-footer p {
+  color: inherit;
+  margin: 0;
+  font-size: inherit;
 }
 
-.footer-inner span { display: block; margin-top: 2px; }
-
-.footer-links {
-  display: flex;
-  gap: 20px;
+.site-footer .copyright {
+  margin-top: 0.65rem;
+  font-size: 0.78rem;
+  color: rgba(255, 255, 255, 0.5);
+  letter-spacing: 0.01em;
 }
 
-.footer-links a { color: var(--muted); }
+/* --- OKF catalog additions (generator-specific elements) --- */
+.muted {
+  color: var(--muted-foreground);
+  font-size: 0.95rem;
+}
 
-@media (max-width: 760px) {
-  .shell { width: min(calc(100% - 28px), var(--shell)); }
+.lang-badges a {
+  margin-right: 0.4rem;
+  font-size: 0.85rem;
+}
 
-  .header-inner {
-    min-height: 64px;
-  }
+table.facts th {
+  width: 8rem;
+}
 
-  .top-nav {
-    gap: 12px;
-  }
+table.catalog th {
+  background: var(--muted);
+}
 
-  .top-nav a:not(.nav-cta) { display: none; }
-
-  .page { padding-top: 45px; }
-
-  h1 { font-size: 2.7rem; }
-
-  .doc-grid {
-    grid-template-columns: 1fr;
-    margin-top: 38px;
-    margin-bottom: 55px;
-  }
-
-  .footer-inner {
-    padding: 25px 0;
-    align-items: flex-start;
-    flex-direction: column;
-  }
+.empty-state {
+  background: var(--brand-mist);
+  border: 1px solid #d0dceb;
+  border-radius: var(--radius);
+  padding: 1rem 1.25rem;
+  margin: 1rem 0 1.5rem;
+  color: var(--muted-foreground);
+  font-size: 0.95rem;
 }

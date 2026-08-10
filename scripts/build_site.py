@@ -64,7 +64,6 @@ GITHUB_BLOB = "https://github.com/evaluchat/knowledge/blob/main/"
 REPO_URL = GITHUB_BLOB[: GITHUB_BLOB.index("/blob/")]
 SITE_LABEL = "Knowledge catalog"
 SKIP_DIR_NAMES = {".github", "templates", ".git", "scripts", "site"}
-CSS = (Path(__file__).parent / "theme" / "style.css").read_text(encoding="utf-8")
 
 # Site-root-relative registries, filled by build() before rendering:
 #   CONCEPT_PAGES: repo file path → page path (e.g. "theory/camdle.en.md" → "camdle.html")
@@ -280,97 +279,101 @@ def fmt_meta_value(v) -> str:
 
 
 def page_shell(
-    title: str, body_html: str, *, nav: str = "", breadcrumbs: bool = True, base: str = ""
+    title: str, body_html: str, *, nav: str = "", breadcrumbs: bool = True, base: str = "",
+    hero: bool = False,
 ) -> str:
     esc_title = html.escape(title)
     home = f"{base}index.html"
+    favicon = f"{base}favicon.ico"
+    logo = f"{base}assets/evaluchat.png"
     if not breadcrumbs:
         crumbs = ""
     elif nav:
-        crumbs = f'<div class="breadcrumbs">{nav}</div>'
+        crumbs = f'<p class="breadcrumb">{nav}</p>'
     else:
         crumbs = (
-            '<div class="breadcrumbs">'
+            '<p class="breadcrumb">'
             f'<a href="{home}">{SITE_LABEL}</a>'
-            "<span>/</span>"
+            '<span class="sep">/</span>'
             f"<span>{esc_title}</span>"
-            "</div>"
+            "</p>"
         )
+    if hero:
+        pre_main = (
+            '<section class="page-hero-slim">'
+            f'<div class="page-hero-slim-inner">{crumbs}<h1>{esc_title}</h1></div>'
+            "</section>"
+        )
+        inner_crumbs = ""
+    else:
+        pre_main = ""
+        inner_crumbs = crumbs
     return f"""<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
 <title>{esc_title}</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&amp;family=Space+Grotesk:wght@500;600;700&amp;display=swap" rel="stylesheet">
-<style>
-{CSS}
-/* OKF catalog additions — theme-consistent styling for generator-specific elements */
-:root {{ --fg: var(--ink); }}
-body {{ background: var(--surface); }}
-main.page {{ padding: 68px 0 100px; }}
-.content {{ max-width: 900px; margin: 0 auto; }}
-table.facts, table.catalog {{ border-collapse: collapse; width: 100%; margin: 1.2rem 0; font-size: .95rem; }}
-table.facts th, table.facts td, table.catalog th, table.catalog td {{ border-bottom: 1px solid var(--line); padding: .5rem .6rem; text-align: left; vertical-align: top; }}
-table.facts th {{ width: 8rem; color: var(--muted); font-weight: 600; }}
-table.catalog th {{ font-size: .85rem; color: var(--muted); }}
-.muted {{ color: var(--muted); font-size: .95rem; }}
-.lang-badges a {{ margin-right: .4rem; font-size: .85rem; }}
-.intro {{ margin-bottom: 1.5rem; }}
-.empty-state {{ border: 1px dashed var(--line); border-radius: 10px; padding: 1.1rem 1.3rem; color: var(--muted); margin: 1.5rem 0; }}
-.breadcrumbs {{ max-width: 900px; margin: 0 auto 28px; display: flex; gap: 10px; color: #8a8997; font-size: 13px; font-weight: 600; }}
-.breadcrumbs a {{ color: #68677a; }}
-.site-footer {{ border-top: 1px solid var(--line); padding: 40px 0; margin-top: 40px; }}
-.footer-inner {{ display: flex; justify-content: space-between; align-items: center; gap: 20px; flex-wrap: wrap; color: var(--muted); font-size: .9rem; }}
-.footer-inner strong {{ color: var(--ink); font-family: "Space Grotesk", sans-serif; }}
-.footer-links {{ display: flex; gap: 18px; }}
-.footer-links a {{ color: var(--muted); }}
-.eyebrow {{ color: var(--accent-dark); font-size: 11px; font-weight: 700; letter-spacing: .12em; }}
-</style>
+<link rel="icon" href="{favicon}" sizes="any"/>
+<link rel="stylesheet" href="{base}assets/style.css"/>
 </head>
 <body>
 <header class="site-header">
-  <div class="shell header-inner">
-    <a class="brand" href="{home}" aria-label="{SITE_LABEL}">
-      <span class="brand-mark">e</span>
-      <span>evaluchat</span>
-    </a>
-    <nav class="top-nav" aria-label="Primary navigation">
+  <div class="header-inner">
+    <div class="logo">
+      <a href="{home}" aria-label="{SITE_LABEL}">
+        <img class="logo-mark" src="{logo}" width="32" height="32" alt=""/>
+        evaluchat
+      </a>
+    </div>
+    <nav class="main-nav" aria-label="Primary navigation">
       <a href="{home}">{SITE_LABEL}</a>
       <a href="{REPO_URL}">GitHub</a>
       <a href="{GITHUB_BLOB}README.md">README</a>
+      <a href="https://evaluchat.com/" class="nav-cta">Open evaluchat ↗</a>
     </nav>
   </div>
 </header>
-<main class="shell page">
-{crumbs}
+{pre_main}
+<main class="page-wrap">
+{inner_crumbs}
   <article class="content">
 {body_html}
   </article>
 </main>
 <footer class="site-footer">
-  <div class="shell footer-inner">
-    <div>
-      <strong>evaluchat</strong>
-      <span>{SITE_LABEL} · Open Knowledge Format</span>
-    </div>
-    <div class="footer-links">
-      <a href="{home}">{SITE_LABEL}</a>
-      <a href="{REPO_URL}">GitHub</a>
-    </div>
-  </div>
+  <p>
+    <a href="https://evaluchat.com">evaluchat.com</a>
+    &middot; {SITE_LABEL}
+    &middot; <a href="{REPO_URL}">GitHub</a>
+    &middot; <a href="mailto:hello@evaluchat.com">hello@evaluchat.com</a>
+  </p>
+  <p class="copyright">© 2026 Evaluchat · Open Knowledge Format</p>
 </footer>
 </body>
 </html>
 """
 
 
+def copy_theme_assets() -> None:
+    """Ship brand assets (logo mark, favicon) into the built site."""
+    theme_dir = Path(__file__).parent / "theme"
+    assets_out = OUT / "assets"
+    assets_out.mkdir(parents=True, exist_ok=True)
+    for name in ("evaluchat.png", "style.css"):
+        src = theme_dir / name
+        if src.is_file():
+            (assets_out / name).write_bytes(src.read_bytes())
+    favicon = theme_dir / "favicon.ico"
+    if favicon.is_file():
+        (OUT / "favicon.ico").write_bytes(favicon.read_bytes())
+
+
 def build() -> int:
     by_id, bundles = collect_concepts()
     OUT.mkdir(parents=True, exist_ok=True)
     (OUT / ".nojekyll").write_text("", encoding="utf-8")
+    copy_theme_assets()
 
     global CONCEPT_PAGES, SECTION_PAGES
 
@@ -590,7 +593,7 @@ def build() -> int:
             )
             (OUT / f"{cid}.{lang}.html").write_text(page, encoding="utf-8")
 
-    # --- Section pages: <dir>/index.html ---
+    # --- Section pages: <dir>/index.html (docs-style slim hero band) ---
     for d in sorted(section_dirs):
         sgroups = [g for g in groups if rel(g["canon_path"]).startswith(d + "/")]
         label = section_label(d)
@@ -598,11 +601,11 @@ def build() -> int:
         idx_path = ROOT / d / "index.md"
         if idx_path.is_file():
             _raw, body = split_frontmatter(idx_path.read_text(encoding="utf-8", errors="replace"))
+            # The hero band carries the h1; strip the directory index's own H1.
+            body = re.sub(r"^#\s+.+\n?", "", body or "", count=1)
             parts.append(
-                f'<article class="body">{render_markdown(rewrite_links(body or "", idx_path.parent, out_dir=d))}</article>'
+                f'<article class="body">{render_markdown(rewrite_links(body, idx_path.parent, out_dir=d))}</article>'
             )
-        else:
-            parts.append(f"<h1>{html.escape(label)}</h1>")
         if not sgroups:
             parts.append(
                 '<div class="empty-state">No entries in this section yet — the first contribution lands here.</div>'
@@ -617,7 +620,7 @@ def build() -> int:
         parts.append(recent_strip(sgroups, 5, "../"))
         (OUT / d).mkdir(parents=True, exist_ok=True)
         (OUT / d / "index.html").write_text(
-            page_shell(label, "\n".join(parts), base="../"), encoding="utf-8"
+            page_shell(label, "\n".join(parts), base="../", hero=True), encoding="utf-8"
         )
 
     # --- Landing page: index.md + recently updated strip ---
