@@ -1,5 +1,8 @@
 # Knowledge Catalog — Update Log
 
+## 2026-08-11
+* **Platform capabilities — public-beta runtime contract**: `concepts/platform-capabilities.en.md` extended from knob vocabulary to the typed capability/knob/profile contract (required capabilities, typed knobs with dependencies/exclusions, immutable profile semantics, assignment snapshot rule, telemetry boundary incl. tracking-off) pinned to Canvas 0.5.9. `concepts/index.md` and `CONTRIBUTING.md` updated (apparatus/runtime checklist line).
+
 ## 2026-08-10
 * **Addition**: Added `concepts/platform-capabilities.en.md` (Concept, draft, applies_to 0.5.9) — the knob vocabulary apparatus specs reference: AI modes (none/chat-only/constrained/full), drafting gates (none/discussion-first/thesis-approved), telemetry boundary (process_signals/transcript/output, no authorship detection, no integrity score), versioning contract (apparatus version independent of canvas version; provenance records both).
 

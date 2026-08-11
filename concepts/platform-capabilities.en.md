@@ -5,7 +5,7 @@ lang: en
 origin: native
 status: draft
 title: Platform capabilities — knob vocabulary as shipped
-description: "The Canvas platform's configurable surface for research apparatuses: AI modes, drafting gates, and telemetry, pinned to a shipped platform version. Apparatus specs reference this vocabulary for their knobs."
+description: "The Canvas platform's typed capability, knob, telemetry, and apparatus-profile contract for reproducible education research, pinned to a shipped platform version."
 tags: [platform, capabilities, knobs, ai-modes, telemetry, apparatus]
 applies_to: "0.5.9"
 generated: { by: evaluchat-continuation, at: 2026-08-10T10:45:00Z }
@@ -21,25 +21,48 @@ sources:
     title: The apparatus as research instrument (research catalog)
 ---
 
-# Platform capabilities — knob vocabulary as shipped
+# Platform capabilities — public-beta runtime contract
 
-> `applies_to: 0.5.9`. This concept defines the **knob vocabulary** that research apparatus specs
-> reference in their frontmatter (`knobs:`). An apparatus spec says `ai_mode: constrained`; this
-> concept says what that *mechanically means* in the pinned platform version. When the platform
-> changes, bump `applies_to` and adjust the tables below — old evidence stays interpretable because
-> provenance records the version its configuration ran under.
+> `applies_to: 0.5.9`. This concept defines the typed capability and knob
+> vocabulary that research apparatus specs reference. When the platform changes,
+> bump `applies_to`; old evidence stays interpretable because provenance records
+> the Canvas and apparatus versions plus resolved configuration.
 
-## AI modes
+The public beta treats an apparatus as a reviewed research contract. A catalog
+entry declares required capabilities, roles, telemetry, provenance, typed knobs,
+dependencies/exclusions, and immutable profiles. Canvas validates the generated
+catalog at build time and executes only known built-in implementations. A PR
+cannot supply executable code to a running deployment.
 
-| Mode | Chat | Canvas edits | Notes |
+Minimum viable student workflow: assignment context, student authoring, and
+submission. Profiles that disable every meaningful activity are invalid.
+
+## Required capabilities
+
+| Capability | Meaning |
+|---|---|
+| `assignment-context` | Student can read the task and treatment context |
+| `student-authoring` | Student has an authoring surface independent of AI generation |
+| `submission` | Student can submit work for teacher review |
+| `ai-dialogue` | Reviewed AI conversation route is available |
+| `ai-canvas-actions` | Reviewed AI generation/edit actions are available |
+| `drafting-gate` | A gate policy can control drafting assistance |
+| `process-tracking` | Process telemetry can be captured under consent/policy |
+
+The first three capabilities are mandatory for every student-facing apparatus.
+
+## Typed knobs
+
+| Knob | Type | Default | Effect |
 |---|---|---|---|
-| `none` | — | — | no AI panel in the workspace |
-| `chat-only` | ✓ | — | advisor; cannot touch the document |
-| `constrained` | ✓ | gated | drafting unlocks per `drafting_gate` policy |
-| `full` | ✓ | ✓ | unconstrained co-editing |
+| `ai_assistance` | boolean | `true` | allow or disable agent calls |
+| `ai_canvas_actions` | boolean | `true` | allow or disable AI generation/edit routes; requires AI assistance when enabled |
+| `drafting_gate` | enum | `discussion-first` | `none`, `discussion-first`, or `thesis-approved` |
+| `threshold` | integer 0–100 | `4` | visible contributions before the escape hatch |
+| `tracking` | boolean | `true` | capture/display process telemetry |
 
-`constrained` is the CAMDLE-relevant mode: the AI participates in dialogue freely, but its
-contribution to the canvas document is gated behind the drafting policy.
+Dependencies, exclusions, ranges, and enum values are validated against the
+resolved profile before an assignment can be created.
 
 ## Drafting gates
 
@@ -47,17 +70,33 @@ contribution to the canvas document is gated behind the drafting policy.
 |---|---|---|
 | `none` | immediate | drafting available from the start |
 | `discussion-first` | prior dialogic contribution | the current shipped behaviour (see [essays-workflow]) |
-| `thesis-approved` | assess-thesis pass | planned; not shipped in 0.5.9 |
+| `thesis-approved` | assess-thesis pass | supported by the contract; profile-specific |
 
 The gate is the mechanism that turns a pedagogical constraint into a research variable: the
 drafting-unlock threshold is configurable and pre-registerable per experiment (see
 [threshold-calibration]).
 
+## Immutable profile examples
+
+The generated Essays catalog publishes these valid profiles:
+
+- `canonical-constrained-dialogue` — AI dialogue/actions, discussion-first gate,
+  threshold 4, tracking on;
+- `gate-off` — drafting from the start, threshold 0;
+- `ai-off` — local authoring and submission without agent calls;
+- `canvas-actions-off` — AI dialogue while canvas generation/edit actions are
+  disabled;
+- `tracking-off` — canonical treatment without process telemetry.
+
+The assignment stores the selected apparatus ID, apparatus version, profile ID,
+and resolved configuration snapshot. Teachers cannot change knobs after
+selection and later profile publication does not rewrite existing assignments.
+
 ## Telemetry boundary
 
 | Stream | Records | Explicitly NOT |
 |---|---|---|
-| `process_signals` | keystroke bursts, paste volume, canvas edit types | authorship detection; no integrity score |
+| `process_signals` | keystroke bursts, paste volume, canvas edit types | authorship detection; no integrity score; omitted when tracking is false |
 | `transcript` | full LLM agent conversation | — |
 | `output` | final submission | — |
 
@@ -69,7 +108,7 @@ not from a platform verdict.
 ## Versioning contract
 
 - `applies_to` pins the platform version whose behaviour this vocabulary describes.
-- Apparatus specs carry their own `version` and `min_platform` — the apparatus version is
+- Apparatus specs carry their own `version` and `min_canvas_version` — the apparatus version is
   independent of the canvas version.
 - Evidence provenance records `apparatus: {id, version, configuration}` + `canvas: {version}` so a
   given result is reproducible against the exact platform and knob set that produced it.
