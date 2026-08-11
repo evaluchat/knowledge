@@ -29,7 +29,7 @@
       "en"
     ],
     "status": "draft",
-    "description": "The Canvas platform's configurable surface for research apparatuses: AI modes, drafting gates, and telemetry, pinned to a shipped platform version. Apparatus specs reference this vocabulary for their knobs.",
+    "description": "The Canvas platform's typed capability, knob, telemetry, and apparatus-profile contract for reproducible education research, pinned to a shipped platform version.",
     "updated": "2026-08-10T10:45:00+00:00",
     "canonical_resource": "https://github.com/evaluchat/knowledge/blob/main/concepts/platform-capabilities.en.md"
   },

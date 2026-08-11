@@ -31,53 +31,105 @@
 <h1>Platform capabilities — knob vocabulary as shipped</h1>
 <table class="facts"><tr><th>type</th><td>Concept</td></tr><tr><th>id</th><td>platform-capabilities</td></tr><tr><th>status</th><td>draft</td></tr><tr><th>lang</th><td>en</td></tr><tr><th>origin</th><td>native</td></tr><tr><th>generated</th><td>by=evaluchat-continuation, at=2026-08-10T10:45:00Z</td></tr><tr><th>sources</th><td>{&#x27;id&#x27;: &#x27;essays-workflow&#x27;, &#x27;resource&#x27;: &#x27;https://github.com/evaluchat/knowledge/blob/main/concepts/essays-workflow.en.md&#x27;, &#x27;title&#x27;: &#x27;Essays workflow — proportional drafting unlock (knowledge catalog)&#x27;}, {&#x27;id&#x27;: &#x27;apparatus-recipe&#x27;, &#x27;resource&#x27;: &#x27;https://github.com/evaluchat/knowledge/blob/main/playbooks/apparatus-recipe.en.md&#x27;, &#x27;title&#x27;: &#x27;The apparatus recipe (knowledge catalog)&#x27;}, {&#x27;id&#x27;: &#x27;apparatus-method&#x27;, &#x27;resource&#x27;: &#x27;https://github.com/evaluchat/research/blob/main/methods/apparatus.en.md&#x27;, &#x27;title&#x27;: &#x27;The apparatus as research instrument (research catalog)&#x27;}</td></tr></table>
 
-<article class="body"><h1 id="platform-capabilities-knob-vocabulary-as-shipped">Platform capabilities — knob vocabulary as shipped</h1>
+<article class="body"><h1 id="platform-capabilities-public-beta-runtime-contract">Platform capabilities — public-beta runtime contract</h1>
 <blockquote>
-<p><code>applies_to: 0.5.9</code>. This concept defines the <strong>knob vocabulary</strong> that research apparatus specs
-reference in their frontmatter (<code>knobs:</code>). An apparatus spec says <code>ai_mode: constrained</code>; this
-concept says what that <em>mechanically means</em> in the pinned platform version. When the platform
-changes, bump <code>applies_to</code> and adjust the tables below — old evidence stays interpretable because
-provenance records the version its configuration ran under.</p>
+<p><code>applies_to: 0.5.9</code>. This concept defines the typed capability and knob
+vocabulary that research apparatus specs reference. When the platform changes,
+bump <code>applies_to</code>; old evidence stays interpretable because provenance records
+the Canvas and apparatus versions plus resolved configuration.</p>
 </blockquote>
-<h2 id="ai-modes">AI modes</h2>
+<p>The public beta treats an apparatus as a reviewed research contract. A catalog
+entry declares required capabilities, roles, telemetry, provenance, typed knobs,
+dependencies/exclusions, and immutable profiles. Canvas validates the generated
+catalog at build time and executes only known built-in implementations. A PR
+cannot supply executable code to a running deployment.</p>
+<p>Minimum viable student workflow: assignment context, student authoring, and
+submission. Profiles that disable every meaningful activity are invalid.</p>
+<h2 id="required-capabilities">Required capabilities</h2>
 <table>
 <thead>
 <tr>
-<th>Mode</th>
-<th>Chat</th>
-<th>Canvas edits</th>
-<th>Notes</th>
+<th>Capability</th>
+<th>Meaning</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td><code>none</code></td>
-<td>—</td>
-<td>—</td>
-<td>no AI panel in the workspace</td>
+<td><code>assignment-context</code></td>
+<td>Student can read the task and treatment context</td>
 </tr>
 <tr>
-<td><code>chat-only</code></td>
-<td>✓</td>
-<td>—</td>
-<td>advisor; cannot touch the document</td>
+<td><code>student-authoring</code></td>
+<td>Student has an authoring surface independent of AI generation</td>
 </tr>
 <tr>
-<td><code>constrained</code></td>
-<td>✓</td>
-<td>gated</td>
-<td>drafting unlocks per <code>drafting_gate</code> policy</td>
+<td><code>submission</code></td>
+<td>Student can submit work for teacher review</td>
 </tr>
 <tr>
-<td><code>full</code></td>
-<td>✓</td>
-<td>✓</td>
-<td>unconstrained co-editing</td>
+<td><code>ai-dialogue</code></td>
+<td>Reviewed AI conversation route is available</td>
+</tr>
+<tr>
+<td><code>ai-canvas-actions</code></td>
+<td>Reviewed AI generation/edit actions are available</td>
+</tr>
+<tr>
+<td><code>drafting-gate</code></td>
+<td>A gate policy can control drafting assistance</td>
+</tr>
+<tr>
+<td><code>process-tracking</code></td>
+<td>Process telemetry can be captured under consent/policy</td>
 </tr>
 </tbody>
 </table>
-<p><code>constrained</code> is the CAMDLE-relevant mode: the AI participates in dialogue freely, but its
-contribution to the canvas document is gated behind the drafting policy.</p>
+<p>The first three capabilities are mandatory for every student-facing apparatus.</p>
+<h2 id="typed-knobs">Typed knobs</h2>
+<table>
+<thead>
+<tr>
+<th>Knob</th>
+<th>Type</th>
+<th>Default</th>
+<th>Effect</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ai_assistance</code></td>
+<td>boolean</td>
+<td><code>true</code></td>
+<td>allow or disable agent calls</td>
+</tr>
+<tr>
+<td><code>ai_canvas_actions</code></td>
+<td>boolean</td>
+<td><code>true</code></td>
+<td>allow or disable AI generation/edit routes; requires AI assistance when enabled</td>
+</tr>
+<tr>
+<td><code>drafting_gate</code></td>
+<td>enum</td>
+<td><code>discussion-first</code></td>
+<td><code>none</code>, <code>discussion-first</code>, or <code>thesis-approved</code></td>
+</tr>
+<tr>
+<td><code>threshold</code></td>
+<td>integer 0–100</td>
+<td><code>4</code></td>
+<td>visible contributions before the escape hatch</td>
+</tr>
+<tr>
+<td><code>tracking</code></td>
+<td>boolean</td>
+<td><code>true</code></td>
+<td>capture/display process telemetry</td>
+</tr>
+</tbody>
+</table>
+<p>Dependencies, exclusions, ranges, and enum values are validated against the
+resolved profile before an assignment can be created.</p>
 <h2 id="drafting-gates">Drafting gates</h2>
 <table>
 <thead>
@@ -101,13 +153,27 @@ contribution to the canvas document is gated behind the drafting policy.</p>
 <tr>
 <td><code>thesis-approved</code></td>
 <td>assess-thesis pass</td>
-<td>planned; not shipped in 0.5.9</td>
+<td>supported by the contract; profile-specific</td>
 </tr>
 </tbody>
 </table>
 <p>The gate is the mechanism that turns a pedagogical constraint into a research variable: the
 drafting-unlock threshold is configurable and pre-registerable per experiment (see
 <a href="https://github.com/evaluchat/research/blob/main/theory/threshold-calibration.en.md">threshold-calibration</a>).</p>
+<h2 id="immutable-profile-examples">Immutable profile examples</h2>
+<p>The generated Essays catalog publishes these valid profiles:</p>
+<ul>
+<li><code>canonical-constrained-dialogue</code> — AI dialogue/actions, discussion-first gate,
+  threshold 4, tracking on;</li>
+<li><code>gate-off</code> — drafting from the start, threshold 0;</li>
+<li><code>ai-off</code> — local authoring and submission without agent calls;</li>
+<li><code>canvas-actions-off</code> — AI dialogue while canvas generation/edit actions are
+  disabled;</li>
+<li><code>tracking-off</code> — canonical treatment without process telemetry.</li>
+</ul>
+<p>The assignment stores the selected apparatus ID, apparatus version, profile ID,
+and resolved configuration snapshot. Teachers cannot change knobs after
+selection and later profile publication does not rewrite existing assignments.</p>
 <h2 id="telemetry-boundary">Telemetry boundary</h2>
 <table>
 <thead>
@@ -121,7 +187,7 @@ drafting-unlock threshold is configurable and pre-registerable per experiment (s
 <tr>
 <td><code>process_signals</code></td>
 <td>keystroke bursts, paste volume, canvas edit types</td>
-<td>authorship detection; no integrity score</td>
+<td>authorship detection; no integrity score; omitted when tracking is false</td>
 </tr>
 <tr>
 <td><code>transcript</code></td>
@@ -142,7 +208,7 @@ not from a platform verdict.</p>
 <h2 id="versioning-contract">Versioning contract</h2>
 <ul>
 <li><code>applies_to</code> pins the platform version whose behaviour this vocabulary describes.</li>
-<li>Apparatus specs carry their own <code>version</code> and <code>min_platform</code> — the apparatus version is
+<li>Apparatus specs carry their own <code>version</code> and <code>min_canvas_version</code> — the apparatus version is
   independent of the canvas version.</li>
 <li>Evidence provenance records <code>apparatus: {id, version, configuration}</code> + <code>canvas: {version}</code> so a
   given result is reproducible against the exact platform and knob set that produced it.</li>
