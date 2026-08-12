@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Validate the reviewed Markdown-template catalog sources.
+"""Validate the reviewed workspace-template catalog sources.
 
 Usage (from the knowledge repository root):
   python3 scripts/validate_templates.py
@@ -24,10 +24,18 @@ from okf_lint import split_frontmatter
 
 ROOT = Path(__file__).resolve().parents[1]
 TEMPLATES_ROOT = ROOT / "templates"
-SUPPORTED_TYPES = {"Markdown Template"}
+# Type names are normalised case-insensitively; "Form template" and
+# "Form Template" are the same catalog kind (see the Universal Workspace
+# Form Templates plan). Kinds are validated case-sensitively below.
+SUPPORTED_TYPES = {"markdown template": "markdown", "form template": "form"}
+SUPPORTED_FIELD_TYPES = {"text", "textarea", "number", "date", "select", "roster"}
 ID_RE = re.compile(r"^[a-z0-9][a-z0-9-]*$")
+# Form field ids follow snake_case (e.g. due_date, word_target) so they can be
+# referenced naturally in the markdown body and downstream submission records.
+FIELD_ID_RE = re.compile(r"^[a-z0-9][a-z0-9_-]*$")
 SEMVER_RE = re.compile(r"^\d+\.\d+\.\d+$")
 LOCALE_RE = re.compile(r"^[a-z]{2}(?:-[A-Z]{2})?$")
+PLACEHOLDER_RE = re.compile(r"\{\{\s*([a-z0-9][a-z0-9_-]*)\s*\}\}")
 
 
 @dataclass(frozen=True)
@@ -48,6 +56,100 @@ def _required_string(metadata: dict[str, Any], key: str, path: Path) -> str:
     return value.strip()
 
 
+def _validate_form_fields(metadata: dict[str, Any], path: Path) -> dict[str, str]:
+    """Validate the fields mapping of a Form template; return field id -> type."""
+    fields = metadata.get("fields")
+    if not isinstance(fields, dict) or not fields:
+        raise TemplateValidationError(
+            f"{path}: Form templates require a non-empty 'fields' mapping"
+        )
+
+    field_types: dict[str, str] = {}
+    for field_id, definition in fields.items():
+        if not FIELD_ID_RE.fullmatch(field_id):
+            raise TemplateValidationError(
+                f"{path}: field id {field_id!r} must match {FIELD_ID_RE.pattern}"
+            )
+        if not isinstance(definition, dict):
+            raise TemplateValidationError(
+                f"{path}: field {field_id!r} must be a YAML mapping"
+            )
+
+        label = definition.get("label")
+        if not isinstance(label, str) or not label.strip():
+            raise TemplateValidationError(
+                f"{path}: field {field_id!r} requires a non-empty 'label' string"
+            )
+
+        field_type = definition.get("type")
+        if field_type not in SUPPORTED_FIELD_TYPES:
+            supported = ", ".join(sorted(SUPPORTED_FIELD_TYPES))
+            raise TemplateValidationError(
+                f"{path}: field {field_id!r} type {field_type!r} is not supported; "
+                f"expected one of: {supported}"
+            )
+
+        if "required" in definition and not isinstance(definition["required"], bool):
+            raise TemplateValidationError(
+                f"{path}: field {field_id!r} 'required' must be a boolean"
+            )
+
+        for key in ("max_length", "display_chars", "display_lines", "min", "max"):
+            if key in definition and (
+                not isinstance(definition[key], int) or isinstance(definition[key], bool)
+            ):
+                raise TemplateValidationError(
+                    f"{path}: field {field_id!r} {key!r} must be an integer"
+                )
+
+        if field_type == "select":
+            options = definition.get("options")
+            if (
+                not isinstance(options, list)
+                or not options
+                or not all(isinstance(o, str) and o.strip() for o in options)
+            ):
+                raise TemplateValidationError(
+                    f"{path}: select field {field_id!r} requires a non-empty "
+                    "'options' list of strings"
+                )
+
+        if field_type == "number":
+            lower = definition.get("min")
+            upper = definition.get("max")
+            if lower is not None and upper is not None and lower > upper:
+                raise TemplateValidationError(
+                    f"{path}: number field {field_id!r} has min {lower} > max {upper}"
+                )
+
+        field_types[field_id] = field_type
+    return field_types
+
+
+def _validate_placeholders(body: str, field_types: dict[str, str], path: Path) -> None:
+    """Cross-check body placeholders against the declared fields."""
+    remaining = PLACEHOLDER_RE.sub("", body)
+    if "{{" in remaining or "}}" in remaining:
+        marker = "{{" if "{{" in remaining else "}}"
+        index = remaining.find(marker)
+        context = remaining[max(0, index - 40): index + 40].replace("\n", " ")
+        raise TemplateValidationError(
+            f"{path}: malformed placeholder syntax in body near ...{context}..."
+        )
+
+    used = set(PLACEHOLDER_RE.findall(body))
+    undeclared = sorted(used - set(field_types))
+    if undeclared:
+        raise TemplateValidationError(
+            f"{path}: body uses undeclared placeholder(s): {', '.join(undeclared)}"
+        )
+    unused = sorted(set(field_types) - used)
+    if unused:
+        raise TemplateValidationError(
+            f"{path}: declared field(s) never used in body: {', '.join(unused)}"
+        )
+
+
 def load_template(path: Path) -> TemplateRecord:
     source = path.read_text(encoding="utf-8")
     raw, body = split_frontmatter(source)
@@ -65,7 +167,8 @@ def load_template(path: Path) -> TemplateRecord:
         raise TemplateValidationError(f"{path}: frontmatter must be a YAML mapping")
 
     template_type = _required_string(metadata, "type", path)
-    if template_type not in SUPPORTED_TYPES:
+    expected_kind = SUPPORTED_TYPES.get(template_type.lower())
+    if expected_kind is None:
         supported = ", ".join(sorted(SUPPORTED_TYPES))
         raise TemplateValidationError(
             f"{path}: unsupported template type {template_type!r}; expected {supported}"
@@ -92,9 +195,10 @@ def load_template(path: Path) -> TemplateRecord:
     title = _required_string(metadata, "title", path)
     description = _required_string(metadata, "description", path)
     template_kind = _required_string(metadata, "template_kind", path)
-    if template_kind != "markdown":
+    if template_kind != expected_kind:
         raise TemplateValidationError(
-            f"{path}: supported Markdown Templates must have template_kind: markdown"
+            f"{path}: template type {template_type!r} requires "
+            f"template_kind: {expected_kind}, got {template_kind!r}"
         )
 
     assistant = metadata.get("assistant")
@@ -114,6 +218,10 @@ def load_template(path: Path) -> TemplateRecord:
         raise TemplateValidationError(
             f"{path}: filename must be {expected_name!r} for its id and locale"
         )
+
+    if expected_kind == "form":
+        field_types = _validate_form_fields(metadata, path)
+        _validate_placeholders(body, field_types, path)
 
     return TemplateRecord(path=path, metadata=metadata, body=body)
 
@@ -157,7 +265,7 @@ def main() -> int:
         print(f"Template validation failed:\n{error}", file=sys.stderr)
         return 1
 
-    print(f"Validated {len(records)} Markdown template(s) in {TEMPLATES_ROOT}")
+    print(f"Validated {len(records)} template(s) in {TEMPLATES_ROOT}")
     return 0
 
 
