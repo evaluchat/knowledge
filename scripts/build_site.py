@@ -43,6 +43,10 @@ from okf_lint import (  # noqa: E402
     split_frontmatter,
 )
 
+# BEGIN KNOWLEDGE TEMPLATE IMPORT
+from validate_templates import load_templates  # noqa: E402
+# END KNOWLEDGE TEMPLATE IMPORT
+
 try:
     import markdown as md_lib
 
@@ -370,6 +374,82 @@ def copy_theme_assets() -> None:
         (OUT / "favicon.ico").write_bytes(favicon.read_bytes())
 
 
+# BEGIN KNOWLEDGE TEMPLATE RENDERER
+def build_templates() -> None:
+    """Render reviewed Markdown templates without adding them to the concept catalog."""
+    records = load_templates(ROOT / "templates")
+    templates_out = OUT / "templates"
+    templates_out.mkdir(parents=True, exist_ok=True)
+
+    rows: list[str] = []
+    for record in records:
+        metadata = record.metadata
+        template_id = str(metadata["id"])
+        title = str(metadata["title"])
+        description = str(metadata["description"])
+        source_name = record.path.name
+        source_out = templates_out / source_name
+        source_out.parent.mkdir(parents=True, exist_ok=True)
+        source_out.write_text(record.path.read_text(encoding="utf-8"), encoding="utf-8")
+
+        preview = render_markdown(
+            rewrite_links(record.body.strip(), record.path.parent, out_dir="templates")
+        )
+        detail_body = (
+            f"<h1>{html.escape(title)}</h1>\n"
+            f'<p class="lede">{html.escape(description)}</p>\n'
+            '<p class="muted"><a href="index.html">All templates</a> · '
+            f'<a href="{html.escape(source_name)}">Raw Markdown source</a></p>\n'
+            '<h2>Preview</h2>\n'
+            f'<article class="body">{preview}</article>\n'
+        )
+        detail_path = templates_out / f"{template_id}.html"
+        detail_path.write_text(
+            page_shell(title, detail_body, base="../"), encoding="utf-8"
+        )
+        rows.append(
+            "<tr>"
+            f'<td><a href="{html.escape(detail_path.name)}">{html.escape(title)}</a>'
+            f'<br/><span class="muted"><code>{html.escape(template_id)}</code></span></td>'
+            f'<td>{html.escape(description)}</td>'
+            f'<td><a href="{html.escape(source_name)}">Raw Markdown</a></td>'
+            "</tr>"
+        )
+
+    index_body = (
+        "<h1>Templates</h1>\n"
+        "<p class=\"lede\">Reviewed Markdown starters for the Evaluchat workspace.</p>\n"
+        '<table class="catalog"><thead><tr><th>Template</th><th>Description</th>'
+        f'<th>Source</th></tr></thead><tbody>{"".join(rows)}</tbody></table>\n'
+    )
+    index_path = templates_out / "index.html"
+    index_path.write_text(
+        page_shell("Templates", index_body, base="../", hero=True), encoding="utf-8"
+    )
+
+    getting_started = next(
+        (record for record in records if record.metadata.get("id") == "evaluchat-getting-started"),
+        None,
+    )
+    if getting_started is None:
+        raise RuntimeError("Template build assertion failed: Getting Started is missing")
+    expected_files = (
+        index_path,
+        templates_out / "evaluchat-getting-started.html",
+        templates_out / getting_started.path.name,
+    )
+    missing = [str(path) for path in expected_files if not path.is_file()]
+    if missing:
+        raise RuntimeError(f"Template build assertion failed; missing: {', '.join(missing)}")
+    if "Welcome to Evaluchat" not in expected_files[1].read_text(encoding="utf-8"):
+        raise RuntimeError("Template build assertion failed: preview body is missing")
+    if expected_files[2].read_text(encoding="utf-8") != getting_started.path.read_text(
+        encoding="utf-8"
+    ):
+        raise RuntimeError("Template build assertion failed: raw source changed")
+# END KNOWLEDGE TEMPLATE RENDERER
+
+
 def build() -> int:
     by_id, bundles = collect_concepts()
     OUT.mkdir(parents=True, exist_ok=True)
@@ -642,6 +722,10 @@ def build() -> int:
     (OUT / "catalog.json").write_text(
         json.dumps(catalog, indent=2, ensure_ascii=False) + "\n", encoding="utf-8"
     )
+
+    # BEGIN KNOWLEDGE TEMPLATE BUILD
+    build_templates()
+    # END KNOWLEDGE TEMPLATE BUILD
     print(
         f"Built {len(groups)} concept groups ({len(bundles)} evidence bundles) + "
         f"{len(section_dirs)} section pages → site/"

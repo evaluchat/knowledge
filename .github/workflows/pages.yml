@@ -49,6 +49,42 @@ jobs:
               -e 's|SITE_LABEL = "Knowledge catalog"|SITE_LABEL = "Research catalog"|' \
               -e 's|SITE_DOMAIN = "knowledge.evaluchat.org"|SITE_DOMAIN = "research.evaluchat.org"|' \
               scripts/build_site.py > /tmp/local_build_site.norm.py
+          python3 - <<'PY'
+          from pathlib import Path
+
+          path = Path("/tmp/local_build_site.norm.py")
+          text = path.read_text()
+          def strip_marked_block(source: str, name: str) -> str:
+              lines = source.splitlines()
+              output = []
+              skipping = False
+              skip_blank_after = False
+              for line in lines:
+                  if f"# BEGIN {name}" in line:
+                      if name.endswith("BUILD") and output and output[-1] == "":
+                          output.pop()
+                      skipping = True
+                      continue
+                  if skipping:
+                      if f"# END {name}" in line:
+                          skipping = False
+                          skip_blank_after = not name.endswith("BUILD")
+                      continue
+                  if skip_blank_after:
+                      if line == "":
+                          continue
+                      skip_blank_after = False
+                  output.append(line)
+              return "\n".join(output) + "\n"
+
+          for name in (
+              "KNOWLEDGE TEMPLATE IMPORT",
+              "KNOWLEDGE TEMPLATE RENDERER",
+              "KNOWLEDGE TEMPLATE BUILD",
+          ):
+              text = strip_marked_block(text, name)
+          path.write_text(text)
+          PY
           if ! diff -q /tmp/research_build_site.py /tmp/local_build_site.norm.py >/dev/null; then
             echo "ERROR: scripts/build_site.py diverged from evaluchat/research@${REF}."
             echo "Fix: copy research's build_site.py, swap GITHUB_BLOB + SITE_LABEL for knowledge, and re-commit."
@@ -68,11 +104,14 @@ jobs:
         with:
           python-version: "3.12"
 
-      - name: Install markdown
-        run: python3 -m pip install markdown
+      - name: Install site build dependencies
+        run: python3 -m pip install markdown PyYAML
 
       - name: Lint OKF catalog
         run: python3 scripts/okf_lint.py
+
+      - name: Validate Markdown templates
+        run: python3 scripts/validate_templates.py
 
       - name: Build site
         run: python3 scripts/build_site.py
