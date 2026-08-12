@@ -10,6 +10,7 @@ Open, multilingual, PR-able knowledge about what Evaluchat Canvas does and how i
 | Section | Purpose |
 |---------|---------|
 | [Concepts](/concepts/index.md) | What the product is and how its features work (implementation source of truth) |
+| [Templates](https://knowledge.evaluchat.org/templates/) | Reviewed Markdown starters for the Evaluchat workspace |
 | Prompts | Exact wording of prompts as shipped, versioned (Phase 2 — planned) |
 | [Playbooks](/playbooks/index.md) | How to specify and build on Canvas capabilities — the research apparatus recipe (draft) |
 | References | Pointer concepts linking to the research catalog (Phase 2 — planned) |
