@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>OSS repository issue &amp; board policy (Model 1)</title>
+<link rel="icon" href="favicon.ico" sizes="any"/>
+<link rel="stylesheet" href="assets/style.css"/>
+</head>
+<body>
+<header class="site-header">
+  <div class="header-inner">
+    <div class="logo">
+      <a href="index.html" aria-label="Knowledge catalog">
+        <img class="logo-mark" src="assets/evaluchat.png" width="32" height="32" alt=""/>
+        evaluchat
+      </a>
+    </div>
+    <nav class="main-nav" aria-label="Primary navigation">
+      <a href="index.html">Knowledge catalog</a>
+      <a href="https://github.com/evaluchat/knowledge">GitHub</a>
+      <a href="https://github.com/evaluchat/knowledge/blob/main/README.md">README</a>
+      <a href="https://evaluchat.com/" class="nav-cta">Open evaluchat ↗</a>
+    </nav>
+  </div>
+</header>
+
+<main class="page-wrap">
+<p class="breadcrumb"><a href="index.html">Knowledge catalog</a><span class="sep">/</span><span>OSS repository issue &amp; board policy (Model 1)</span></p>
+  <article class="content">
+<h1>OSS repository issue &amp; board policy (Model 1)</h1>
+<table class="facts"><tr><th>type</th><td>Playbook</td></tr><tr><th>id</th><td>oss-issues-board-policy</td></tr><tr><th>status</th><td>stable</td></tr><tr><th>lang</th><td>en</td></tr><tr><th>origin</th><td>native</td></tr><tr><th>generated</th><td>by=opencode-go/deepseek-v4-flash, at=2026-08-13T08:34:45Z</td></tr><tr><th>sources</th><td>{&#x27;id&#x27;: &#x27;contributing&#x27;, &#x27;resource&#x27;: &#x27;https://github.com/evaluchat/evaluchat/blob/main/CONTRIBUTING.md&#x27;, &#x27;title&#x27;: &#x27;CONTRIBUTING.md — Issues and the project board (public statement of this policy)&#x27;}, {&#x27;id&#x27;: &#x27;board&#x27;, &#x27;resource&#x27;: &#x27;https://github.com/users/evaluchat/projects/1&#x27;, &#x27;title&#x27;: &#x27;Evaluchat Board (GitHub Projects v2)&#x27;}</td></tr></table>
+
+<article class="body"><h1 id="oss-repository-issue-board-policy-model-1">OSS repository issue &amp; board policy (Model 1)</h1>
+<blockquote>
+<p>Operating policy for the evaluchat/evaluchat GitHub repository, adopted 2026-08-13.
+The public-facing statement lives in CONTRIBUTING.md ("Issues and the project board").
+This playbook is the internal operating version: how to keep the issue list and board clean.</p>
+</blockquote>
+<h2 id="the-model-in-one-line">The model in one line</h2>
+<p><strong>Issues are the public record; the board is the execution state machine; internal notes never become issues.</strong></p>
+<p>This is "Model 1" of the three conventions found in major OSS projects (VS Code / Home Assistant = Model 1, Kubernetes = Model 2 with a separate enhancements repo, Astro / Prisma = Model 3 with Discussions for feature requests). Model 1 was chosen because the issue tracker is the only public surface external people can search, upvote and comment on — that is how the first external contributor (waghgauri14, issue #23) found the project.</p>
+<h2 id="issue-policy">Issue policy</h2>
+<ul>
+<li><strong>Bug reports</strong> — user-reported problems against the live published main-branch code. Must be reproducible: steps, expected vs actual, environment.</li>
+<li><strong>Feature requests</strong> — labelled <code>enhancement</code>. These are the public roadmap. Keep them open until delivered or explicitly closed <code>not planned</code>.</li>
+<li><strong>Never issues</strong> — internal project notes, tech-debt musings, uncommitted ideas. They become <strong>board drafts</strong> (Backlog column). The issue list is not a notes dump.</li>
+<li><strong>Closing</strong> — always with a reason: <code>completed</code> when the work shipped (comment citing the merged PR, e.g. "Shipped in #8"), <code>not_planned</code> when converted to a board note.</li>
+<li><strong>Shipped-but-open trap</strong> — issues migrated from board drafts can postdate the PRs that shipped them (2026-08-10 board hygiene did this to #19/#24/#26/#28/#29/#30/#31). Verify the feature exists on main, then close with the PR citation.</li>
+</ul>
+<h2 id="board-mechanics">Board mechanics</h2>
+<ul>
+<li><strong>Columns</strong>: Backlog → Ready → In progress → In review → Done. Fields: Priority (P0–P2), Size (XS–XL).</li>
+<li><strong>Automations</strong> (all enabled): "Item closed" → moves to Done; "Pull request linked to issue" → moves to In progress; "Item added to project"; "Auto-close issue"; "Pull request merged".</li>
+<li><strong>Quirk (observed 2026-08-13, #36)</strong>: reopening a closed issue does NOT move its board item back out of Done — the board item must be moved manually.</li>
+<li><strong>PRs are not board items.</strong> The functionality a PR delivers is rendered on the board as issue items or drafts, not as the PR node itself.</li>
+<li>Linking: put <code>Closes #N</code> in the PR body — the issue auto-closes on merge and the automation moves the item.</li>
+</ul>
+<h2 id="workflow-notes">Workflow notes</h2>
+<ul>
+<li>When a PR delivers an open issue, link it (<code>Closes #N</code> in the PR body) — the trail is the point.</li>
+<li>Triage regularly; closing-as-not-planned beats a polluted issue list.</li>
+<li>Issue open/closed state and board status are independent: an issue stays open until shipped; the board column tracks execution.</li>
+</ul>
+<h2 id="history">History</h2>
+<ul>
+<li>2026-08-12 — first external engagement: waghgauri14 commented on #23 (repo-identity confusion from the rename). Rename context: evaluchat/canvas → evaluchat/evaluchat (a major commercial LMS named Canvas); old URL 301-redirects; in-repo stale references cleaned by the rename-completion commit inside PR #13.</li>
+<li>2026-08-13 — policy adopted. Cleanup: 7 shipped issues closed with PR citations (#5–#11), 4 internal notes (#25/#27/#34/#35) closed and converted to Backlog drafts, #44 (CodeRabbit backlog) converted likewise, PR #13 linked to #22 via <code>Closes #22</code>.</li>
+</ul></article>
+
+  </article>
+</main>
+<footer class="site-footer">
+  <p>
+    <a href="https://evaluchat.com">evaluchat.com</a>
+    &middot; Knowledge catalog
+    &middot; <a href="https://github.com/evaluchat/knowledge">GitHub</a>
+    &middot; <a href="mailto:hello@evaluchat.com">hello@evaluchat.com</a>
+  </p>
+  <p class="copyright">© 2026 Evaluchat · Open Knowledge Format</p>
+</footer>
+</body>
+</html>

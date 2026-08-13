@@ -23,6 +23,17 @@
     "canonical_resource": "https://github.com/evaluchat/knowledge/blob/main/concepts/essays-workflow.en.md"
   },
   {
+    "id": "oss-issues-board-policy",
+    "type": "Playbook",
+    "languages": [
+      "en"
+    ],
+    "status": "stable",
+    "description": "How evaluchat/evaluchat GitHub issues and the Evaluchat Board are managed: issues are user-reported bugs and enhancement feature requests only (the public roadmap); internal notes and tech debt live on the project board as drafts; board columns, automations and quirks.",
+    "updated": "2026-08-13T08:34:45+00:00",
+    "canonical_resource": "https://github.com/evaluchat/knowledge/blob/main/playbooks/oss-issues-board-policy.en.md"
+  },
+  {
     "id": "platform-capabilities",
     "type": "Concept",
     "languages": [
