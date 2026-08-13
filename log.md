@@ -1,5 +1,8 @@
 # Knowledge Catalog — Update Log
 
+## 2026-08-13
+* **Addition**: Added `playbooks/oss-issues-board-policy.en.md` (Playbook, stable) + index line — Model 1 issue/board policy for the evaluchat OSS repo: issues = user-reported bugs + enhancement feature requests (public roadmap); internal notes/tech debt = board drafts, never issues; board columns, automations ("Item closed" → Done, "Pull request linked" → In progress), reopen-doesn't-restore quirk; PR-body `Closes #N` linking. Public statement in evaluchat/evaluchat CONTRIBUTING.md.
+
 ## 2026-08-11
 * **Platform capabilities — public-beta runtime contract**: `concepts/platform-capabilities.en.md` extended from knob vocabulary to the typed capability/knob/profile contract (required capabilities, typed knobs with dependencies/exclusions, immutable profile semantics, assignment snapshot rule, telemetry boundary incl. tracking-off) pinned to Canvas 0.5.9. `concepts/index.md` and `CONTRIBUTING.md` updated (apparatus/runtime checklist line).
 
