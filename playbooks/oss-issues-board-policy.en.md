@@ -38,6 +38,8 @@ This is "Model 1" of the three conventions found in major OSS projects (VS Code 
 - **Never issues** — internal project notes, tech-debt musings, uncommitted ideas. They become **board drafts** (Backlog column). The issue list is not a notes dump.
 - **Closing** — always with a reason: `completed` when the work shipped (comment citing the merged PR, e.g. "Shipped in #8"), `not_planned` when converted to a board note.
 - **Shipped-but-open trap** — issues migrated from board drafts can postdate the PRs that shipped them (2026-08-10 board hygiene did this to #19/#24/#26/#28/#29/#30/#31). Verify the feature exists on main, then close with the PR citation.
+  - **Root cause (full story, 2026-08-10)**: the hygiene run converted ALL seeded board drafts into issues with a generic stub body ("Migrated from Canvas Board draft…") and default Backlog status — including the ~10 drafts already marked Done with "Shipped in PR #N" bodies. Only #32 was closed at migration time. Four more victims were found 2026-08-13: #20 (PR #4, LaTeX-delimiter math), #21 (PR #2, Mermaid), #22 (PR #1, toolbar — also redesigned in PR #13), #33 (PR #3, inline KaTeX). Lesson: before converting drafts → issues, carry over the draft's status and body verbatim; verify "shipped" claims against merged PRs + the main tree (e.g. MathInlineExtension.ts, MermaidBlock.tsx, CustomFormattingToolbar.tsx).
+  - **Overlap note**: #20 (display + LaTeX-delimiter math) and #33 (inline KaTeX) were the display/inline halves of the same private-repo feature (MathInlineExtension.ts, built 2026-07-09); they shipped as separate backport PRs #4/#3 and were closed as separate shipped items — do not merge duplicates post-hoc.
 
 ## Board mechanics
 
