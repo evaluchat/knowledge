@@ -18,8 +18,10 @@
   --border: #dde3eb;
   --link: #2a6fdb;
   --radius: 10px;
+  /* One reading column. Keep header/body/hero on the same measure so
+     document pages match the home column (avoid a nested 720-in-920 gutter). */
   --max-width: 920px;
-  --content-width: 720px;
+  --content-width: 920px;
   --header-height: 60px;
 }
 
