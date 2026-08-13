@@ -1,0 +1,147 @@
+name: pages
+
+# Build the OKF catalog site and publish to the gh-pages branch.
+# One-time owner action required: enable GitHub Pages in repo settings
+# (Source: Deploy from a branch → gh-pages / root).
+
+on:
+  push:
+    branches:
+      - main
+      - dev
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      # Divergence guard: build_site.py + scripts/theme/ must track
+      # evaluchat/research on the same branch (dev now, main after merge).
+      # Only GITHUB_BLOB + SITE_LABEL may differ. A diverged generator fails
+      # here so a stale render can never be published.
+      - name: Check site generator sync with research
+        run: |
+          set -euo pipefail
+          REF="${GITHUB_REF_NAME:-dev}"
+          API="https://api.github.com/repos/evaluchat/research/contents"
+          # Fetch via the API (strongly consistent) — raw.githubusercontent.com
+          # CDN-caches fresh pushes and can serve stale blobs for minutes.
+          fetch_file() {
+            curl -fsSL "${API}/$1?ref=${REF}" | python3 -c \
+              "import json,sys,base64; sys.stdout.buffer.write(base64.b64decode(json.load(sys.stdin)['content']))" \
+              > "/tmp/$2" || {
+                echo "ERROR: cannot fetch evaluchat/research@${REF} $1 — refusing to publish with an unverifiable mirror."
+                exit 1
+              }
+          }
+          fetch_file "scripts/build_site.py" research_build_site.py
+          fetch_file "scripts/theme/style.css" research_style.css
+          fetch_file "scripts/theme/evaluchat.png" research_evaluchat.png
+          fetch_file "scripts/theme/favicon.ico" research_favicon.ico
+          sed -e 's|evaluchat/knowledge/blob/main|evaluchat/research/blob/main|' \
+              -e 's|SITE_LABEL = "Knowledge catalog"|SITE_LABEL = "Research catalog"|' \
+              -e 's|SITE_DOMAIN = "knowledge.evaluchat.org"|SITE_DOMAIN = "research.evaluchat.org"|' \
+              scripts/build_site.py > /tmp/local_build_site.norm.py
+          python3 - <<'PY'
+          from pathlib import Path
+
+          path = Path("/tmp/local_build_site.norm.py")
+          text = path.read_text()
+          def strip_marked_block(source: str, name: str) -> str:
+              lines = source.splitlines()
+              output = []
+              skipping = False
+              skip_blank_after = False
+              for line in lines:
+                  if f"# BEGIN {name}" in line:
+                      if name.endswith("BUILD") and output and output[-1] == "":
+                          output.pop()
+                      skipping = True
+                      continue
+                  if skipping:
+                      if f"# END {name}" in line:
+                          skipping = False
+                          skip_blank_after = not name.endswith("BUILD")
+                      continue
+                  if skip_blank_after:
+                      if line == "":
+                          continue
+                      skip_blank_after = False
+                  output.append(line)
+              return "\n".join(output) + "\n"
+
+          for name in (
+              "KNOWLEDGE TEMPLATE IMPORT",
+              "KNOWLEDGE TEMPLATE RENDERER",
+              "KNOWLEDGE TEMPLATE BUILD",
+          ):
+              text = strip_marked_block(text, name)
+          path.write_text(text)
+          PY
+          if ! diff -q /tmp/research_build_site.py /tmp/local_build_site.norm.py >/dev/null; then
+            echo "ERROR: scripts/build_site.py diverged from evaluchat/research@${REF}."
+            echo "Fix: copy research's build_site.py, swap GITHUB_BLOB + SITE_LABEL for knowledge, and re-commit."
+            diff /tmp/research_build_site.py /tmp/local_build_site.norm.py | head -40
+            exit 1
+          fi
+          for f in style.css evaluchat.png favicon.ico; do
+            if ! diff -q "/tmp/research_$f" "scripts/theme/$f" >/dev/null; then
+              echo "ERROR: scripts/theme/$f diverged from evaluchat/research@${REF}."
+              echo "Fix: copy research's scripts/theme/$f and re-commit."
+              exit 1
+            fi
+          done
+          echo "Site generator in sync with evaluchat/research@${REF}"
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install site build dependencies
+        run: python3 -m pip install markdown PyYAML
+
+      - name: Lint OKF catalog
+        run: python3 scripts/okf_lint.py
+
+      - name: Validate Markdown templates
+        run: python3 scripts/validate_templates.py
+
+      - name: Build site
+        run: python3 scripts/build_site.py
+
+      - name: Publish site/ to gh-pages
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          git config user.name "evaluchat-bot"
+          git config user.email "hello@evaluchat.com"
+
+          WORK=$(mktemp -d)
+          cp -a site/. "$WORK/"
+
+          if git fetch origin gh-pages:gh-pages 2>/dev/null; then
+            git checkout gh-pages
+          else
+            git checkout --orphan gh-pages
+          fi
+
+          # Remove old published files (keep .git)
+          find . -mindepth 1 -maxdepth 1 ! -name '.git' -exec rm -rf {} +
+          cp -a "$WORK"/. .
+          touch .nojekyll
+
+          git add -A
+          if git diff --cached --quiet; then
+            echo "No site changes to publish."
+          else
+            git commit -m "Publish site from ${GITHUB_SHA:-local}"
+            git push origin gh-pages
+          fi

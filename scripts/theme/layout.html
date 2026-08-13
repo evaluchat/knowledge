@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="{{ site.lang | default: 'en-US' }}">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  {% seo %}
+  <link rel="stylesheet" href="{{ '/assets/css/style.css' | relative_url }}">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <header class="site-header">
+    <div class="shell header-inner">
+      <a class="brand" href="{{ '/' | relative_url }}" aria-label="{{ site.title }}">
+        <span class="brand-mark">e</span>
+        <span>evaluchat</span>
+      </a>
+
+      <nav class="top-nav" aria-label="Primary navigation">
+        <a href="{{ '/teachers/' | relative_url }}">Teachers</a>
+        <a href="{{ '/students/' | relative_url }}">Students</a>
+        <a href="{{ '/research/' | relative_url }}">Research</a>
+        {% if site.product_url %}
+          <a class="nav-cta" href="{{ site.product_url }}">Open evaluchat ↗</a>
+        {% endif %}
+      </nav>
+    </div>
+  </header>
+
+  <main class="shell page">
+    {% if page.title and page.url != '/' %}
+      <div class="breadcrumbs">
+        <a href="{{ '/' | relative_url }}">Docs</a>
+        <span>/</span>
+        <span>{{ page.title }}</span>
+      </div>
+    {% endif %}
+
+    <article class="content">
+      {{ content }}
+    </article>
+  </main>
+
+  <footer class="site-footer">
+    <div class="shell footer-inner">
+      <div>
+        <strong>evaluchat</strong>
+        <span>Documentation &amp; product overview</span>
+      </div>
+      <div class="footer-links">
+        <a href="{{ '/' | relative_url }}">Docs</a>
+        <a href="{{ '/research/' | relative_url }}">Research</a>
+        {% if site.product_url %}<a href="{{ site.product_url }}">Product ↗</a>{% endif %}
+      </div>
+    </div>
+  </footer>
+</body>
+</html>
