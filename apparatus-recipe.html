@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>The apparatus recipe — from research question to built apparatus</title>
+<title>The apparatus recipe (renamed to method-recipe)</title>
 <link rel="icon" href="favicon.ico" sizes="any"/>
 <link rel="stylesheet" href="assets/style.css"/>
 </head>
@@ -20,129 +20,27 @@
       <a href="index.html">Knowledge catalog</a>
       <a href="https://github.com/evaluchat/knowledge">GitHub</a>
       <a href="https://github.com/evaluchat/knowledge/blob/main/README.md">README</a>
-      <a href="https://evaluchat.com/" class="nav-cta">Open evaluchat ↗</a>
+      <a href="https://evaluchat.org/" class="nav-cta">Open evaluchat ↗</a>
     </nav>
   </div>
 </header>
 
 <main class="page-wrap">
-<p class="breadcrumb"><a href="index.html">Knowledge catalog</a><span class="sep">/</span><span>The apparatus recipe — from research question to built apparatus</span></p>
+<p class="breadcrumb"><a href="index.html">Knowledge catalog</a><span class="sep">/</span><span>The apparatus recipe (renamed to method-recipe)</span></p>
   <article class="content">
-<h1>The apparatus recipe — from research question to built apparatus</h1>
-<table class="facts"><tr><th>type</th><td>Playbook</td></tr><tr><th>id</th><td>apparatus-recipe</td></tr><tr><th>status</th><td>draft</td></tr><tr><th>lang</th><td>en</td></tr><tr><th>origin</th><td>native</td></tr><tr><th>generated</th><td>by=opencode-go/deepseek-v4-flash, at=2026-08-09T16:40:00Z</td></tr><tr><th>sources</th><td>{&#x27;id&#x27;: &#x27;research-apparatus&#x27;, &#x27;resource&#x27;: &#x27;https://github.com/evaluchat/knowledge/blob/main/concepts/research-apparatus.en.md&#x27;, &#x27;title&#x27;: &#x27;Research apparatus — reproducible research on Canvas (knowledge catalog)&#x27;}, {&#x27;id&#x27;: &#x27;threshold-calibration&#x27;, &#x27;resource&#x27;: &#x27;https://github.com/evaluchat/research/blob/main/theory/threshold-calibration.en.md&#x27;, &#x27;title&#x27;: &#x27;Threshold calibration — research question (open)&#x27;}</td></tr></table>
+<h1>The apparatus recipe (renamed to method-recipe)</h1>
+<table class="facts"><tr><th>type</th><td>Playbook</td></tr><tr><th>id</th><td>apparatus-recipe</td></tr><tr><th>status</th><td>deprecated</td></tr><tr><th>lang</th><td>en</td></tr><tr><th>origin</th><td>native</td></tr><tr><th>generated</th><td>by=cursor-grok/4.6, at=2026-08-13T14:48:00Z</td></tr></table>
 
-<article class="body"><h1 id="the-apparatus-recipe-from-research-question-to-built-apparatus">The apparatus recipe — from research question to built apparatus</h1>
-<blockquote>
-<p><strong>Applies to:</strong> Canvas apps/web <strong>0.5.9</strong> (dev line). Companion to <a href="research-apparatus.html">research-apparatus</a>; worked example: <a href="essays-workflow.html">essays-workflow</a>.</p>
-</blockquote>
-<h2 id="what-the-recipe-is">What the recipe is</h2>
-<p>The recipe is <strong>not</strong> "here's how to build a feature". It is:</p>
-<blockquote>
-<p><strong>Given a research question, specify the intervention and the measurement apparatus.</strong></p>
-</blockquote>
-<p>An apparatus is a reproducible configuration of Canvas capabilities, workflows, and measurements designed to investigate one or more research questions and produce specified evidence. The recipe is the way a research question becomes such a specification.</p>
-<h2 id="the-canonical-form">The canonical form</h2>
-<blockquote>
-<p><strong>"This is my research question:</strong> [link(s)]. <strong>This is how I foresee the apparatus working:</strong> [✓ canvas workspace, ✓ AI assistant configured as …, ✓ class and student management, ✓ ability to assign assignments, ✓ …]. <strong>Can you build this for me?"</strong></p>
-</blockquote>
-<p>The checklist below makes each part of that sentence explicit.</p>
-<h2 id="the-design-checklist-eight-primitives">The design checklist (eight primitives)</h2>
-<p>Work through each primitive; leave a cell empty if the apparatus genuinely does not need it. This is a <strong>design checklist, not a universal schema</strong> — see <a href="#checklist-not-schema">Checklist, not schema</a> below.</p>
-<table>
-<thead>
-<tr>
-<th>#</th>
-<th>Primitive</th>
-<th>What to specify</th>
-<th>Essays (Apparatus #1)</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>1</td>
-<td><strong>Workspace</strong></td>
-<td>What the learner opens and works in</td>
-<td>Split-screen: dialogue panel beside an editable markdown document</td>
-</tr>
-<tr>
-<td>2</td>
-<td><strong>Assistant role</strong></td>
-<td>How the AI is configured, and what it may and may not do</td>
-<td>Constrained AI chat: interviews before drafting, acts as developmental editor, may not draft the whole assignment from one prompt</td>
-</tr>
-<tr>
-<td>3</td>
-<td><strong>Knowledge context</strong></td>
-<td>What knowledge the assistant carries into the session</td>
-<td>Assignment brief, CAMDLE design constraints, thesis-assessment criteria</td>
-</tr>
-<tr>
-<td>4</td>
-<td><strong>Class and student management</strong></td>
-<td>How learners are organised and enrolled</td>
-<td>Teacher-owned classes and rosters; assignments assigned to specific students</td>
-</tr>
-<tr>
-<td>5</td>
-<td><strong>Assignment / submission</strong></td>
-<td>How work is assigned and handed in</td>
-<td>Teacher assignment creation + seed catalog; submission unlocks after the defense phase</td>
-</tr>
-<tr>
-<td>6</td>
-<td><strong>Workflow</strong></td>
-<td>The phases the learner passes through</td>
-<td><code>socratic</code> → <code>drafting</code> → <code>defense</code></td>
-</tr>
-<tr>
-<td>7</td>
-<td><strong>Evidence output</strong></td>
-<td>What measurements are recorded and how they are exported</td>
-<td>Process signals (typing, paste, canvas edits, focus) aggregated into <code>session_summary</code> events; teacher-facing Engagement Metrics; save-as-evidence export</td>
-</tr>
-<tr>
-<td>8</td>
-<td><strong>Consent / privacy</strong></td>
-<td>What consent and privacy terms the apparatus runs under</td>
-<td>Institutional and parental/guardian consent for evidence use; anonymisation before contribution to the research catalog</td>
-</tr>
-</tbody>
-</table>
-<h2 id="worked-example-essays-as-apparatus-1">Worked example: Essays as Apparatus #1</h2>
-<p>The Essays assignment flow (the <a href="essays-workflow.html">essays-workflow</a> concept) is <strong>Apparatus #1</strong> — the first instance of the pattern. Mapping the checklist to the actual implementation:</p>
-<ol>
-<li><strong>Workspace</strong> — the student's split-screen canvas (dialogue + document).</li>
-<li><strong>Assistant role</strong> — drafting support is released conditionally: proportional scaffolding. The model cannot generate the whole assignment from a single prompt; assistance unlocks after sufficient dialogic contribution. This is the <strong>intervention</strong> the apparatus makes.</li>
-<li><strong>Knowledge context</strong> — the assignment brief and the CAMDLE design; the assistant assesses the thesis each turn.</li>
-<li><strong>Class and student management</strong> — teacher-owned custom assignments and the shared seed catalog; one active session per student per assignment.</li>
-<li><strong>Assignment / submission</strong> — assignments resolve from teacher-created assignments or seeds; submission unlocks only after the viva-defense phase.</li>
-<li><strong>Workflow</strong> — three phases: <code>socratic</code> (thesis interview), <code>drafting</code> (milestone-gated co-creation), <code>defense</code> (devil's-advocate challenge before submission).</li>
-<li><strong>Evidence output</strong> — process signals collected client-side into compact <code>session_summary</code> events; teachers see Engagement Metrics on the submission view. Process evidence is explicitly <strong>not</strong> authorship detection — observations for teacher judgment, never an integrity verdict.</li>
-<li><strong>Consent / privacy</strong> — evidence contributions carry consent and anonymisation records before entering the research catalog (see the research catalog's evidence-bundle provenance template).</li>
-</ol>
-<p>The threshold — how much contribution is "enough" — is an <strong>empirical variable</strong>, not a settled value; it is the subject of the <a href="https://github.com/evaluchat/research/blob/main/theory/threshold-calibration.en.md">threshold-calibration</a> research question and is recorded per configuration (see below).</p>
-<h2 id="checklist-not-schema">Checklist, not schema</h2>
-<p>The eight primitives are a design checklist, not a universal apparatus schema. A second apparatus is expected to expose where the checklist is insufficient: a teacher-side apparatus (for example, an AI assignment stress test) may need input-artefact analysis and comparison engines while <em>not</em> needing class management, submission, or defense. <strong>That divergence is evidence the recipe works as an experimental framework</strong>, not a failure of the recipe.</p>
-<h2 id="recording-version-and-configuration">Recording version and configuration</h2>
-<ul>
-<li><strong>Version</strong> the apparatus per the behaviour/evidence contract: a major bump when previous experiments become hard to compare (e.g. what counts as sufficient contribution changes), minor for new capabilities that don't alter existing semantics, patch for implementation fixes. The apparatus version is independent of the canvas version.</li>
-<li><strong>Record the configuration</strong> of every run: threshold, defense required or optional, AI modes, and any other per-apparatus setting. The same apparatus version with different configurations runs materially different interventions.</li>
-<li><strong>Provenance</strong>: evidence contributions must record <code>apparatus: {id, version, configuration}</code> and <code>canvas: {version}</code> — see the <a href="https://github.com/evaluchat/knowledge/blob/main/concepts/research-apparatus.en.md">research-apparatus</a> concept and the research catalog's <code>methods/apparatus.en.md</code>.</li>
-</ul>
-<h2 id="what-is-not-built-yet">What is not built yet</h2>
-<p>This playbook is a <strong>specification tool, not a builder</strong>. As of Canvas 0.5.9 there is:</p>
-<ul>
-<li><strong>no DSL</strong> for apparatuses — the recipe is written in prose and checklists;</li>
-<li><strong>no builder framework</strong> — the checklist does not generate manifests or code;</li>
-<li><strong>no plugin runtime</strong> — apparatuses are enabled and versioned by the platform, not installed as independently loadable artifacts; there are no lifecycle hooks, dependency resolution, or sandboxing.</li>
-</ul>
-<p>The Essays apparatus is the proof that the pattern can be <em>named</em> and <em>described</em>; the tooling to <em>generate</em> apparatuses is future work.</p></article>
+<article class="body"><h1 id="the-apparatus-recipe-renamed">The apparatus recipe (renamed)</h1>
+<p>This playbook was renamed. Catalog language is now <strong>Method</strong> (not apparatus) and <strong>levers</strong> (not knobs).</p>
+<p><strong>Canonical page:</strong> <a href="method-recipe.html">method-recipe</a></p>
+<p>The old <code>id: apparatus-recipe</code> is kept here so existing GitHub URLs continue to resolve. Do not cite this stub as current product or research truth.</p></article>
 
   </article>
 </main>
 <footer class="site-footer">
   <p>
-    <a href="https://evaluchat.com">evaluchat.com</a>
+    <a href="https://evaluchat.org">evaluchat.com</a>
     &middot; Knowledge catalog
     &middot; <a href="https://github.com/evaluchat/knowledge">GitHub</a>
     &middot; <a href="mailto:hello@evaluchat.com">hello@evaluchat.com</a>

@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>Platform capabilities — knob vocabulary as shipped</title>
+<title>Platform capabilities — public-beta runtime contract</title>
 <link rel="icon" href="favicon.ico" sizes="any"/>
 <link rel="stylesheet" href="assets/style.css"/>
 </head>
@@ -20,29 +20,32 @@
       <a href="index.html">Knowledge catalog</a>
       <a href="https://github.com/evaluchat/knowledge">GitHub</a>
       <a href="https://github.com/evaluchat/knowledge/blob/main/README.md">README</a>
-      <a href="https://evaluchat.com/" class="nav-cta">Open evaluchat ↗</a>
+      <a href="https://evaluchat.org/" class="nav-cta">Open evaluchat ↗</a>
     </nav>
   </div>
 </header>
 
 <main class="page-wrap">
-<p class="breadcrumb"><a href="index.html">Knowledge catalog</a><span class="sep">/</span><span>Platform capabilities — knob vocabulary as shipped</span></p>
+<p class="breadcrumb"><a href="index.html">Knowledge catalog</a><span class="sep">/</span><span>Platform capabilities — public-beta runtime contract</span></p>
   <article class="content">
-<h1>Platform capabilities — knob vocabulary as shipped</h1>
-<table class="facts"><tr><th>type</th><td>Concept</td></tr><tr><th>id</th><td>platform-capabilities</td></tr><tr><th>status</th><td>draft</td></tr><tr><th>lang</th><td>en</td></tr><tr><th>origin</th><td>native</td></tr><tr><th>generated</th><td>by=evaluchat-continuation, at=2026-08-10T10:45:00Z</td></tr><tr><th>sources</th><td>{&#x27;id&#x27;: &#x27;essays-workflow&#x27;, &#x27;resource&#x27;: &#x27;https://github.com/evaluchat/knowledge/blob/main/concepts/essays-workflow.en.md&#x27;, &#x27;title&#x27;: &#x27;Essays workflow — proportional drafting unlock (knowledge catalog)&#x27;}, {&#x27;id&#x27;: &#x27;apparatus-recipe&#x27;, &#x27;resource&#x27;: &#x27;https://github.com/evaluchat/knowledge/blob/main/playbooks/apparatus-recipe.en.md&#x27;, &#x27;title&#x27;: &#x27;The apparatus recipe (knowledge catalog)&#x27;}, {&#x27;id&#x27;: &#x27;apparatus-method&#x27;, &#x27;resource&#x27;: &#x27;https://github.com/evaluchat/research/blob/main/methods/apparatus.en.md&#x27;, &#x27;title&#x27;: &#x27;The apparatus as research instrument (research catalog)&#x27;}</td></tr></table>
+<h1>Platform capabilities — public-beta runtime contract</h1>
+<table class="facts"><tr><th>type</th><td>Concept</td></tr><tr><th>id</th><td>platform-capabilities</td></tr><tr><th>status</th><td>draft</td></tr><tr><th>lang</th><td>en</td></tr><tr><th>origin</th><td>native</td></tr><tr><th>generated</th><td>by=cursor-grok/4.6, at=2026-08-13T14:48:00Z</td></tr><tr><th>sources</th><td>{&#x27;id&#x27;: &#x27;essays-workflow&#x27;, &#x27;resource&#x27;: &#x27;https://github.com/evaluchat/knowledge/blob/main/concepts/essays-workflow.en.md&#x27;, &#x27;title&#x27;: &#x27;Essays workflow — proportional drafting unlock (knowledge catalog)&#x27;}, {&#x27;id&#x27;: &#x27;method-recipe&#x27;, &#x27;resource&#x27;: &#x27;https://github.com/evaluchat/knowledge/blob/main/playbooks/method-recipe.en.md&#x27;, &#x27;title&#x27;: &#x27;The method recipe (knowledge catalog)&#x27;}, {&#x27;id&#x27;: &#x27;ai-assisted-essay&#x27;, &#x27;resource&#x27;: &#x27;https://github.com/evaluchat/research/blob/main/methods/ai-assisted-essay/&#x27;, &#x27;title&#x27;: &#x27;ai-assisted-essay — published method (research catalog)&#x27;}</td></tr></table>
 
 <article class="body"><h1 id="platform-capabilities-public-beta-runtime-contract">Platform capabilities — public-beta runtime contract</h1>
 <blockquote>
-<p><code>applies_to: 0.5.9</code>. This concept defines the typed capability and knob
-vocabulary that research apparatus specs reference. When the platform changes,
+<p><code>applies_to: 0.5.9</code>. This concept defines the typed capability and lever
+vocabulary that research method specs reference. When the platform changes,
 bump <code>applies_to</code>; old evidence stays interpretable because provenance records
-the Canvas and apparatus versions plus resolved configuration.</p>
+the Canvas and method versions plus resolved levers.</p>
 </blockquote>
-<p>The public beta treats an apparatus as a reviewed research contract. A catalog
-entry declares required capabilities, roles, telemetry, provenance, typed knobs,
+<p>The public beta treats a Method as a reviewed research contract. A catalog
+entry declares required capabilities, roles, telemetry, provenance, typed levers,
 dependencies/exclusions, and immutable profiles. Canvas validates the generated
 catalog at build time and executes only known built-in implementations. A PR
 cannot supply executable code to a running deployment.</p>
+<p>This catalog calls the named switches <strong>levers</strong>. Live product APIs and stored
+assignment snapshots are unchanged in this pass (existing field names such as
+<code>apparatusId</code> remain as shipped).</p>
 <p>Minimum viable student workflow: assignment context, student authoring, and
 submission. Profiles that disable every meaningful activity are invalid.</p>
 <h2 id="required-capabilities">Required capabilities</h2>
@@ -84,12 +87,12 @@ submission. Profiles that disable every meaningful activity are invalid.</p>
 </tr>
 </tbody>
 </table>
-<p>The first three capabilities are mandatory for every student-facing apparatus.</p>
-<h2 id="typed-knobs">Typed knobs</h2>
+<p>The first three capabilities are mandatory for every student-facing method.</p>
+<h2 id="typed-levers">Typed levers</h2>
 <table>
 <thead>
 <tr>
-<th>Knob</th>
+<th>Lever</th>
 <th>Type</th>
 <th>Default</th>
 <th>Effect</th>
@@ -171,9 +174,10 @@ drafting-unlock threshold is configurable and pre-registerable per experiment (s
   disabled;</li>
 <li><code>tracking-off</code> — canonical treatment without process telemetry.</li>
 </ul>
-<p>The assignment stores the selected apparatus ID, apparatus version, profile ID,
-and resolved configuration snapshot. Teachers cannot change knobs after
-selection and later profile publication does not rewrite existing assignments.</p>
+<p>The assignment stores the selected method identity, method version, profile ID,
+and resolved configuration snapshot. Teachers cannot change levers after
+selection and later profile publication does not rewrite existing assignments.
+Stored snapshots keep the field names the live app already reads.</p>
 <h2 id="telemetry-boundary">Telemetry boundary</h2>
 <table>
 <thead>
@@ -202,23 +206,24 @@ selection and later profile publication does not rewrite existing assignments.</
 </tbody>
 </table>
 <p>Process evidence describes <em>how</em> work happened, never <em>who</em> did it. There is no
-integrity/authorship scoring in the platform (see <a href="https://github.com/evaluchat/knowledge/blob/main/concepts/essays-workflow.en.md">essays-workflow</a>); apparatuses that want to
+integrity/authorship scoring in the platform (see <a href="https://github.com/evaluchat/knowledge/blob/main/concepts/essays-workflow.en.md">essays-workflow</a>); methods that want to
 argue about authorship must build their case from the transcript and process signals as evidence,
 not from a platform verdict.</p>
 <h2 id="versioning-contract">Versioning contract</h2>
 <ul>
 <li><code>applies_to</code> pins the platform version whose behaviour this vocabulary describes.</li>
-<li>Apparatus specs carry their own <code>version</code> and <code>min_canvas_version</code> — the apparatus version is
+<li>Method specs carry their own <code>version</code> and <code>min_canvas_version</code> — the method version is
   independent of the canvas version.</li>
-<li>Evidence provenance records <code>apparatus: {id, version, configuration}</code> + <code>canvas: {version}</code> so a
-  given result is reproducible against the exact platform and knob set that produced it.</li>
+<li>Evidence provenance in the research catalog records <code>method: {id, version, levers}</code> +
+  <code>canvas: {version}</code> so a given result is reproducible against the exact platform and lever
+  set that produced it. That catalog shape does not rename live product APIs.</li>
 </ul></article>
 
   </article>
 </main>
 <footer class="site-footer">
   <p>
-    <a href="https://evaluchat.com">evaluchat.com</a>
+    <a href="https://evaluchat.org">evaluchat.com</a>
     &middot; Knowledge catalog
     &middot; <a href="https://github.com/evaluchat/knowledge">GitHub</a>
     &middot; <a href="mailto:hello@evaluchat.com">hello@evaluchat.com</a>

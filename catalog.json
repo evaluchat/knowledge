@@ -5,9 +5,9 @@
     "languages": [
       "en"
     ],
-    "status": "draft",
-    "description": "Given a research question, specify the intervention and the measurement apparatus: the canonical form, an eight-primitive design checklist, a worked example (Essays), and the rules for recording version and configuration.",
-    "updated": "2026-08-09T16:40:00+00:00",
+    "status": "deprecated",
+    "description": "Deprecated stub. The playbook formerly called apparatus-recipe is now method-recipe. This file remains so existing GitHub URLs do not 404.",
+    "updated": "2026-08-13T14:48:00+00:00",
     "canonical_resource": "https://github.com/evaluchat/knowledge/blob/main/playbooks/apparatus-recipe.en.md"
   },
   {
@@ -21,6 +21,17 @@
     "description": "How the Evaluchat essays feature gates drafting support behind dialogic contribution (CAMDLE), as implemented in Canvas — the implementation source of truth.",
     "updated": "2026-08-09T14:00:00+00:00",
     "canonical_resource": "https://github.com/evaluchat/knowledge/blob/main/concepts/essays-workflow.en.md"
+  },
+  {
+    "id": "method-recipe",
+    "type": "Playbook",
+    "languages": [
+      "en"
+    ],
+    "status": "draft",
+    "description": "Given a research question, specify the Method: the canonical form, an eight-primitive design checklist, a worked example (Essays / ai-assisted-essay), and the rules for recording version and levers.",
+    "updated": "2026-08-13T14:48:00+00:00",
+    "canonical_resource": "https://github.com/evaluchat/knowledge/blob/main/playbooks/method-recipe.en.md"
   },
   {
     "id": "oss-issues-board-policy",
@@ -40,8 +51,8 @@
       "en"
     ],
     "status": "draft",
-    "description": "The Canvas platform's typed capability, knob, telemetry, and apparatus-profile contract for reproducible education research, pinned to a shipped platform version.",
-    "updated": "2026-08-10T10:45:00+00:00",
+    "description": "The Canvas platform's typed capability, lever, telemetry, and method-profile contract for reproducible education research, pinned to a shipped platform version.",
+    "updated": "2026-08-13T14:48:00+00:00",
     "canonical_resource": "https://github.com/evaluchat/knowledge/blob/main/concepts/platform-capabilities.en.md"
   },
   {
@@ -50,9 +61,20 @@
     "languages": [
       "en"
     ],
-    "status": "draft",
-    "description": "A research apparatus is a reproducible configuration of Canvas capabilities, workflows, and measurements designed to investigate one or more research questions and produce specified evidence — the four-dimension invariant, epistemic spine, versioning and configuration model.",
-    "updated": "2026-08-09T16:40:00+00:00",
+    "status": "deprecated",
+    "description": "Deprecated stub. The concept formerly called research-apparatus is now research-method. This file remains so existing GitHub URLs do not 404.",
+    "updated": "2026-08-13T14:48:00+00:00",
     "canonical_resource": "https://github.com/evaluchat/knowledge/blob/main/concepts/research-apparatus.en.md"
+  },
+  {
+    "id": "research-method",
+    "type": "Concept",
+    "languages": [
+      "en"
+    ],
+    "status": "draft",
+    "description": "A Method is a published, versioned way of investigating a research question: it selects Knowledge-documented levers, Evaluchat applies that profile in a workspace, and evidence is filed under that method in the research catalog.",
+    "updated": "2026-08-13T14:48:00+00:00",
+    "canonical_resource": "https://github.com/evaluchat/knowledge/blob/main/concepts/research-method.en.md"
   }
 ]
