@@ -335,7 +335,7 @@ def page_shell(
       <a href="{home}">{SITE_LABEL}</a>
       <a href="{REPO_URL}">GitHub</a>
       <a href="{GITHUB_BLOB}README.md">README</a>
-      <a href="https://evaluchat.com/" class="nav-cta">Open evaluchat ↗</a>
+      <a href="https://evaluchat.org/" class="nav-cta">Open evaluchat ↗</a>
     </nav>
   </div>
 </header>
@@ -348,7 +348,7 @@ def page_shell(
 </main>
 <footer class="site-footer">
   <p>
-    <a href="https://evaluchat.com">evaluchat.com</a>
+    <a href="https://evaluchat.org">evaluchat.com</a>
     &middot; {SITE_LABEL}
     &middot; <a href="{REPO_URL}">GitHub</a>
     &middot; <a href="mailto:hello@evaluchat.com">hello@evaluchat.com</a>

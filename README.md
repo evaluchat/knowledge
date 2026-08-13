@@ -44,5 +44,5 @@ MIT — the docs and any scripts in this repository are MIT-licensed (see [`LICE
 - Live research catalog: https://research.evaluchat.org
 - Live knowledge catalog: https://knowledge.evaluchat.org
 - Research catalog: https://github.com/evaluchat/research
-- Evaluchat: https://evaluchat.com
+- Evaluchat: https://evaluchat.org
 - OKF v0.2 — the portable knowledge format these catalogs use
