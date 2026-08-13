@@ -9,18 +9,19 @@ renderer (fenced code + headings). Output → site/ (local artifact; Pages
 workflow publishes site/ to the gh-pages branch).
 
 Rendering model:
-- index.html — the repo's human-maintained README.md rendered as the landing
-  page (frontmatter stripped, relative .md links rewritten to generated
-  pages), plus a compact "Recently updated" strip. index.md remains the OKF
-  section listing (`okf_version`).
+- index.html — README.md (human intro), then catalog sections from index.md,
+  then a "Recently updated" strip. index.md remains the OKF section listing
+  (`okf_version`) for agents and GitHub.
 - <dir>/index.html — one section page per top-level content directory
   (theory/, methods/, ...): the directory's own index.md (if any), a compact
   list of its concept groups, an empty-state block for empty sections, and
   that section's "Recently updated" strip.
-- /{id}.html — one page per concept group (canonical language), plus
-  /{id}.{lang}.html for non-en representations.
-- Evidence contributions are grouped per bundle (methods/<id>/evidence/<contribution>/): the bundle's index.md becomes the
-  page; role files (question/results/...) are not separate concepts.
+- /<dir>/<id>.html — one page per concept group (canonical language), plus
+  /<dir>/<id>.<lang>.html for non-en representations (e.g.
+  methods/ai-assisted-essay.html).
+- Evidence contributions are grouped per bundle
+  (methods/<id>/evidence/<contribution>/): the bundle's index.md becomes
+  methods/<id>/evidence/<contribution>.html; role files are not separate concepts.
 - catalog.json — derived from frontmatter for agent consumers.
 """
 
@@ -72,7 +73,8 @@ SITE_DOMAIN = "knowledge.evaluchat.org"
 SKIP_DIR_NAMES = {".github", "templates", ".git", "scripts", "site", "evidence-template"}
 
 # Site-root-relative registries, filled by build() before rendering:
-#   CONCEPT_PAGES: repo file path → page path (e.g. "theory/camdle.en.md" → "camdle.html")
+#   CONCEPT_PAGES: repo file path → page path
+#     (e.g. "theory/camdle.en.md" → "theory/camdle.html")
 #   SECTION_PAGES: top-level dir → section page path (e.g. "theory" → "theory/index.html")
 CONCEPT_PAGES: dict[str, str] = {}
 SECTION_PAGES: dict[str, str] = {}
@@ -81,6 +83,24 @@ ISO_RE = re.compile(
     r"(\d{4}-\d{2}-\d{2}(?:[T ]\d{2}:\d{2}:\d{2}(?:\.\d+)?(?:Z|[+-]\d{2}:?\d{2})?)?)"
 )
 LINK_RE = re.compile(r"\[([^\]]*)\]\(([^)\s]+)(?:\s+[\"'][^\"']*[\"'])?\)")
+
+
+def page_href_for(canon_path: Path, cid: str) -> str:
+    """Site-root-relative HTML path for a concept or evidence bundle."""
+    parts = Path(rel(canon_path)).parts
+    if "evidence" in parts:
+        idx = parts.index("evidence")
+        prefix = "/".join(parts[: idx + 1])
+        return f"{prefix}/{cid}.html"
+    if len(parts) >= 2:
+        return f"{parts[0]}/{cid}.html"
+    return f"{cid}.html"
+
+
+def base_href_for(page: str) -> str:
+    """Relative prefix from a page path back to the site root ('' or '../'…)."""
+    depth = page.count("/")
+    return "../" * depth if depth else ""
 
 
 def under_skip_dir(path: Path) -> bool:
@@ -332,7 +352,6 @@ def page_shell(
       </a>
     </div>
     <nav class="main-nav" aria-label="Primary navigation">
-      <a href="{home}">{SITE_LABEL}</a>
       <a href="{REPO_URL}">GitHub</a>
       <a href="{GITHUB_BLOB}README.md">README</a>
       <a href="https://evaluchat.org/" class="nav-cta">Open evaluchat ↗</a>
@@ -486,6 +505,7 @@ def build() -> int:
         updates = [meta_updated(m) for _p, m, _b in list(reps) + list(extra_files)]
         updates = [u for u in updates if u]
         updated = max(updates).isoformat() if updates else ""
+        page = page_href_for(canon_path, cid)
         g = {
             "cid": cid,
             "type": typ,
@@ -499,7 +519,7 @@ def build() -> int:
             "canon_meta": canon_meta,
             "canon_body": canon_body,
             "reps": reps,
-            "page": f"{cid}.html",
+            "page": page,
         }
         groups.append(g)
         catalog.append(
@@ -526,9 +546,11 @@ def build() -> int:
     for g in groups:
         for path, meta, _b in g["reps"]:
             lang = str(meta.get("lang") or "")
-            CONCEPT_PAGES[rel(path)] = (
-                g["page"] if lang.lower() == "en" else f"{g['cid']}.{lang}.html"
-            )
+            if lang.lower() == "en":
+                CONCEPT_PAGES[rel(path)] = g["page"]
+            else:
+                stem, ext = g["page"].rsplit(".", 1)
+                CONCEPT_PAGES[rel(path)] = f"{stem}.{lang}.{ext}"
         CONCEPT_PAGES[rel(g["canon_path"])] = g["page"]  # canonical wins
 
     section_dirs: set[str] = set()
@@ -542,11 +564,16 @@ def build() -> int:
             section_dirs.add(d)
     SECTION_PAGES = {d: f"{d}/index.html" for d in sorted(section_dirs)}
 
-    def lang_badges_html(g: dict, prefix: str = "") -> str:
+    def lang_badges_html(g: dict, from_dir: str) -> str:
         out = []
         for lang in g["langs"]:
-            href = g["page"] if lang.lower() == "en" else f"{g['cid']}.{lang}.html"
-            out.append(f'<a href="{prefix}{html.escape(href)}">{html.escape(lang)}</a>')
+            if lang.lower() == "en":
+                href = g["page"]
+            else:
+                stem, ext = g["page"].rsplit(".", 1)
+                href = f"{stem}.{lang}.{ext}"
+            link = posixpath.relpath(href, from_dir) if from_dir else href
+            out.append(f'<a href="{html.escape(link)}">{html.escape(lang)}</a>')
         return " ".join(out)
 
     def table_html(headers: list[str], rows_html: str) -> str:
@@ -558,21 +585,23 @@ def build() -> int:
             + "</tbody></table>"
         )
 
-    def row_section(g: dict, prefix: str) -> str:
+    def row_section(g: dict, from_dir: str) -> str:
+        href = posixpath.relpath(g["page"], from_dir) if from_dir else g["page"]
         return (
             "<tr>"
-            f'<td><a href="{prefix}{html.escape(g["page"])}">{html.escape(g["title"])}</a><br/>'
+            f'<td><a href="{html.escape(href)}">{html.escape(g["title"])}</a><br/>'
             f'<span class="muted"><code>{html.escape(g["cid"])}</code></span></td>'
             f'<td>{html.escape(g["type"])}</td>'
             f'<td>{html.escape(g["status"])}</td>'
-            f'<td class="lang-badges">{lang_badges_html(g, prefix)}</td>'
+            f'<td class="lang-badges">{lang_badges_html(g, from_dir)}</td>'
             "</tr>"
         )
 
-    def row_recent(g: dict, prefix: str) -> str:
+    def row_recent(g: dict, from_dir: str) -> str:
+        href = posixpath.relpath(g["page"], from_dir) if from_dir else g["page"]
         return (
             "<tr>"
-            f'<td><a href="{prefix}{html.escape(g["page"])}">{html.escape(g["title"])}</a><br/>'
+            f'<td><a href="{html.escape(href)}">{html.escape(g["title"])}</a><br/>'
             f'<span class="muted"><code>{html.escape(g["cid"])}</code></span></td>'
             f'<td>{html.escape(g["type"])}</td>'
             f'<td>{html.escape(g["status"])}</td>'
@@ -580,7 +609,7 @@ def build() -> int:
             "</tr>"
         )
 
-    def recent_strip(gs: list[dict], limit: int, prefix: str) -> str:
+    def recent_strip(gs: list[dict], limit: int, from_dir: str) -> str:
         recent = sorted(gs, key=lambda g: g["updated"], reverse=True)
         recent = [g for g in recent if g["updated"]][:limit]
         if not recent:
@@ -589,7 +618,7 @@ def build() -> int:
             "<h2>Recently updated</h2>"
             + table_html(
                 ["Title / id", "Type", "Status", "Updated"],
-                "".join(row_recent(g, prefix) for g in recent),
+                "".join(row_recent(g, from_dir) for g in recent),
             )
         )
 
@@ -607,6 +636,9 @@ def build() -> int:
         cid, title = g["cid"], g["title"]
         canon_path, canon_meta, canon_body = g["canon_path"], g["canon_meta"], g["canon_body"]
         langs, status, typ, tier = g["langs"], g["status"], g["type"], g["tier"]
+        page = g["page"]
+        out_dir = posixpath.dirname(page) or ""
+        base = base_href_for(page)
         facts = [
             ("type", typ),
             ("id", cid),
@@ -631,19 +663,39 @@ def build() -> int:
         other_langs = [lang for lang in langs if lang != str(canon_meta.get("lang") or "en")]
         other_html = ""
         if other_langs:
-            links = " · ".join(
-                f'<a href="{html.escape(cid)}.{html.escape(lang)}.html">{html.escape(lang)}</a>'
-                for lang in other_langs
-            )
-            other_html = f'<p class="muted">Other languages: {links}</p>'
+            links = []
+            for lang in other_langs:
+                stem, ext = page.rsplit(".", 1)
+                lang_page = f"{stem}.{lang}.{ext}"
+                href = posixpath.relpath(lang_page, out_dir) if out_dir else lang_page
+                links.append(
+                    f'<a href="{html.escape(href)}">{html.escape(lang)}</a>'
+                )
+            other_html = f'<p class="muted">Other languages: {" · ".join(links)}</p>'
 
         body_html = (
             f"<h1>{html.escape(title)}</h1>\n"
             f"{facts_html}\n"
             f"{other_html}\n"
-            f'<article class="body">{render_markdown(rewrite_links(canon_body, canon_path.parent))}</article>\n'
+            f'<article class="body">{render_markdown(rewrite_links(canon_body, canon_path.parent, out_dir=out_dir))}</article>\n'
         )
-        (OUT / g["page"]).write_text(page_shell(title, body_html), encoding="utf-8")
+        crumb_parts = [f'<a href="{base}index.html">{SITE_LABEL}</a>']
+        if out_dir:
+            top = out_dir.split("/")[0]
+            crumb_parts.append(
+                f'<a href="{html.escape(posixpath.relpath(f"{top}/index.html", out_dir))}">{html.escape(section_label(top))}</a>'
+            )
+        crumb_parts.append(f"<span>{html.escape(title)}</span>")
+        nav = (
+            '<p class="breadcrumb">'
+            + '<span class="sep">/</span>'.join(crumb_parts)
+            + "</p>"
+        )
+        page_path = OUT / page
+        page_path.parent.mkdir(parents=True, exist_ok=True)
+        page_path.write_text(
+            page_shell(title, body_html, nav=nav, base=base), encoding="utf-8"
+        )
 
         # Non-en representations
         for path, meta, body in g["reps"]:
@@ -667,14 +719,22 @@ def build() -> int:
                 for k, v in facts_l
                 if v
             ) + "</table>"
-            nav = f'<p class="muted"><a href="{html.escape(cid)}.html">Canonical (en)</a></p>'
-            page = page_shell(
-                f"{t} ({lang})",
-                f"<h1>{html.escape(t)}</h1>\n{facts_l_html}\n"
-                f'<article class="body">{render_markdown(rewrite_links(body, path.parent))}</article>\n',
-                nav=nav,
+            canon_href = posixpath.basename(page)
+            nav = f'<p class="muted"><a href="{html.escape(canon_href)}">Canonical (en)</a></p>'
+            stem, ext = page.rsplit(".", 1)
+            lang_page = f"{stem}.{lang}.{ext}"
+            lang_path = OUT / lang_page
+            lang_path.parent.mkdir(parents=True, exist_ok=True)
+            lang_path.write_text(
+                page_shell(
+                    f"{t} ({lang})",
+                    f"<h1>{html.escape(t)}</h1>\n{facts_l_html}\n"
+                    f'<article class="body">{render_markdown(rewrite_links(body, path.parent, out_dir=out_dir))}</article>\n',
+                    nav=nav,
+                    base=base,
+                ),
+                encoding="utf-8",
             )
-            (OUT / f"{cid}.{lang}.html").write_text(page, encoding="utf-8")
 
     # --- Section pages: <dir>/index.html (docs-style slim hero band) ---
     for d in sorted(section_dirs):
@@ -697,27 +757,44 @@ def build() -> int:
             parts.append(
                 table_html(
                     ["Title / id", "Type", "Status", "Languages"],
-                    "".join(row_section(g, "../") for g in sgroups),
+                    "".join(row_section(g, d) for g in sgroups),
                 )
             )
-        parts.append(recent_strip(sgroups, 5, "../"))
+        parts.append(recent_strip(sgroups, 5, d))
         (OUT / d).mkdir(parents=True, exist_ok=True)
         (OUT / d / "index.html").write_text(
             page_shell(label, "\n".join(parts), base="../", hero=True), encoding="utf-8"
         )
 
-    # --- Landing page: README.md + recently updated strip ---
+    # --- Landing page: README + catalog sections (index.md) + recently updated ---
+    landing_parts: list[str] = []
     readme_md = ROOT / "README.md"
-    landing_body = ""
     if readme_md.is_file():
         text = readme_md.read_text(encoding="utf-8", errors="replace")
         _raw, body = split_frontmatter(text)
         landing_src = body if _raw is not None else text
-        landing_body = render_markdown(rewrite_links(landing_src or "", ROOT))
-    landing_body += recent_strip(groups, 8, "")
-    landing_body += (
-        f'\n<p class="muted">{len(groups)} concept groups · generated by build_site.py</p>'
+        landing_parts.append(render_markdown(rewrite_links(landing_src or "", ROOT)))
+
+    index_md = ROOT / "index.md"
+    if index_md.is_file():
+        _raw, body = split_frontmatter(
+            index_md.read_text(encoding="utf-8", errors="replace")
+        )
+        # Drop the catalog H1 and the short lede; README already introduces the repo.
+        body = re.sub(r"^#\s+.+\n?", "", body or "", count=1)
+        body = re.sub(r"^\s*\n+", "", body)
+        # Drop the first paragraph (human-intro pointer) if present.
+        body = re.sub(r"^[^\n#][^\n]*\n+", "", body, count=1)
+        if body.strip():
+            landing_parts.append(
+                render_markdown(rewrite_links(body, ROOT))
+            )
+
+    landing_parts.append(recent_strip(groups, 8, ""))
+    landing_parts.append(
+        f'<p class="muted">{len(groups)} concept groups · generated by build_site.py</p>'
     )
+    landing_body = "\n".join(p for p in landing_parts if p)
     (OUT / "index.html").write_text(
         page_shell(f"evaluchat {SITE_LABEL.lower()}", landing_body, breadcrumbs=False),
         encoding="utf-8",

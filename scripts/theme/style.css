@@ -57,7 +57,7 @@ body {
 }
 
 .header-inner {
-  max-width: var(--max-width);
+  max-width: var(--content-width);
   margin: 0 auto;
   padding: 0 1.5rem;
   height: var(--header-height);
@@ -133,13 +133,13 @@ body {
 
 /* --- Page layout --- */
 .page-wrap {
-  max-width: var(--max-width);
+  max-width: var(--content-width);
   margin: 0 auto;
   padding: 2.75rem 1.5rem 1rem;
 }
 
 .content {
-  max-width: var(--content-width);
+  max-width: 100%;
 }
 
 .content .intro {
@@ -275,7 +275,7 @@ th {
 }
 
 .page-hero-slim-inner {
-  max-width: var(--max-width);
+  max-width: var(--content-width);
   margin: 0 auto;
 }
 
