@@ -23,7 +23,7 @@ generated:
   at: 2026-08-09T14:00:00Z
 ---
 
-> **Apparatus #1.** This is the implementation source of truth for **Apparatus #1 (Essays / CAMDLE apparatus)** — see [research-apparatus](research-apparatus.en.md).
+> This is the implementation source of truth for the Essays / CAMDLE workflow that the **ai-assisted-essay** method selects — see [research-method](research-method.en.md).
 
 # Essays workflow — proportional drafting unlock
 

@@ -4,12 +4,18 @@ Open knowledge about how **Evaluchat Canvas** works — the product's features, 
 
 This is the **product truth** half of Evaluchat's open knowledge platform:
 
-| Repository | Kind of truth | Contents |
-|------------|--------------|----------|
-| [`evaluchat/knowledge`](https://github.com/evaluchat/knowledge) (this repo) | Product truth | What Canvas currently does and how it is implemented — exact behaviour, prompts as shipped |
-| [`evaluchat/research`](https://github.com/evaluchat/research) | Research truth | What we are investigating, and what evidence currently supports (questions, hypotheses, evidence, findings) |
+| Knowledge (this repo) | Research |
+|-----------------------|----------|
+| Product truth | Research truth |
+| What Evaluchat can do | What we are investigating |
+| Features, capabilities, workspace templates | Theory → questions → methods → evidence → findings |
 
-The two repositories are deliberately separated: product implementation facts live here; research questions, evidence, and claims live in the research catalog. Private strategy never appears in either.
+- **Knowledge** documents the platform: capabilities, workflows, and **workspace templates** such as Getting Started and Assignment brief. Those templates are product building blocks Evaluchat instantiates.
+- **Research** documents investigations: a question, a **Method** that uses named platform features, the evidence that method produced, and any finding a human later claims.
+
+A Method selects **levers** (named switches such as `ai_assistance`, `drafting_gate`, `threshold`) whose meaning is defined here. Evaluchat **runs** that profile. It does not own research truth. This catalog does not store classroom evidence. The research catalog does not store executable product templates.
+
+The two repositories are deliberately separated. Private strategy never appears in either.
 
 ## Format
 
@@ -21,8 +27,9 @@ OKF v0.2 — Markdown files with YAML frontmatter. Each concept has a stable `id
 
 ```
 concepts/   # feature concepts — the implementation source of truth
+templates/  # workspace templates (Getting Started, Assignment brief)
 prompts/    # exact prompt wording, versioned (Phase 2)
-playbooks/  # teacher setup, self-hosting (Phase 2)
+playbooks/  # how to specify a Method on Canvas capabilities
 references/ # pointers to the research catalog (Phase 2)
 ```
 

@@ -24,7 +24,7 @@ generated:
   at: 2026-08-09T14:00:00Z
 ---
 
-> **Apparatus #1.** Este es el source of truth de implementación para **Apparatus #1 (ensayos / apparatus CAMDLE)** — véase [research-apparatus](research-apparatus.en.md).
+> Este es el source of truth de implementación para el flujo de ensayos / CAMDLE que selecciona el método **ai-assisted-essay** — véase [research-method](research-method.en.md).
 
 # Flujo de trabajo de ensayos — desbloqueo proporcional de la redacción
 

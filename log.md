@@ -1,6 +1,7 @@
 # Knowledge Catalog — Update Log
 
 ## 2026-08-13
+* **Terminology**: Renamed `concepts/research-apparatus.en.md` → `concepts/research-method.en.md` (`id: research-method`) and `playbooks/apparatus-recipe.en.md` → `playbooks/method-recipe.en.md` (`id: method-recipe`). Short deprecated stubs remain at the old paths/ids so existing GitHub URLs do not 404. Public prose uses Method and levers; live product APIs and stored snapshots are unchanged. Two-catalog story (Knowledge = product truth; Research = questions → methods → evidence → findings) written into README, `index.md`, and CONTRIBUTING. `platform-capabilities.en.md` and essays-workflow positioning blocks updated. Knowledge `templates/` remain workspace items only (Getting Started, Assignment brief) — no evidence-bundle.
 * **Addition**: Added `playbooks/oss-issues-board-policy.en.md` (Playbook, stable) + index line — Model 1 issue/board policy for the evaluchat OSS repo: issues = user-reported bugs + enhancement feature requests (public roadmap); internal notes/tech debt = board drafts, never issues; board columns, automations ("Item closed" → Done, "Pull request linked" → In progress), reopen-doesn't-restore quirk; PR-body `Closes #N` linking. Public statement in evaluchat/evaluchat CONTRIBUTING.md.
 
 ## 2026-08-11

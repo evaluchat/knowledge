@@ -4,7 +4,9 @@ Thank you for contributing. This catalog is open, multilingual, and PR-able: any
 
 ## What belongs here
 
-**Product truth only.** This repository documents what Evaluchat Canvas currently does and how it is implemented: features, behaviour, prompts as shipped, role/API mechanics, apparatus runtime contracts, and versioned specifications. It is not a place for opinions, marketing claims, competitive comparisons, or internal strategy. Research questions, hypotheses, evidence, and claims belong in the [research catalog](https://github.com/evaluchat/research).
+**Product truth only.** This repository documents what Evaluchat Canvas currently does and how it is implemented: features, behaviour, prompts as shipped, role/API mechanics, method runtime contracts, and versioned specifications. It is not a place for opinions, marketing claims, competitive comparisons, or internal strategy.
+
+Knowledge is product truth (what Evaluchat can do: features, capabilities, workspace templates). Research is research truth (questions → methods → evidence → findings). A Method in the research catalog selects **levers** whose meaning is defined here. Research questions, methods, evidence, and claims belong in the [research catalog](https://github.com/evaluchat/research). Classroom evidence and executable product templates stay in their own repos.
 
 ## Multilingual convention (house spec)
 
@@ -82,7 +84,7 @@ This repository is **MIT-licensed** (docs + scripts). By submitting a pull reque
 - [ ] `generated.by` set for agent-authored content; no `verified: human:` unless actually human-reviewed
 - [ ] CI lint passes (it runs automatically on the PR)
 - [ ] Content is product truth only — no research claims, no competitive content, no internal strategy
-- [ ] Apparatus/runtime changes state the supported Canvas version, capability contract, and privacy boundary
+- [ ] Method/runtime changes state the supported Canvas version, capability and lever contract, and privacy boundary
 
 ## CI
 

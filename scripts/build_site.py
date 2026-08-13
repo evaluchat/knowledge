@@ -18,8 +18,7 @@ Rendering model:
   that section's "Recently updated" strip.
 - /{id}.html — one page per concept group (canonical language), plus
   /{id}.{lang}.html for non-en representations.
-- Evidence contributions are grouped per bundle (evidence/<slug>/ or
-  apparatus/<id>/evidence/<contribution>/): the bundle's index.md becomes the
+- Evidence contributions are grouped per bundle (methods/<id>/evidence/<contribution>/): the bundle's index.md becomes the
   page; role files (question/results/...) are not separate concepts.
 - catalog.json — derived from frontmatter for agent consumers.
 """
@@ -252,8 +251,7 @@ def collect_concepts() -> tuple[dict[str, list[tuple[Path, dict, str]]], dict[Pa
             if meta is None:
                 continue
             if "evidence" in path.parts:
-                # Registry/collection index.md (evidence/index.md,
-                # apparatus/<id>/evidence/index.md) is not a concept; role
+                # Collection index.md (methods/<id>/evidence/index.md) is not a concept; role
                 # files belong to the bundle dir that carries an index.md.
                 parent = path.parent
                 if parent.name != "evidence" and (parent / "index.md").is_file():
