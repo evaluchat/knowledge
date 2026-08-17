@@ -2,13 +2,14 @@
 type: Concept
 id: evidence-publishing
 title: Evidence publishing mechanics — the workspace Evidence action
-description: "Design: evidence definition becomes an integral, required part of every Method; the workspace Evidence action files a completed evidence-template as a single timestamped document into the method's evidence directory via a bot-authored PR."
+description: "Design: evidence definition becomes an integral, required part of every Method; the workspace Evidence action renders a versioned Form Template and files its completed evidence packet as a single timestamped document into the method's evidence directory via a bot-authored PR."
 lang: en
 origin: native
 status: draft
 tags: [design, evidence, methods, workspace, github, okf]
 applies_to: 0.5.9
-generated: { by: hermes-agent/deepseek-v4-flash, at: 2026-08-17T00:00:00Z }
+timestamp: 2026-08-17T15:21:42Z
+generated: { by: codex/gpt-5, at: 2026-08-17T15:21:42Z }
 sources:
   - id: evidence-roles
     resource: https://github.com/evaluchat/research/blob/main/governance/evidence-roles.en.md
@@ -22,6 +23,9 @@ sources:
   - id: platform-capabilities
     resource: https://github.com/evaluchat/knowledge/blob/main/concepts/platform-capabilities.en.md
     title: Platform capabilities — public-beta runtime contract
+  - id: measuring-subjective-evidence
+    resource: https://github.com/evaluchat/knowledge/blob/main/references/how-to-measure-anything-evidence.md
+    title: Measuring Subjective Evidence — Hubbard Reference
 ---
 
 # Evidence publishing mechanics
@@ -52,12 +56,14 @@ Goals (per Cronje, 2026-08-17):
 
 ## 2. Decisions (Cronje, 2026-08-17)
 
-1. **Single file**: one `evidence-template.md` per method, at `methods/<id>/evidence-template.md`,
-   replacing the current `evidence-template/` directory (eight role files + index collapse into one
-   structured markdown document).
+1. **Single file**: one `evidence-template.en.md` per method, at
+   `methods/<id>/evidence-template.en.md`, replacing the current `evidence-template/` directory
+   (eight role files + index collapse into one structured markdown document). The English suffix
+   follows the Research catalog’s settled filename convention.
 2. **Instantiation**: the Evidence button on an existing method workspace item creates a **canvas
-   thread** from the markdown template — a normal canvas editing experience, except the thread is
-   **not a separate workspace item** (not listed in the workspace manifest).
+   thread** from the Form Template — a form-aware canvas editing experience, except the thread is
+   **not a separate workspace item** (not listed in the workspace manifest). Frozen run values are
+   read-only fields; owner judgements use reviewed typed fields, including prose textareas.
 3. **Submit**: after the template's sections are filled in, submit opens a **PR** into the research
    repo, creating an instance under `methods/<id>/evidence/` — minimally **one file, a timestamp
    with `.md` extension**. PR always; a rule may skip manual PR approval for system-orchestrated
@@ -70,54 +76,72 @@ Goals (per Cronje, 2026-08-17):
 
 ```
 methods/<id>/
-  <id>.en.md            # method spec (unchanged) — declares evidence_template
-  evidence-template.md  # NEW single-file evidence questionnaire (markdown template)
+  <id>.en.md            # method spec — declares evidence_template
+  evidence-template.en.md  # NEW single-file, versioned Form Template
   evidence/
     index.md            # existing registry (unchanged)
     2026-08-17T14-30-00Z.md   # filed instances, timestamp-slugged
 ```
 
-### 3.1 `evidence-template.md`
+### 3.1 `evidence-template.en.md`
 
-A single markdown document with YAML frontmatter (the pinned contract) and guided sections for
-the eight evidence roles. Frontmatter (illustrative):
+A single markdown document with YAML frontmatter (the pinned contract), declared Form Template
+fields, and body sections for the eight evidence roles. It is a mixed-authority form: trusted
+system fields are frozen from the concluded run; typed owner fields capture the subjective evidence
+that may later be aggregated. Frontmatter (illustrative):
 
 ```yaml
-type: Evidence Template
+type: Form Template
 id: evidence-template
+version: 1.0.0
 lang: en
+locale: en
+template_kind: form
 applies_to_method: ai-assignment-stress-test@0.1.0
-stage: documented-experience        # default ladder rung for button filings
+default_stage: documented-experience
+fields:
+  method_id:
+    type: text
+    read_only: true
+    source: frozen_run.method.id
+  threshold_fit:
+    type: select
+    options: [much-too-low, about-right, much-too-high, insufficient-information]
+  observations:
+    type: textarea
 generated: { by: <producer>, at: <iso> }   # AI-assistance disclosure when applicable
 ```
 
-Body sections (each maps to an evidence role; `{{section}}`-style guidance rendered as
-placeholder prompts, not typed form fields):
+Body sections render the declared `{{field}}` values and map to the evidence roles:
 
 - **Question** — the research question this method serves (pre-filled, read-only link).
-- **Context** — discipline, task genre, language, institution type. No student identifiers.
+- **Context** — typed discipline, task genre, proficiency and institution context plus a bounded
+  narrative context. No student identifiers.
 - **Intervention** — resolved levers (pre-filled), assignment artefact reference, probe protocol.
 - **Observations** — teacher/researcher narrative, verbatim, any language.
-- **Results** — method-defined structured fields (pinned per method version).
+- **Results** — system-authored, method-defined structured measurements (pinned per method
+  version) and explicit missing-data record.
 - **Reflection** — interpretation, kept separate from observations.
 - **Limitations** — scope, missing data, competing explanations.
 - **Provenance** — consent + anonymisation declarations (mandatory), `method: {id, version,
   levers, canvas}` (pre-filled, read-only, from the frozen run snapshot).
 - **Stage** — contribution-ladder rung the contributor declares.
 
-Because it is a **markdown template**, instantiation renders it as a normal canvas document the
-owner edits — the same editing experience as any other canvas thread (markdown editing, optional
-AI assistance via `ai-dialogue` for structure/drafting). It is not a typed-field form; narrative
-evidence is prose, and forcing it into input fields would fight the way teachers actually write.
+The Form Template renderer uses the declared field types (`select`, `number`, `date`, `text`, and
+`textarea`) and requiredness. Narrative evidence remains prose in designated textareas; ordinal
+owner judgements use named, versioned options so later work can retain their distribution instead
+of inferring a score from prose. The `assistant.guidance` is a protected instruction that preserves
+the system/owner and observation/reflection boundaries.
 
 ### 3.2 The Evidence button → canvas thread
 
 - On a workspace item of kind `method` (a concluded run), an **Evidence** action creates a canvas
   thread bound to that item.
-- The thread's document content = the method's `evidence-template.md`, with the read-only
-  sections **pre-filled from the frozen run snapshot**: method id/version, resolved levers (as
-  actually run, not the current default profile), canvas version, question links. The owner
-  cannot edit these — provenance is derived, never typed.
+- The thread's document content = the method's `evidence-template.en.md`, with its read-only
+  fields **pre-filled from the frozen run snapshot**: method id/version, resolved levers (as
+  actually run, not the current default profile), canvas version, question links, collection
+  denominator, and permitted aggregate analytics. The owner cannot edit these — provenance is
+  derived, never typed.
 - The thread is **owned by the method item's owner and the org**, exactly like any existing
   workspace thread (`withOwnedThreadMetadata` ownership markers), but it is **not entered into
   the manifest** / not listed as a workspace item.
@@ -133,8 +157,9 @@ evidence is prose, and forcing it into input fields would fight the way teachers
 
 ### 3.3 Submit → PR → file
 
-1. **Submit** on the evidence canvas validates: consent fields answered, anonymisation declared
-   (`consent-anonymised: no` blocks), required sections non-empty, provenance block present.
+1. **Submit** on the evidence canvas validates: public-contribution authorisation is confirmed,
+   anonymisation is confirmed, required fields are complete, and the system-authored provenance
+   block is present. A negative or uncertain privacy declaration blocks submission.
 2. The submit assembles a **single markdown file**:
    `methods/<id>/evidence/<ISO-timestamp>.md` — frontmatter (type, id, lang, affected-run GUID,
    `stage`, `generated.by` incl. AI-assistance disclosure if the assistant helped draft) + the
@@ -163,27 +188,24 @@ evidence is prose, and forcing it into input fields would fight the way teachers
 ## 4. What this design does NOT do
 
 - Files documented-experience bundles (one assignment, human narrative). No synthesis, no A/B, no
-  hidden measurement.
+  hidden measurement. [Finding authoring](finding-authoring.en.md) is the separate downstream
+  design for source-linked analysis and human-controlled finding drafts.
 - No claim stronger than the evidence: `stage` routes anything above documented-experience to the
   existing review protocol. AI may draft structure (disclosed via `generated.by`) but the
   contribution is the workspace owner's; claims/interpretation remain human.
 - No platform-owned evidence database; publication is a GitHub PR into the research catalog.
 
-## 5. Remaining forks (small)
+## 5. Remaining fork
 
-1. Guided markdown sections (assumed, default) vs typed form fields (select/textarea) — the
-   template-catalog form machinery supports either.
-2. Explicit `evidence_template:` pointer in method frontmatter (lean towards this so lint and the
-   generator check one declared reference) vs filename-location convention.
-3. Auto-merge scope: documented-experience-and-below only; structured experiments require human
+1. Auto-merge scope: documented-experience-and-below only; structured experiments require human
    review.
 
 ## 6. Sequencing (when design is settled)
 
-1. Research repo: single-file `evidence-template.md` convention + `evidence_template:` pointer in
+1. Research repo: single-file `evidence-template.en.md` convention + `evidence_template:` pointer in
    method frontmatter + okf-lint gate.
-2. Research repo: add `evidence-template.md` to `ai-assignment-stress-test` (and
-   `ai-assisted-essay`).
+2. Research repo: migrate the remaining methods to `evidence-template.en.md`; the first typed
+   template is `ai-assisted-essay`.
 3. Platform: catalog generator mirrors evidence template; validator requires it.
 4. Platform: Evidence button → owned canvas thread (not manifest-listed) + submit assembler + bot
    PR + auto-merge rule.
