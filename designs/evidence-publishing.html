@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Evidence publishing mechanics — the workspace Evidence action</title>
+<link rel="icon" href="../favicon.ico" sizes="any"/>
+<link rel="stylesheet" href="../assets/style.css"/>
+</head>
+<body>
+<header class="site-header">
+  <div class="header-inner">
+    <div class="logo">
+      <a href="../index.html" aria-label="Knowledge catalog">
+        <img class="logo-mark" src="../assets/evaluchat.png" width="32" height="32" alt=""/>
+        evaluchat
+      </a>
+    </div>
+    <nav class="main-nav" aria-label="Primary navigation">
+      <a href="https://github.com/evaluchat/knowledge">GitHub</a>
+      <a href="https://github.com/evaluchat/knowledge/blob/main/README.md">README</a>
+      <a href="https://evaluchat.org/" class="nav-cta">Open evaluchat ↗</a>
+    </nav>
+  </div>
+</header>
+
+<main class="page-wrap">
+<p class="breadcrumb"><p class="breadcrumb"><a href="../index.html">Knowledge catalog</a><span class="sep">/</span><a href="index.html">Designs</a><span class="sep">/</span><span>Evidence publishing mechanics — the workspace Evidence action</span></p></p>
+  <article class="content">
+<h1>Evidence publishing mechanics — the workspace Evidence action</h1>
+<table class="facts"><tr><th>type</th><td>Concept</td></tr><tr><th>id</th><td>evidence-publishing</td></tr><tr><th>status</th><td>draft</td></tr><tr><th>lang</th><td>en</td></tr><tr><th>origin</th><td>native</td></tr><tr><th>generated</th><td>by=codex/gpt-5, at=2026-08-17T15:21:42Z</td></tr><tr><th>sources</th><td>{&#x27;id&#x27;: &#x27;evidence-roles&#x27;, &#x27;resource&#x27;: &#x27;https://github.com/evaluchat/research/blob/main/governance/evidence-roles.en.md&#x27;, &#x27;title&#x27;: &#x27;Shared evidence roles — how every method files a run (research catalog)&#x27;}, {&#x27;id&#x27;: &#x27;contribution-ladder&#x27;, &#x27;resource&#x27;: &#x27;https://github.com/evaluchat/research/blob/main/governance/contribution-ladder.en.md&#x27;, &#x27;title&#x27;: &#x27;The contribution ladder — how teachers contribute to research&#x27;}, {&#x27;id&#x27;: &#x27;method-recipe&#x27;, &#x27;resource&#x27;: &#x27;https://github.com/evaluchat/knowledge/blob/main/playbooks/method-recipe.en.md&#x27;, &#x27;title&#x27;: &#x27;The method recipe — from research question to published method&#x27;}, {&#x27;id&#x27;: &#x27;platform-capabilities&#x27;, &#x27;resource&#x27;: &#x27;https://github.com/evaluchat/knowledge/blob/main/concepts/platform-capabilities.en.md&#x27;, &#x27;title&#x27;: &#x27;Platform capabilities — public-beta runtime contract&#x27;}, {&#x27;id&#x27;: &#x27;measuring-subjective-evidence&#x27;, &#x27;resource&#x27;: &#x27;https://github.com/evaluchat/knowledge/blob/main/references/how-to-measure-anything-evidence.md&#x27;, &#x27;title&#x27;: &#x27;Measuring Subjective Evidence — Hubbard Reference&#x27;}</td></tr></table>
+
+<article class="body"><h1 id="evidence-publishing-mechanics">Evidence publishing mechanics</h1>
+<blockquote>
+<p>Design note (2026-08-17, decision-record status: draft). This document captures agreed
+design decisions for making evidence filing an integral, default part of the workspace
+method lifecycle. Design only — no implementation exists yet.</p>
+</blockquote>
+<h2 id="1-problem">1. Problem</h2>
+<p>Methods publish to <code>evaluchat/research</code> today without an enforceable evidence contract, and
+filing evidence is a manual, human-only task (a contributor copies an <code>evidence-template/</code>
+directory and fills eight role files by hand). The platform has no A/B machinery and, for the
+assignment stress test in particular, evidence is inherently a single-case, subjective
+teacher/researcher questionnaire — one assignment evaluated at a time. There is no product
+surface that turns a concluded method run into a filed evidence bundle.</p>
+<p>Goals (per Cronje, 2026-08-17):</p>
+<ol>
+<li><strong>Evidence definition becomes an integral part of the method</strong> and a hard prerequisite for
+   publishing the method.</li>
+<li><strong>Filing evidence becomes a default feature of the workspace item lifecycle</strong> — an "Evidence"
+   action on a workspace item of kind <code>method</code> that instantiates the method's evidence template
+   and, on submit, files the completed document into the method's evidence directory
+   (<code>methods/&lt;id&gt;/evidence/</code>).</li>
+<li>Publication goes through GitHub (private repos first-class in future, a path to public
+   sharing), not a platform-owned database.</li>
+</ol>
+<h2 id="2-decisions-cronje-2026-08-17">2. Decisions (Cronje, 2026-08-17)</h2>
+<ol>
+<li><strong>Single file</strong>: one <code>evidence-template.en.md</code> per method, at
+   <code>methods/&lt;id&gt;/evidence-template.en.md</code>, replacing the current <code>evidence-template/</code> directory
+   (eight role files + index collapse into one structured markdown document). The English suffix
+   follows the Research catalog’s settled filename convention.</li>
+<li><strong>Instantiation</strong>: the Evidence button on an existing method workspace item creates a <strong>canvas
+   thread</strong> from the Form Template — a form-aware canvas editing experience, except the thread is
+   <strong>not a separate workspace item</strong> (not listed in the workspace manifest). Frozen run values are
+   read-only fields; owner judgements use reviewed typed fields, including prose textareas.</li>
+<li><strong>Submit</strong>: after the template's sections are filled in, submit opens a <strong>PR</strong> into the research
+   repo, creating an instance under <code>methods/&lt;id&gt;/evidence/</code> — minimally <strong>one file, a timestamp
+   with <code>.md</code> extension</strong>. PR always; a rule may skip manual PR approval for system-orchestrated
+   submissions whose controls are baked into the process.</li>
+<li><strong>Slug</strong>: timestamp, optionally linked to the workspace-item GUID. No PII in the GUID; access
+   security comes from ownership enforcement, not from GUID secrecy.</li>
+<li><strong>Bot identity</strong>: Valery Bot.ha.</li>
+</ol>
+<h2 id="3-resulting-shape">3. Resulting shape</h2>
+<pre><code>methods/&lt;id&gt;/
+  &lt;id&gt;.en.md            # method spec — declares evidence_template
+  evidence-template.en.md  # NEW single-file, versioned Form Template
+  evidence/
+    index.md            # existing registry (unchanged)
+    2026-08-17T14-30-00Z.md   # filed instances, timestamp-slugged
+</code></pre>
+<h3 id="31-evidence-templateenmd">3.1 <code>evidence-template.en.md</code></h3>
+<p>A single markdown document with YAML frontmatter (the pinned contract), declared Form Template
+fields, and body sections for the eight evidence roles. It is a mixed-authority form: trusted
+system fields are frozen from the concluded run; typed owner fields capture the subjective evidence
+that may later be aggregated. Frontmatter (illustrative):</p>
+<pre><code class="language-yaml">type: Form Template
+id: evidence-template
+version: 1.0.0
+lang: en
+locale: en
+template_kind: form
+applies_to_method: ai-assignment-stress-test@0.1.0
+default_stage: documented-experience
+fields:
+  method_id:
+    type: text
+    read_only: true
+    source: frozen_run.method.id
+  threshold_fit:
+    type: select
+    options: [much-too-low, about-right, much-too-high, insufficient-information]
+  observations:
+    type: textarea
+generated: { by: &lt;producer&gt;, at: &lt;iso&gt; }   # AI-assistance disclosure when applicable
+</code></pre>
+<p>Body sections render the declared <code>{{field}}</code> values and map to the evidence roles:</p>
+<ul>
+<li><strong>Question</strong> — the research question this method serves (pre-filled, read-only link).</li>
+<li><strong>Context</strong> — typed discipline, task genre, proficiency and institution context plus a bounded
+  narrative context. No student identifiers.</li>
+<li><strong>Intervention</strong> — resolved levers (pre-filled), assignment artefact reference, probe protocol.</li>
+<li><strong>Observations</strong> — teacher/researcher narrative, verbatim, any language.</li>
+<li><strong>Results</strong> — system-authored, method-defined structured measurements (pinned per method
+  version) and explicit missing-data record.</li>
+<li><strong>Reflection</strong> — interpretation, kept separate from observations.</li>
+<li><strong>Limitations</strong> — scope, missing data, competing explanations.</li>
+<li><strong>Provenance</strong> — consent + anonymisation declarations (mandatory), <code>method: {id, version,
+  levers, canvas}</code> (pre-filled, read-only, from the frozen run snapshot).</li>
+<li><strong>Stage</strong> — contribution-ladder rung the contributor declares.</li>
+</ul>
+<p>The Form Template renderer uses the declared field types (<code>select</code>, <code>number</code>, <code>date</code>, <code>text</code>, and
+<code>textarea</code>) and requiredness. Narrative evidence remains prose in designated textareas; ordinal
+owner judgements use named, versioned options so later work can retain their distribution instead
+of inferring a score from prose. The <code>assistant.guidance</code> is a protected instruction that preserves
+the system/owner and observation/reflection boundaries.</p>
+<h3 id="32-the-evidence-button-canvas-thread">3.2 The Evidence button → canvas thread</h3>
+<ul>
+<li>On a workspace item of kind <code>method</code> (a concluded run), an <strong>Evidence</strong> action creates a canvas
+  thread bound to that item.</li>
+<li>The thread's document content = the method's <code>evidence-template.en.md</code>, with its read-only
+  fields <strong>pre-filled from the frozen run snapshot</strong>: method id/version, resolved levers (as
+  actually run, not the current default profile), canvas version, question links, collection
+  denominator, and permitted aggregate analytics. The owner cannot edit these — provenance is
+  derived, never typed.</li>
+<li>The thread is <strong>owned by the method item's owner and the org</strong>, exactly like any existing
+  workspace thread (<code>withOwnedThreadMetadata</code> ownership markers), but it is <strong>not entered into
+  the manifest</strong> / not listed as a workspace item.</li>
+<li>The method item stores an <code>evidenceThreads</code> reference (thread id + status) so the UI can
+  resume/reopen an in-progress evidence thread.</li>
+<li><strong>GUID access safety</strong>: the workspace-item GUID is already high-entropy (<code>wi_...</code>) and thread
+  access is already governed by server-stamped ownership metadata in the proxy
+  (<code>withOwnedThreadMetadata</code> path) — not by guessing. The evidence thread uses the same
+  enforcement: a user can only open an evidence thread whose ownership markers match their own
+  account. The GUID appears in the evidence filename/PR only as a traceable reference to the run;
+  it is not an access token, and ownership checks apply to both the evidence thread and the run
+  item it cites, so no cross-user lookup is possible through it.</li>
+</ul>
+<h3 id="33-submit-pr-file">3.3 Submit → PR → file</h3>
+<ol>
+<li><strong>Submit</strong> on the evidence canvas validates: public-contribution authorisation is confirmed,
+   anonymisation is confirmed, required fields are complete, and the system-authored provenance
+   block is present. A negative or uncertain privacy declaration blocks submission.</li>
+<li>The submit assembles a <strong>single markdown file</strong>:
+   <code>methods/&lt;id&gt;/evidence/&lt;ISO-timestamp&gt;.md</code> — frontmatter (type, id, lang, affected-run GUID,
+   <code>stage</code>, <code>generated.by</code> incl. AI-assistance disclosure if the assistant helped draft) + the
+   filled sections + the provenance block.</li>
+<li>The server (Valery Bot.ha) opens a <strong>PR</strong> into the configured destination repo (default
+   <code>evaluchat/research</code>; private repo destination later, same flow).</li>
+<li>On PR open, okf-lint CI runs. <strong>Auto-merge rule</strong> (system-orchestrated submissions): if
+   (a) provenance + consent declarations are present and machine-checked, (b) the bundle's
+   declared stage ≤ documented-experience, (c) okf-lint passes, then the bot may merge the PR
+   without manual approval. Anything above documented-experience (e.g. a teacher declaring a
+   structured experiment) routes to the human review protocol. The control that justifies
+   skipping approval is the baked-in provenance/consent/stage validation, not "trust the bot".</li>
+<li>The evidence thread's status updates to <code>filed (PR merged)</code> with the PR URL; the method item
+   records the evidence contribution URL.</li>
+</ol>
+<h3 id="34-catalog-mirroring-platform-side">3.4 Catalog mirroring (platform side)</h3>
+<ul>
+<li>The catalog generator mirrors <code>evidence_template</code> (id, version, source content) into the
+  generated method entry — same pattern as <code>run_brief_template</code>. The Evidence button resolves the
+  template from the catalog entry, so the platform renders exactly the template of the method
+  <strong>version</strong> the run used (no drift, no cross-version mixing).</li>
+<li>The build-time validator requires a valid evidence template: a method without one cannot ship in
+  the catalog. Research-side okf-lint enforces the same for method PRs. Two-sided gate — matches
+  "prerequisite before publishing".</li>
+</ul>
+<h2 id="4-what-this-design-does-not-do">4. What this design does NOT do</h2>
+<ul>
+<li>Files documented-experience bundles (one assignment, human narrative). No synthesis, no A/B, no
+  hidden measurement. <a href="finding-authoring.html">Finding authoring</a> is the separate downstream
+  design for source-linked analysis and human-controlled finding drafts.</li>
+<li>No claim stronger than the evidence: <code>stage</code> routes anything above documented-experience to the
+  existing review protocol. AI may draft structure (disclosed via <code>generated.by</code>) but the
+  contribution is the workspace owner's; claims/interpretation remain human.</li>
+<li>No platform-owned evidence database; publication is a GitHub PR into the research catalog.</li>
+</ul>
+<h2 id="5-remaining-fork">5. Remaining fork</h2>
+<ol>
+<li>Auto-merge scope: documented-experience-and-below only; structured experiments require human
+   review.</li>
+</ol>
+<h2 id="6-sequencing-when-design-is-settled">6. Sequencing (when design is settled)</h2>
+<ol>
+<li>Research repo: single-file <code>evidence-template.en.md</code> convention + <code>evidence_template:</code> pointer in
+   method frontmatter + okf-lint gate.</li>
+<li>Research repo: migrate the remaining methods to <code>evidence-template.en.md</code>; the first typed
+   template is <code>ai-assisted-essay</code>.</li>
+<li>Platform: catalog generator mirrors evidence template; validator requires it.</li>
+<li>Platform: Evidence button → owned canvas thread (not manifest-listed) + submit assembler + bot
+   PR + auto-merge rule.</li>
+<li>Private repo destination + public promotion step.</li>
+</ol></article>
+
+  </article>
+</main>
+<footer class="site-footer">
+  <p>
+    <a href="https://evaluchat.org">evaluchat.com</a>
+    &middot; Knowledge catalog
+    &middot; <a href="https://github.com/evaluchat/knowledge">GitHub</a>
+    &middot; <a href="mailto:hello@evaluchat.com">hello@evaluchat.com</a>
+  </p>
+  <p class="copyright">© 2026 Evaluchat · Open Knowledge Format</p>
+</footer>
+</body>
+</html>

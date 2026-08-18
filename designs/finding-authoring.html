@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Finding authoring — evidence ledgers and human-controlled claims</title>
+<link rel="icon" href="../favicon.ico" sizes="any"/>
+<link rel="stylesheet" href="../assets/style.css"/>
+</head>
+<body>
+<header class="site-header">
+  <div class="header-inner">
+    <div class="logo">
+      <a href="../index.html" aria-label="Knowledge catalog">
+        <img class="logo-mark" src="../assets/evaluchat.png" width="32" height="32" alt=""/>
+        evaluchat
+      </a>
+    </div>
+    <nav class="main-nav" aria-label="Primary navigation">
+      <a href="https://github.com/evaluchat/knowledge">GitHub</a>
+      <a href="https://github.com/evaluchat/knowledge/blob/main/README.md">README</a>
+      <a href="https://evaluchat.org/" class="nav-cta">Open evaluchat ↗</a>
+    </nav>
+  </div>
+</header>
+
+<main class="page-wrap">
+<p class="breadcrumb"><p class="breadcrumb"><a href="../index.html">Knowledge catalog</a><span class="sep">/</span><a href="index.html">Designs</a><span class="sep">/</span><span>Finding authoring — evidence ledgers and human-controlled claims</span></p></p>
+  <article class="content">
+<h1>Finding authoring — evidence ledgers and human-controlled claims</h1>
+<table class="facts"><tr><th>type</th><td>Concept</td></tr><tr><th>id</th><td>finding-authoring</td></tr><tr><th>status</th><td>draft</td></tr><tr><th>lang</th><td>en</td></tr><tr><th>origin</th><td>native</td></tr><tr><th>generated</th><td>by=codex/gpt-5, at=2026-08-17T15:21:42Z</td></tr><tr><th>sources</th><td>{&#x27;id&#x27;: &#x27;evidence-publishing&#x27;, &#x27;resource&#x27;: &#x27;https://github.com/evaluchat/knowledge/blob/main/designs/evidence-publishing.en.md&#x27;, &#x27;title&#x27;: &#x27;Evidence publishing mechanics — the workspace Evidence action&#x27;}, {&#x27;id&#x27;: &#x27;research-method&#x27;, &#x27;resource&#x27;: &#x27;https://github.com/evaluchat/knowledge/blob/main/concepts/research-method.en.md&#x27;, &#x27;title&#x27;: &#x27;Research method — how methods use platform capabilities and levers&#x27;}, {&#x27;id&#x27;: &#x27;measuring-subjective-evidence&#x27;, &#x27;resource&#x27;: &#x27;https://github.com/evaluchat/knowledge/blob/main/references/how-to-measure-anything-evidence.md&#x27;, &#x27;title&#x27;: &#x27;Measuring Subjective Evidence — Hubbard Reference&#x27;}, {&#x27;id&#x27;: &#x27;review-protocol&#x27;, &#x27;resource&#x27;: &#x27;https://github.com/evaluchat/research/blob/main/governance/review-protocol.en.md&#x27;, &#x27;title&#x27;: &#x27;Claim governance — review protocol for findings&#x27;}</td></tr></table>
+
+<article class="body"><h1 id="finding-authoring-evidence-ledgers-and-human-controlled-claims">Finding authoring — evidence ledgers and human-controlled claims</h1>
+<blockquote>
+<p>Design note (2026-08-17, decision-record status: draft). This is the
+downstream companion to <a href="evidence-publishing.html">evidence publishing</a>: it
+turns a set of filed evidence contributions into an inspectable analysis
+surface without allowing an AI assistant to author or approve a finding.</p>
+</blockquote>
+<h2 id="1-problem">1. Problem</h2>
+<p>Evidence filing makes individual, bounded reports public and comparable. It
+does not make twenty submitted reports easy to inspect together. A finding
+author needs an accurate answer to basic questions before writing a claim:</p>
+<ul>
+<li>Which evidence contributions addressed this research question at this time?</li>
+<li>Which ones were excluded, missing, challenged, non-comparable, or from the
+  same contributor or context?</li>
+<li>What do the structured response distributions and recorded contexts show?</li>
+<li>Which observations or limitations contradict the pattern the author is
+  considering?</li>
+</ul>
+<p>An AI can help retrieve, tabulate, and challenge an answer, but neither a
+system prompt nor a fluent summary makes it impartial. Selecting a claim,
+deciding whether evidence is comparable, interpreting a pattern, and accepting
+the finding’s scope remain accountable human research decisions.</p>
+<h2 id="2-decisions">2. Decisions</h2>
+<ol>
+<li><strong>Ledger before finding.</strong> A finding-authoring session starts from a dated,
+   immutable Evidence Ledger for a selected research question. The ledger is a
+   descriptive analysis record, never a finding.</li>
+<li><strong>On-demand and freshness-gated.</strong> A user explicitly creates a ledger. The
+   platform offers the latest ledger only when its input fingerprint matches;
+   if any eligible evidence was added, removed, or changed, it offers a new
+   ledger instead and marks older ones stale for that scope.</li>
+<li><strong>Complete accounting, not a curated sample.</strong> The ledger records every
+   eligible contribution in scope and every exclusion with its mechanical
+   reason. It never silently omits negative, challenging, incomplete, or
+   non-comparable evidence.</li>
+<li><strong>AI may analyse and advise, never edit a finding.</strong> The assistant may
+   create the ledger, answer questions about it, and test a human-proposed
+   claim or challenge. It has no canvas-write, commit, PR, tier, review, or
+   publication capability for the finding document.</li>
+<li><strong>Findings stay human documents.</strong> The author starts from a basic finding
+   skeleton or a copy of an existing finding as a new revision. Only the human
+   types or accepts edits. The existing published finding is never overwritten.</li>
+<li><strong>Protocol still governs publication.</strong> The deterministic claim checker and
+   the Research review protocol determine formal completeness and routing. A
+   ledger cannot promote a tier, approve a claim, or substitute for review.</li>
+</ol>
+<h2 id="3-the-two-artifacts">3. The two artifacts</h2>
+<table>
+<thead>
+<tr>
+<th>Artifact</th>
+<th>Purpose</th>
+<th>Authority</th>
+<th>Mutability</th>
+<th>Publication meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Evidence Ledger</strong></td>
+<td>Source-linked inventory and descriptive analysis of one evidence snapshot</td>
+<td>Platform creates the manifest; AI may render the analysis</td>
+<td>Immutable after creation; human annotations live separately</td>
+<td>Audit material, not a finding or verdict</td>
+</tr>
+<tr>
+<td><strong>Finding draft</strong></td>
+<td>A human’s claim, scope, interpretation, limitations, and review request</td>
+<td>Human author</td>
+<td>Human-editable only; a published finding is revised by copy</td>
+<td>Candidate Research finding, subject to the existing protocol</td>
+</tr>
+</tbody>
+</table>
+<pre><code class="language-text">Accepted evidence indexed by question
+        │
+        ▼
+Deterministic scope + input fingerprint ── unchanged ──► reopen latest ledger
+        │ changed
+        ▼
+Timestamped Evidence Ledger (immutable, source-linked)
+        │
+        ├── AI: descriptive analysis + claim/challenge advice only
+        ▼
+Human-only Finding draft (new skeleton or revision copy)
+        │
+        ▼
+Claim checker + human review + PR workflow
+</code></pre>
+<h3 id="31-evidence-ledger">3.1 Evidence Ledger</h3>
+<p>The platform creates a ledger from public, indexed evidence that resolves to
+the selected research question. It may include twenty evidence contributions
+or any other number; no arbitrary count is a substitute for the contribution
+ladder’s tier and independence requirements.</p>
+<p>The ledger has a timestamped identity and an <strong>input fingerprint</strong> over a
+canonical, sorted manifest. At minimum the manifest records:</p>
+<table>
+<thead>
+<tr>
+<th>Ledger field</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>research_question</code> and question version/path</td>
+<td>Declares the question the ledger serves</td>
+</tr>
+<tr>
+<td><code>created_at</code>, repository commit, resolver and ledger-template versions</td>
+<td>Reproduces the time, source state, and mechanism</td>
+</tr>
+<tr>
+<td>Included contributions</td>
+<td>Path/ID, content or Git blob hash, method/version, stage, contributor/context grouping, and applicable resolved levers</td>
+</tr>
+<tr>
+<td>Excluded candidates</td>
+<td>Path/ID and mechanical reason: unlinked question, invalid/missing provenance, out-of-scope filter, inaccessible, or not yet accepted</td>
+</tr>
+<tr>
+<td>Query and scope</td>
+<td>Method, version, date, stage, language, and context filters; no hidden ranking or relevance filter</td>
+</tr>
+<tr>
+<td>Input fingerprint</td>
+<td>Detects additions, removals, or changes after the ledger was made</td>
+</tr>
+<tr>
+<td>Prompt and model policy versions</td>
+<td>Makes AI-assisted rendering inspectable without treating it as verification</td>
+</tr>
+</tbody>
+</table>
+<p>The rendered ledger contains only descriptive, source-linked material:</p>
+<ul>
+<li>inventory, inclusion/exclusion counts, missingness, and contribution stages;</li>
+<li>distributions of versioned structured items, retaining <code>not-applicable</code> and
+  <code>insufficient-information</code> responses;</li>
+<li>method versions, resolved levers, settings, contributor/context clustering,
+  and comparability warnings;</li>
+<li>explicitly labelled owner observations and reflections, with a transparent
+  narrative-coding record if they are grouped;</li>
+<li>a counterevidence register: negative responses, challenges, contradictions,
+  and plausible alternative explanations; and</li>
+<li>evidence gaps and questions that the available record cannot answer.</li>
+</ul>
+<p>It must not contain a finding, an efficacy conclusion, a causal inference, a
+teacher-population claim, an integrity verdict, or an undisclosed inference
+from prose. Every non-trivial displayed value links to the included source
+record(s), calculation, or explicit <code>insufficient evidence</code> state.</p>
+<h3 id="32-freshness-and-archival">3.2 Freshness and archival</h3>
+<p>Ledger creation is on-demand, not a background auto-publication job. Before
+opening the session, the resolver recomputes the canonical manifest for the
+requested question and scope.</p>
+<ul>
+<li><strong>Same fingerprint:</strong> reopen the existing ledger, preserving its timestamp.</li>
+<li><strong>Different fingerprint:</strong> show that evidence has changed and offer a new
+  ledger. The prior ledger remains readable, labelled with its old scope.</li>
+<li><strong>No eligible evidence:</strong> create no analytic summary; explain what is missing
+  and link the author back to the evidence collection path.</li>
+</ul>
+<p>The live ledger is a protected canvas thread owned by the author and their
+organisation. When a human submits a finding for review, the exact ledger
+manifest and rendered ledger are attached to the review packet or exported as
+a timestamped, source-linked analysis artifact. The repository placement for
+that archival copy is an implementation decision, but its content and input
+fingerprint must not change after the finding review begins.</p>
+<h2 id="4-finding-authoring-session">4. Finding-authoring session</h2>
+<p>The author opens a second canvas document from either:</p>
+<ul>
+<li>a basic <strong>Finding skeleton</strong> with headings for claim, scope, evidence,
+  limitations, alternatives, and review; or</li>
+<li>a <strong>revision copy</strong> of an existing finding, with a visible predecessor link
+  and no mutation of the published source.</li>
+</ul>
+<p>The finding starts with a reference to the chosen ledger, but this reference
+does not assert that the ledger supports any particular claim. The human must
+write the claim, define the scope, decide which evidence is comparable, explain
+their interpretation, and choose whether to seek review or publication.</p>
+<h3 id="41-assistant-contract">4.1 Assistant contract</h3>
+<p>The assistant receives the immutable ledger and, only when the human asks, the
+specific draft passage or proposed claim they want checked. It may:</p>
+<ul>
+<li>locate and explain cited evidence, distributions, missingness, and methods;</li>
+<li>build a claim-coverage table linking a <em>human-proposed</em> statement to
+  supporting, contradicting, and insufficient evidence;</li>
+<li>identify scope drift, causal language, selection bias, non-independence,
+  unreported <code>not-applicable</code> responses, and omitted counterexamples;</li>
+<li>propose review questions and explain the contribution-ladder or claim-checker
+  requirements; and</li>
+<li>help the author record a challenge or an uncertainty without resolving it.</li>
+</ul>
+<p>It may not:</p>
+<ul>
+<li>write into the finding canvas, amend a published finding, or submit a PR;</li>
+<li>choose the finding’s claim, evidence subset, tier, status, authors, or review
+  outcome;</li>
+<li>represent evidence as proof, fill gaps with plausible detail, or suppress
+  contradictory evidence; or</li>
+<li>make an ethical, scientific, or publication decision on the human’s behalf.</li>
+</ul>
+<p>The UI enforces this with read-only AI access to the finding document and
+separate advice responses: there is no assistant edit, patch, save, or publish
+tool for the finding. If a human later incorporates AI-generated language or
+analysis materially, the finding records the required <code>generated.by</code>
+disclosure; human authorship and human review remain distinct from that
+disclosure.</p>
+<h3 id="42-prompt-and-output-controls">4.2 Prompt and output controls</h3>
+<p>A system prompt is necessary but insufficient. The implementation couples it
+with deterministic source and citation controls:</p>
+<ol>
+<li>The assistant may use only the selected ledger, its frozen manifest, and
+   source records referenced by that manifest; it has no unbounded repository
+   or web search context.</li>
+<li>It must label each response as <strong>descriptive</strong>, <strong>challenge</strong>,
+   <strong>insufficient evidence</strong>, or <strong>human decision required</strong>. It must cite the
+   ledger source IDs for factual assertions.</li>
+<li>It must return counterevidence and limitations before a positive pattern,
+   and say when a requested comparison is not valid.</li>
+<li>A deterministic post-check rejects source references outside the manifest
+   and marks advice with unresolved citations as unusable.</li>
+<li>The session stores the policy, model, prompt-template, ledger fingerprint,
+   and response IDs so a reviewer can inspect the assistance trail.</li>
+</ol>
+<p>These controls reduce silent cherry-picking and invented evidence; they do not
+turn model output into an impartial verdict.</p>
+<h2 id="5-review-and-challenge-behaviour">5. Review and challenge behaviour</h2>
+<p>The existing Research review protocol remains authoritative. The ledger should
+make its requirements easier to inspect, not duplicate or override them.</p>
+<table>
+<thead>
+<tr>
+<th>Situation</th>
+<th>Required behaviour</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>New or modified in-scope evidence after the ledger</td>
+<td>Mark the finding draft stale; require a refreshed ledger or a human-recorded exclusion rationale before review proceeds</td>
+</tr>
+<tr>
+<td>Open challenge or contradiction</td>
+<td>Put it in the ledger’s counterevidence register and show it in claim advice; never hide it to improve a claim</td>
+</tr>
+<tr>
+<td>Human requests a causal, universal, or efficacy claim</td>
+<td>Explain that the ledger cannot establish it and route to the relevant research design and human review requirements</td>
+</tr>
+<tr>
+<td>Finding reaches <code>supported</code></td>
+<td>Human review remains mandatory; no ledger or AI output can auto-approve it</td>
+</tr>
+<tr>
+<td>AI-assisted text materially affects the finding</td>
+<td>Preserve the human <code>authors</code> record and add the required generation disclosure; disclose assistance to reviewers</td>
+</tr>
+</tbody>
+</table>
+<h2 id="6-non-goals">6. Non-goals</h2>
+<ul>
+<li>This is not automated research adjudication, peer review, or a truth engine.</li>
+<li>It does not make twenty voluntary documented experiences representative,
+  independent, causal, or sufficient for a supported finding.</li>
+<li>It does not read raw student work, raw transcripts, private analytics, or
+  unmerged submissions into an authoring session.</li>
+<li>It does not replace the method evidence contract, contribution ladder,
+  challenge process, deterministic claim checker, or human accountability.</li>
+</ul>
+<h2 id="7-delivery-sequence">7. Delivery sequence</h2>
+<ol>
+<li>Define the canonical evidence resolver and manifest/fingerprint format.</li>
+<li>Implement protected, timestamped ledger threads and source-linked
+   descriptive renderer.</li>
+<li>Add freshness detection and the no-new-evidence/reopen-latest decision.</li>
+<li>Implement a human-only Finding skeleton/revision canvas and read-only AI
+   advice surface.</li>
+<li>Add citation, counterevidence, and stale-ledger checks to the claim-review
+   packet; decide the Research archival location for ledger snapshots.</li>
+<li>Test with synthetic evidence sets containing contradictory, missing,
+   non-comparable, and clustered contributions before using classroom evidence.</li>
+</ol>
+<h1 id="citations">Citations</h1>
+<p>[1] <a href="evidence-publishing.html">Evidence publishing mechanics</a></p>
+<p>[2] <a href="https://github.com/evaluchat/research/blob/main/governance/review-protocol.en.md">Claim governance — review protocol for findings</a></p>
+<p>[3] <a href="https://github.com/evaluchat/knowledge/blob/main/references/how-to-measure-anything-evidence.md">Measuring Subjective Evidence — Hubbard Reference</a></p></article>
+
+  </article>
+</main>
+<footer class="site-footer">
+  <p>
+    <a href="https://evaluchat.org">evaluchat.com</a>
+    &middot; Knowledge catalog
+    &middot; <a href="https://github.com/evaluchat/knowledge">GitHub</a>
+    &middot; <a href="mailto:hello@evaluchat.com">hello@evaluchat.com</a>
+  </p>
+  <p class="copyright">© 2026 Evaluchat · Open Knowledge Format</p>
+</footer>
+</body>
+</html>

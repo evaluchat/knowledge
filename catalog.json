@@ -23,6 +23,28 @@
     "canonical_resource": "https://github.com/evaluchat/knowledge/blob/main/concepts/essays-workflow.en.md"
   },
   {
+    "id": "evidence-publishing",
+    "type": "Concept",
+    "languages": [
+      "en"
+    ],
+    "status": "draft",
+    "description": "Design: evidence definition becomes an integral, required part of every Method; the workspace Evidence action renders a versioned Form Template and files its completed evidence packet as a single timestamped document into the method's evidence directory via a bot-authored PR.",
+    "updated": "2026-08-17T15:21:42+00:00",
+    "canonical_resource": "https://github.com/evaluchat/knowledge/blob/main/designs/evidence-publishing.en.md"
+  },
+  {
+    "id": "finding-authoring",
+    "type": "Concept",
+    "languages": [
+      "en"
+    ],
+    "status": "draft",
+    "description": "Design: an on-demand, immutable evidence ledger gives a finding author a source-linked descriptive analysis of a research-question snapshot, while the finding remains human-authored and AI is limited to non-editing advice and challenge checks.",
+    "updated": "2026-08-17T15:21:42+00:00",
+    "canonical_resource": "https://github.com/evaluchat/knowledge/blob/main/designs/finding-authoring.en.md"
+  },
+  {
     "id": "method-recipe",
     "type": "Playbook",
     "languages": [
