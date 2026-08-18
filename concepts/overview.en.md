@@ -83,13 +83,21 @@ The site mirrors the GitHub repository tree, section by section:
 | Section | What it is |
 |---------|------------|
 | **[Concepts](/concepts/index.html)** | What the platform is and how its features work — you are here. |
-| **[Designs](/designs/index.html)** | Decision notes for features not yet shipped ("draft"). |
+| **[Designs](/designs/index.html)** | Decision notes for platform features — marked *draft* until the feature ships (some graduate to a Concept once shipped). |
 | **[Playbooks](/playbooks/index.html)** | How to specify a Method on Canvas capabilities. |
 | **Research catalog** | Research truth — questions, theory, methods, evidence, findings ([evaluchat/research][research-catalog]). |
 
 Each concept page carries a small reference block (type, status, versions) at
 the top and the human explanation below; `status: draft` means a document is a
 design/under revision and describes intent rather than shipped behaviour.
+
+## Version note
+
+This overview is intentionally **version-independent**: it is a navigation and
+positioning page, not a description of any single Canvas build. Each concept it
+links to carries its own `applies_to` pin (the Canvas version whose behaviour it
+describes), so behaviour-specific truth always resolves at the leaf, never in
+this aggregate. Treat this page as current until a linked concept is deprecated.
 
 ## Contributing
 
