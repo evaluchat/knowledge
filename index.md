@@ -18,6 +18,7 @@ A **Method** in the research catalog selects named **levers** documented here. E
 | Section | Purpose |
 |---------|---------|
 | [Concepts](/concepts/index.md) | What the product is and how its features work (implementation source of truth) |
+| [Designs](/designs/index.md) | Design decision notes for platform features — rationale and agreed mechanics before implementation (draft) |
 | [Templates](https://knowledge.evaluchat.org/templates/) | Reviewed Markdown starters for the Evaluchat workspace (Getting Started, Assignment brief) |
 | Prompts | Exact wording of prompts as shipped, versioned (Phase 2 — planned) |
 | [Playbooks](/playbooks/index.md) | How to specify a Method on Canvas capabilities — the method recipe (draft) |
