@@ -16,9 +16,12 @@ Rendering model:
   (theory/, methods/, ...): the directory's own index.md (if any), a compact
   list of its concept groups, an empty-state block for empty sections, and
   that section's "Recently updated" strip.
-- /<dir>/<id>.html — one page per concept group (canonical language), plus
-  /<dir>/<id>.<lang>.html for non-en representations (e.g.
-  methods/ai-assisted-essay.html).
+- /<dir>/<id>.html — one page per concept group outside methods.
+- methods/<id>/index.html — one page per method, preserving its repository
+  directory; non-en representations use methods/<id>/index.<lang>.html.
+- methods/<id>/evidence-template.html — the method-local Form Template,
+  rendered as a template page (never a concept or catalog entry).
+- methods/<id>/evidence/index.html — the evidence collection index.
 - Evidence contributions are grouped per bundle
   (methods/<id>/evidence/<contribution>/): the bundle's index.md becomes
   methods/<id>/evidence/<contribution>.html; role files are not separate concepts.
@@ -71,6 +74,8 @@ REPO_URL = GITHUB_BLOB[: GITHUB_BLOB.index("/blob/")]
 SITE_LABEL = "Knowledge catalog"
 SITE_DOMAIN = "knowledge.evaluchat.org"
 SKIP_DIR_NAMES = {".github", "templates", ".git", "scripts", "site", "evidence-template"}
+EVIDENCE_TEMPLATE_FILENAME = "evidence-template.en.md"
+SKIP_FILE_NAMES = {EVIDENCE_TEMPLATE_FILENAME}
 
 # Site-root-relative registries, filled by build() before rendering:
 #   CONCEPT_PAGES: repo file path → page path
@@ -78,6 +83,8 @@ SKIP_DIR_NAMES = {".github", "templates", ".git", "scripts", "site", "evidence-t
 #   SECTION_PAGES: top-level dir → section page path (e.g. "theory" → "theory/index.html")
 CONCEPT_PAGES: dict[str, str] = {}
 SECTION_PAGES: dict[str, str] = {}
+TEMPLATE_PAGES: dict[str, str] = {}
+COLLECTION_PAGES: dict[str, str] = {}
 
 ISO_RE = re.compile(
     r"(\d{4}-\d{2}-\d{2}(?:[T ]\d{2}:\d{2}:\d{2}(?:\.\d+)?(?:Z|[+-]\d{2}:?\d{2})?)?)"
@@ -92,6 +99,8 @@ def page_href_for(canon_path: Path, cid: str) -> str:
         idx = parts.index("evidence")
         prefix = "/".join(parts[: idx + 1])
         return f"{prefix}/{cid}.html"
+    if len(parts) >= 3 and parts[0] == "methods" and parts[1] == cid:
+        return f"methods/{cid}/index.html"
     if len(parts) >= 2:
         return f"{parts[0]}/{cid}.html"
     return f"{cid}.html"
@@ -109,6 +118,10 @@ def under_skip_dir(path: Path) -> bool:
     except ValueError:
         parts = path.parts
     return any(p in SKIP_DIR_NAMES for p in parts[:-1])
+
+
+def is_skipped(path: Path) -> bool:
+    return under_skip_dir(path) or path.name.lower() in SKIP_FILE_NAMES
 
 
 def is_reserved(path: Path) -> bool:
@@ -231,6 +244,10 @@ def resolve_target(base_dir: Path, target: str, out_dir: str) -> str:
         dest = "index.html"
     elif resolved in CONCEPT_PAGES:
         dest = CONCEPT_PAGES[resolved]
+    elif resolved in TEMPLATE_PAGES:
+        dest = TEMPLATE_PAGES[resolved]
+    elif resolved in COLLECTION_PAGES:
+        dest = COLLECTION_PAGES[resolved]
     elif resolved in SECTION_PAGES:
         dest = SECTION_PAGES[resolved]
     elif resolved.endswith(".md"):
@@ -263,7 +280,7 @@ def collect_concepts() -> tuple[dict[str, list[tuple[Path, dict, str]]], dict[Pa
             if not name.lower().endswith(".md"):
                 continue
             path = Path(dirpath) / name
-            if under_skip_dir(path) or is_reserved(path):
+            if is_skipped(path) or is_reserved(path):
                 continue
             text = path.read_text(encoding="utf-8", errors="replace")
             raw, body = split_frontmatter(text)
@@ -284,6 +301,28 @@ def collect_concepts() -> tuple[dict[str, list[tuple[Path, dict, str]]], dict[Pa
                 continue
             by_id[cid.strip()].append((path, meta, body or ""))
     return by_id, bundles
+
+
+def collect_method_templates() -> list[tuple[Path, dict, str]]:
+    """Collect method-local Form Templates without treating them as concepts."""
+    templates: list[tuple[Path, dict, str]] = []
+    methods_dir = ROOT / "methods"
+    if not methods_dir.is_dir():
+        return templates
+    for path in sorted(methods_dir.glob(f"*/{EVIDENCE_TEMPLATE_FILENAME}")):
+        text = path.read_text(encoding="utf-8", errors="replace")
+        raw, body = split_frontmatter(text)
+        if raw is None:
+            continue
+        meta = parse_simple_yaml(raw)
+        if meta is not None:
+            templates.append((path, meta, body or ""))
+    return templates
+
+
+def collect_evidence_indexes() -> list[Path]:
+    """Collect method evidence collection indexes for directory-true pages."""
+    return sorted((ROOT / "methods").glob("*/evidence/index.md"))
 
 
 def pick_canonical(reps: list[tuple[Path, dict, str]]) -> tuple[Path, dict, str]:
@@ -470,6 +509,8 @@ def build_templates() -> None:
 
 def build() -> int:
     by_id, bundles = collect_concepts()
+    method_templates = collect_method_templates()
+    evidence_indexes = collect_evidence_indexes()
     if OUT.exists():
         shutil.rmtree(OUT)
     OUT.mkdir(parents=True, exist_ok=True)
@@ -477,7 +518,18 @@ def build() -> int:
     (OUT / "CNAME").write_text(SITE_DOMAIN + "\n", encoding="utf-8")
     copy_theme_assets()
 
-    global CONCEPT_PAGES, SECTION_PAGES
+    global CONCEPT_PAGES, SECTION_PAGES, TEMPLATE_PAGES, COLLECTION_PAGES
+    CONCEPT_PAGES = {}
+    SECTION_PAGES = {}
+    TEMPLATE_PAGES = {
+        rel(path): f"methods/{path.parent.name}/evidence-template.html"
+        for path, _meta, _body in method_templates
+    }
+    COLLECTION_PAGES = {}
+    for path in evidence_indexes:
+        page = f"methods/{path.parent.parent.name}/evidence/index.html"
+        COLLECTION_PAGES[rel(path)] = page
+        COLLECTION_PAGES[rel(path.parent)] = page
 
     catalog: list[dict] = []
     groups: list[dict] = []
@@ -563,6 +615,22 @@ def build() -> int:
         if p.is_dir() and d not in SKIP_DIR_NAMES and not d.startswith(".") and (p / "index.md").is_file():
             section_dirs.add(d)
     SECTION_PAGES = {d: f"{d}/index.html" for d in sorted(section_dirs)}
+
+    def write_redirect(page: str, destination: str) -> None:
+        """Write a small compatibility redirect using a page-relative target."""
+        target = posixpath.relpath(destination, posixpath.dirname(page) or ".")
+        path = OUT / page
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text(
+            "<!DOCTYPE html>\n"
+            '<html lang="en"><head><meta charset="utf-8"/>'
+            f'<meta http-equiv="refresh" content="0; url={html.escape(target)}"/>'
+            f'<link rel="canonical" href="{html.escape(target)}"/>'
+            f'<title>Moved</title></head><body><p>This page moved to '
+            f'<a href="{html.escape(target)}">{html.escape(target)}</a>.</p>'
+            "</body></html>\n",
+            encoding="utf-8",
+        )
 
     def lang_badges_html(g: dict, from_dir: str) -> str:
         out = []
@@ -696,6 +764,8 @@ def build() -> int:
         page_path.write_text(
             page_shell(title, body_html, nav=nav, base=base), encoding="utf-8"
         )
+        if page.startswith(f"methods/{cid}/") and page.endswith("/index.html"):
+            write_redirect(f"methods/{cid}.html", page)
 
         # Non-en representations
         for path, meta, body in g["reps"]:
@@ -735,6 +805,90 @@ def build() -> int:
                 ),
                 encoding="utf-8",
             )
+
+    # --- Method-local template pages (not concepts; never catalog entries) ---
+    method_groups = {
+        g["cid"]: g
+        for g in groups
+        if (
+            rel(g["canon_path"]).startswith("methods/")
+            and len(Path(rel(g["canon_path"])).parts) >= 3
+            and Path(rel(g["canon_path"])).parts[1] == g["cid"]
+        )
+    }
+    for path, meta, body in method_templates:
+        method_id = path.parent.name
+        page = TEMPLATE_PAGES[rel(path)]
+        out_dir = posixpath.dirname(page)
+        base = base_href_for(page)
+        title = str(meta.get("title") or "Evidence template")
+        facts = [
+            ("type", str(meta.get("type") or "")),
+            ("id", str(meta.get("id") or "")),
+            ("version", str(meta.get("version") or "")),
+            ("template kind", str(meta.get("template_kind") or "")),
+            ("applies to method", str(meta.get("applies_to_method") or "")),
+            ("lang", str(meta.get("lang") or "")),
+        ]
+        facts_html = '<table class="facts">' + "".join(
+            f"<tr><th>{html.escape(k)}</th><td>{html.escape(v)}</td></tr>"
+            for k, v in facts if v
+        ) + "</table>"
+        method = method_groups.get(method_id)
+        method_title = method["title"] if method else method_id
+        method_page = method["page"] if method else f"methods/{method_id}/index.html"
+        crumbs = [
+            f'<a href="{base}index.html">{SITE_LABEL}</a>',
+            f'<a href="{html.escape(posixpath.relpath("methods/index.html", out_dir))}">{html.escape(section_label("methods"))}</a>',
+            f'<a href="{html.escape(posixpath.relpath(method_page, out_dir))}">{html.escape(method_title)}</a>',
+            f"<span>{html.escape(title)}</span>",
+        ]
+        nav = '<p class="breadcrumb">' + '<span class="sep">/</span>'.join(crumbs) + "</p>"
+        page_path = OUT / page
+        page_path.parent.mkdir(parents=True, exist_ok=True)
+        page_path.write_text(
+            page_shell(
+                title,
+                f"<h1>{html.escape(title)}</h1>\n{facts_html}\n"
+                f'<article class="body">{render_markdown(rewrite_links(body, path.parent, out_dir=out_dir))}</article>\n',
+                nav=nav,
+                base=base,
+            ),
+            encoding="utf-8",
+        )
+
+    # --- Evidence collection indexes: methods/<id>/evidence/index.html ---
+    for path in evidence_indexes:
+        method_id = path.parent.parent.name
+        page = COLLECTION_PAGES[rel(path)]
+        out_dir = posixpath.dirname(page)
+        base = base_href_for(page)
+        text = path.read_text(encoding="utf-8", errors="replace")
+        _raw, body = split_frontmatter(text)
+        source = body if _raw is not None else text
+        title_match = re.search(r"^#\s+(.+)$", source or "", re.M)
+        title = title_match.group(1).strip() if title_match else "Evidence"
+        method = method_groups.get(method_id)
+        method_title = method["title"] if method else method_id
+        method_page = method["page"] if method else f"methods/{method_id}/index.html"
+        crumbs = [
+            f'<a href="{base}index.html">{SITE_LABEL}</a>',
+            f'<a href="{html.escape(posixpath.relpath("methods/index.html", out_dir))}">{html.escape(section_label("methods"))}</a>',
+            f'<a href="{html.escape(posixpath.relpath(method_page, out_dir))}">{html.escape(method_title)}</a>',
+            f"<span>{html.escape(title)}</span>",
+        ]
+        nav = '<p class="breadcrumb">' + '<span class="sep">/</span>'.join(crumbs) + "</p>"
+        page_path = OUT / page
+        page_path.parent.mkdir(parents=True, exist_ok=True)
+        page_path.write_text(
+            page_shell(
+                title,
+                f'<article class="body">{render_markdown(rewrite_links(source or "", path.parent, out_dir=out_dir))}</article>',
+                nav=nav,
+                base=base,
+            ),
+            encoding="utf-8",
+        )
 
     # --- Section pages: <dir>/index.html (docs-style slim hero band) ---
     for d in sorted(section_dirs):
@@ -802,13 +956,14 @@ def build() -> int:
     (OUT / "catalog.json").write_text(
         json.dumps(catalog, indent=2, ensure_ascii=False) + "\n", encoding="utf-8"
     )
+    print(
+        f"Built {len(groups)} concept groups ({len(bundles)} evidence bundles, "
+        f"{len(method_templates)} method templates) + "
+        f"{len(section_dirs)} section pages → site/"
+    )
     # BEGIN KNOWLEDGE TEMPLATE BUILD
     build_templates()
     # END KNOWLEDGE TEMPLATE BUILD
-    print(
-        f"Built {len(groups)} concept groups ({len(bundles)} evidence bundles) + "
-        f"{len(section_dirs)} section pages → site/"
-    )
     return 0
 
 
