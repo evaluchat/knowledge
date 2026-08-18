@@ -1,5 +1,9 @@
 # Knowledge Catalog — Update Log
 
+## 2026-08-18
+* **Addition**: Added `concepts/overview.en.md` (Concept, stable) — a reader-facing landing page for the platform documentation: what Evaluchat is, who it is for, and where-to-start pointers for teachers, researchers, and self-hosters, with cross-links to the concepts, designs, playbooks, and research-catalog sections. `concepts/index.md` hero rewritten into a short narrative "start here" with a prominent pointer to the overview (the complete reference list remains below). Positions `concepts/index.html` as user-facing documentation.
+* **Addition**: Added `concepts/evidence-contribution.en.md` (Concept, stable, applies_to 0.5.9) — implementation source of truth for the shipped workspace **Evidence** action: Evidence button on a concluded method item → owned canvas thread (not manifest-listed) from the method's `evidence_template`; frozen-run provenance server-resolved read-only (derived, never typed) beside typed owner judgement; consent/anonymisation gates (block on negative/uncertain); submit assembles a single `methods/<id>/evidence/<ISO-timestamp>.en.md` `Evidence Contribution`; bot-authored (Valery Bot.ha) PR into `evaluchat/research` with auto-merge only for documented-experience-and-below with machine-checked consent + okf-lint green, otherwise human review. Graduates `designs/evidence-publishing.en.md`; `concepts/index.md` + `designs/index.md` updated.
+
 ## 2026-08-17
 * **Addition**: Added `designs/` section (new category) + `designs/evidence-publishing.en.md` (Concept, draft, applies_to 0.5.9) — design decisions for the workspace Evidence action: single-file `evidence-template.md` per method, canvas-thread instantiation, submit-to-PR filing into the method's evidence directory via Valery Bot.ha, machine-checked auto-merge for documented-experience bundles, two-sided publishing gate (method PRs require an evidence template). Design only — no implementation.
 
