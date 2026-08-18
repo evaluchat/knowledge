@@ -1,5 +1,8 @@
 # Knowledge Catalog — Update Log
 
+## 2026-08-18
+* **Design**: Added [Evidence Ledger workspace and light Finding authoring](/designs/finding-authoring-ux.en.md) and linked it from the parent finding-authoring decision record. The draft specifies the Evidence Ledger workspace item, template-rendered fact filters, immutable read-only snapshot contexts, bounded ledger assistance, collaborator-gated GitHub publication, a lightweight Finding starter that cites published ledgers, explicit unresolved reviewer governance, acceptance cases, and phased delivery. Design only — no implementation or research finding.
+
 ## 2026-08-17
 * **Addition**: Added `designs/` section (new category) + `designs/evidence-publishing.en.md` (Concept, draft, applies_to 0.5.9) — design decisions for the workspace Evidence action: single-file `evidence-template.md` per method, canvas-thread instantiation, submit-to-PR filing into the method's evidence directory via Valery Bot.ha, machine-checked auto-merge for documented-experience bundles, two-sided publishing gate (method PRs require an evidence template). Design only — no implementation.
 

@@ -8,8 +8,8 @@ origin: native
 status: draft
 tags: [design, findings, evidence-ledger, research, ai-assistance, human-review, okf]
 applies_to: 0.5.9
-timestamp: 2026-08-17T15:21:42Z
-generated: { by: codex/gpt-5, at: 2026-08-17T15:21:42Z }
+timestamp: 2026-08-18T12:31:15Z
+generated: { by: codex/gpt-5, at: 2026-08-18T12:31:15Z }
 sources:
   - id: evidence-publishing
     resource: https://github.com/evaluchat/knowledge/blob/main/designs/evidence-publishing.en.md
@@ -31,6 +31,10 @@ sources:
 > downstream companion to [evidence publishing](evidence-publishing.en.md): it
 > turns a set of filed evidence contributions into an inspectable analysis
 > surface without allowing an AI assistant to author or approve a finding.
+
+The concrete interaction, state, archive, and delivery plan is specified in
+[Finding-authoring UX plan](finding-authoring-ux.en.md). This document remains
+the rationale and governance boundary for that plan.
 
 ## 1. Problem
 
@@ -148,12 +152,11 @@ requested question and scope.
 - **No eligible evidence:** create no analytic summary; explain what is missing
   and link the author back to the evidence collection path.
 
-The live ledger is a protected canvas thread owned by the author and their
-organisation. When a human submits a finding for review, the exact ledger
-manifest and rendered ledger are attached to the review packet or exported as
-a timestamped, source-linked analysis artifact. The repository placement for
-that archival copy is an implementation decision, but its content and input
-fingerprint must not change after the finding review begins.
+The live ledger is a protected Canvas context owned by the author and their
+organisation. In the public-Research-repository V1, the author publishes a
+selected immutable snapshot as `evidence-ledgers/<ledger-id>.en.md`; a later
+Finding links to that already published ledger. Its content and input fingerprint
+must not change after publication.
 
 ## 4. Finding-authoring session
 
@@ -249,10 +252,11 @@ make its requirements easier to inspect, not duplicate or override them.
 2. Implement protected, timestamped ledger threads and source-linked
    descriptive renderer.
 3. Add freshness detection and the no-new-evidence/reopen-latest decision.
-4. Implement a human-only Finding skeleton/revision canvas and read-only AI
-   advice surface.
-5. Add citation, counterevidence, and stale-ledger checks to the claim-review
-   packet; decide the Research archival location for ledger snapshots.
+4. Implement a light, human-only Finding starter that selects published ledgers
+   and relies on the existing OKF/Research validation path.
+5. Add citation, counterevidence, stale-ledger, and linked-ledger checks to the
+   GitHub PR flow; publish V1 snapshots under `evidence-ledgers/` in the
+   Research repository.
 6. Test with synthetic evidence sets containing contradictory, missing,
    non-comparable, and clustered contributions before using classroom evidence.
 
