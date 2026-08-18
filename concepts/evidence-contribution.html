@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Evidence contribution — filing a concluded run to research</title>
+<link rel="icon" href="../favicon.ico" sizes="any"/>
+<link rel="stylesheet" href="../assets/style.css"/>
+</head>
+<body>
+<header class="site-header">
+  <div class="header-inner">
+    <div class="logo">
+      <a href="../index.html" aria-label="Knowledge catalog">
+        <img class="logo-mark" src="../assets/evaluchat.png" width="32" height="32" alt=""/>
+        evaluchat
+      </a>
+    </div>
+    <nav class="main-nav" aria-label="Primary navigation">
+      <a href="https://github.com/evaluchat/knowledge">GitHub</a>
+      <a href="https://github.com/evaluchat/knowledge/blob/main/README.md">README</a>
+      <a href="https://evaluchat.org/" class="nav-cta">Open evaluchat ↗</a>
+    </nav>
+  </div>
+</header>
+
+<main class="page-wrap">
+<p class="breadcrumb"><p class="breadcrumb"><a href="../index.html">Knowledge catalog</a><span class="sep">/</span><a href="index.html">Concepts</a><span class="sep">/</span><span>Evidence contribution — filing a concluded run to research</span></p></p>
+  <article class="content">
+<h1>Evidence contribution — filing a concluded run to research</h1>
+<table class="facts"><tr><th>type</th><td>Concept</td></tr><tr><th>id</th><td>evidence-contribution</td></tr><tr><th>status</th><td>stable</td></tr><tr><th>lang</th><td>en</td></tr><tr><th>origin</th><td>native</td></tr><tr><th>generated</th><td>by=opencode-go/deepseek-v4-flash, at=2026-08-18T15:00:00Z</td></tr><tr><th>sources</th><td>{&#x27;id&#x27;: &#x27;evidence-roles&#x27;, &#x27;resource&#x27;: &#x27;https://github.com/evaluchat/research/blob/main/governance/evidence-roles.en.md&#x27;, &#x27;title&#x27;: &#x27;Shared evidence roles — how every method files a run (research catalog)&#x27;}, {&#x27;id&#x27;: &#x27;contribution-ladder&#x27;, &#x27;resource&#x27;: &#x27;https://github.com/evaluchat/research/blob/main/governance/contribution-ladder.en.md&#x27;, &#x27;title&#x27;: &#x27;The contribution ladder — how teachers contribute to research&#x27;}, {&#x27;id&#x27;: &#x27;method-recipe&#x27;, &#x27;resource&#x27;: &#x27;https://github.com/evaluchat/knowledge/blob/main/playbooks/method-recipe.en.md&#x27;, &#x27;title&#x27;: &#x27;The method recipe — from research question to published method&#x27;}, {&#x27;id&#x27;: &#x27;evidence-publishing-design&#x27;, &#x27;resource&#x27;: &#x27;https://github.com/evaluchat/knowledge/blob/main/designs/evidence-publishing.en.md&#x27;, &#x27;title&#x27;: &#x27;Evidence publishing mechanics — design decisions&#x27;}</td></tr></table>
+
+<article class="body"><blockquote>
+<p>This is the implementation source of truth for the workspace <strong>Evidence</strong>
+action as shipped on the Canvas dev line (0.5.9). It graduates the
+<a href="https://github.com/evaluchat/knowledge/blob/main/designs/evidence-publishing.en.md">evidence-publishing design</a> (draft) into a
+shipped-product concept. It describes what the product does; claims about
+learning effects remain the research catalog's business, not this one.</p>
+</blockquote>
+<h1 id="evidence-contribution-filing-a-concluded-run-to-research">Evidence contribution — filing a concluded run to research</h1>
+<blockquote>
+<p><strong>Applies to:</strong> Canvas apps/web <strong>0.5.9</strong> (dev line), the Evaluchat public
+beta environment. The Evidence action is implemented and E2E-verified on the
+dev line; production cutover of this build was still in progress at the time
+of writing.</p>
+</blockquote>
+<h2 id="overview">Overview</h2>
+<p>When a method run concludes, a teacher or researcher can turn it into a
+<strong>research evidence contribution</strong> without leaving the canvas. The workspace
+<strong>Evidence</strong> button on a concluded method item opens an <em>owned canvas thread</em>
+pre-filled from the run's <strong>frozen snapshot</strong> — the method identity and the
+levers the run actually used, the canvas version, and the run's timing and
+collection counts. The owner fills the subjective fields (context, narrative
+observations, missing data, reflection, limitations) and declares a consent and
+anonymisation status. On submit, the server assembles one timestamped
+<code>Evidence Contribution</code> document and files it into the research catalog via a
+<strong>bot-authored pull request</strong> (Valery Bot.ha).</p>
+<p>The design goal is that <strong>provenance is derived, never typed</strong>: the machine
+records what actually happened from the frozen run, and the human records what
+they observed and judged. The product never implies an evidence contribution is
+peer-reviewed research — a declared <code>stage</code> routes anything above
+<em>documented-experience</em> to independent human review, and nothing stronger than
+the evidence (and its consent record) is ever published.</p>
+<h2 id="the-evidence-button-and-the-evidence-thread">The Evidence button and the evidence thread</h2>
+<ul>
+<li>On a <strong>concluded method workspace item</strong>, an <strong>Evidence</strong> action creates a
+  canvas thread bound to that item. The thread's document content is the
+  method's <code>evidence_template</code>, resolved from the apparatus catalog entry — the
+  platform renders <strong>exactly the template of the method version the run used</strong>
+  (no drift, no cross-version mixing). Launch is canonical; there are no UI
+  dropdowns for choosing a template.</li>
+<li>The thread is an <strong>owned thread, not a workspace item</strong>: it uses the same
+  server-stamped ownership markers as any workspace thread, but it is <strong>not
+  entered into the workspace manifest</strong> and not listed as a workspace item.
+  The method item stores an <code>evidenceThreads</code> reference (thread id + status)
+  so the owner can resume an in-progress evidence thread.</li>
+<li>The thread's status lifecycle is <code>draft → submitted → filed</code>. A <code>submitted</code>
+  or <code>filed</code> thread <strong>locks</strong>: editable fields become read-only and the
+  values-persistence write stops, so a filed contribution cannot be silently
+  mutated.</li>
+</ul>
+<h2 id="form-aware-canvas-frozen-provenance-beside-typed-judgement">Form-aware canvas: frozen provenance beside typed judgement</h2>
+<p>The evidence template is a <strong>mixed-authority form</strong>. Two kinds of fields:</p>
+<ol>
+<li><strong>Frozen-run (read-only) fields</strong> — server-resolved from the stamped run
+   snapshot and rendered read-only (<code>read_only: true</code> plus a <code>source:</code> path).
+   For the canonical <code>ai-assisted-essay</code> template these include: method id and
+   version, the workspace-item GUID, profile id, the <strong>resolved levers as
+   actually run</strong>, canvas version, started/concluded timestamps, participant
+   and collection counts, and — where that run recorded them — analytics,
+   process-signal, and assignment-outcome summaries plus the transcript
+   retention declaration. The owner cannot edit these. <strong>Provenance is
+   derived, never typed.</strong></li>
+<li><strong>Owner-editable field</strong> — typed by declared field type (<code>text</code>, <code>textarea</code>,
+   <code>select</code>, <code>number</code>, <code>date</code>): institution and classroom context, assignment
+   genre, learner proficiency/age band, instruction and writing language,
+   implementation duration and deviation, narrative observations, results,
+   missing data, reflection, limitations, and the contribution role fields
+   (stage + consent/anonymisation) below. Typed fields are the contract —
+   ordinal owner judgements use named, versioned options, never free prose
+   where a typed field is declared.</li>
+</ol>
+<p>The template's <code>layoutMarkdown</code> is what the canvas renders (the evidence-role
+sections plus a "Results — missing or unavailable data" section), and its
+<code>assistant.guidance</code> feeds the writing agent via the proxy: help the owner
+describe <strong>only their concluded run</strong>, never infer, invent, or expose student
+information, and <strong>render the frozen system-authored fields exactly as
+provided</strong> — never altering, duplicating, or adding system measurements.</p>
+<p>Unavailable telemetry is handled honestly: a frozen field whose value the run
+did not record is rendered as <strong>"not recorded"</strong>, never invented — this is
+what the "missing or unavailable data" section is for.</p>
+<h2 id="consent-and-anonymisation-gates">Consent and anonymisation gates</h2>
+<p>Submission is gated on explicit, machine-checkable declarations. Required
+fields include <code>contribution_stage</code>, <code>publication_authorisation</code>,
+<code>anonymisation_status</code>, and <code>data_sharing_limits</code>. A <strong>negative or uncertain
+privacy declaration blocks submission</strong> — the owner cannot file evidence that
+is not explicitly cleared to publish and to share.</p>
+<h2 id="submit-evidence-contribution-bot-pr">Submit → Evidence Contribution → bot PR</h2>
+<p>On submit the server (Valery Bot.ha, using a scoped GitHub token) assembles a
+<strong>single markdown file</strong> at <code>methods/&lt;id&gt;/evidence/&lt;ISO-timestamp&gt;.en.md</code>:</p>
+<ul>
+<li>frontmatter with <code>type: Evidence Contribution</code>, <code>id</code> = the timestamp slug,
+  <code>lang: en</code>, <code>status: draft</code>, <code>stage</code> (the declared contribution stage),
+  <code>generated.by</code> (with AI-assistance disclosure where the assistant helped
+  draft), the consent keys (<code>publication_authorisation</code>,
+  <code>anonymisation_status</code>, <code>data_sharing_limits</code>), and
+  <code>method: {id, version, levers, canvas}</code> provenance;</li>
+<li>the filled evidence-role sections;</li>
+<li>the provenance block.</li>
+</ul>
+<p>The server opens a <strong>pull request</strong> into the configured destination repo
+(default <code>evaluchat/research</code>; private-repo destinations later use the same
+flow). The research <code>okf-lint</code> CI runs on the PR. One of two outcomes:</p>
+<ul>
+<li><strong>Auto-merge</strong> — only when all of: provenance + consent declarations are
+  present and machine-checked, the declared <code>stage</code> ≤ <em>documented-experience</em>,
+  and <code>okf-lint</code> passes. The control that justifies skipping manual approval is
+  the baked-in provenance/consent/stage validation, not "trust the bot".</li>
+<li><strong>Human review</strong> — anything above <em>documented-experience</em> (e.g. a teacher
+  declaring a <em>structured experiment</em>), or a failed machine check, routes to
+  the independent human review protocol, with a bot comment explaining why.</li>
+</ul>
+<p>After a successful merge the evidence thread's status becomes <code>filed</code> and the
+method item records the evidence-contribution URL.</p>
+<h2 id="what-this-feature-is-not">What this feature is not</h2>
+<ul>
+<li>It does <strong>not</strong> merge dev/test data into the public catalog: on a dev or test
+  run the owner declares a stage above <em>documented-experience</em> so the bot opens
+  the PR for human review and the test PR can be closed, never merged.</li>
+<li>It does <strong>not</strong> publish research claims: a <code>stage</code> above the evidence is
+  routed to human review, AI may only draft structure (disclosed via
+  <code>generated.by</code>), and the contribution — with its consent record — is the
+  workspace owner's.</li>
+<li>It is <strong>not</strong> a platform-owned evidence database: publication is a GitHub PR
+  into the research catalog, which remains the source of truth.</li>
+<li>It does <strong>not</strong> conduct synthesis or A/B analysis. A single-case, subjective
+  teacher questionnaire can be filed as a <em>documented experience</em>; finding
+  authoring is a separate, later design.</li>
+</ul>
+<h2 id="status-and-versioning">Status and versioning</h2>
+<p>This concept pins <code>applies_to: 0.5.9</code>, the Canvas apps/web version on the dev
+line on which the Evidence action shipped. It describes behaviour as shipped in
+that build; newer versions may change behaviour. Treat this concept as <strong>stale</strong>
+once the pinned version is superseded by a release that changes the behaviour
+described here, and update via a pull request to the knowledge repository.</p>
+<p>The companion decision record remains <a href="https://github.com/evaluchat/knowledge/blob/main/designs/evidence-publishing.en.md">designs/evidence-publishing.en.md</a>
+(draft), which captures the agreed mechanics and open forks not yet built.</p></article>
+
+  </article>
+</main>
+<footer class="site-footer">
+  <p>
+    <a href="https://evaluchat.org">evaluchat.com</a>
+    &middot; Knowledge catalog
+    &middot; <a href="https://github.com/evaluchat/knowledge">GitHub</a>
+    &middot; <a href="mailto:hello@evaluchat.com">hello@evaluchat.com</a>
+  </p>
+  <p class="copyright">© 2026 Evaluchat · Open Knowledge Format</p>
+</footer>
+</body>
+</html>

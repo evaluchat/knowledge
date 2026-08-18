@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Platform documentation — overview</title>
+<link rel="icon" href="../favicon.ico" sizes="any"/>
+<link rel="stylesheet" href="../assets/style.css"/>
+</head>
+<body>
+<header class="site-header">
+  <div class="header-inner">
+    <div class="logo">
+      <a href="../index.html" aria-label="Knowledge catalog">
+        <img class="logo-mark" src="../assets/evaluchat.png" width="32" height="32" alt=""/>
+        evaluchat
+      </a>
+    </div>
+    <nav class="main-nav" aria-label="Primary navigation">
+      <a href="https://github.com/evaluchat/knowledge">GitHub</a>
+      <a href="https://github.com/evaluchat/knowledge/blob/main/README.md">README</a>
+      <a href="https://evaluchat.org/" class="nav-cta">Open evaluchat ↗</a>
+    </nav>
+  </div>
+</header>
+
+<main class="page-wrap">
+<p class="breadcrumb"><p class="breadcrumb"><a href="../index.html">Knowledge catalog</a><span class="sep">/</span><a href="index.html">Concepts</a><span class="sep">/</span><span>Platform documentation — overview</span></p></p>
+  <article class="content">
+<h1>Platform documentation — overview</h1>
+<table class="facts"><tr><th>type</th><td>Concept</td></tr><tr><th>id</th><td>overview</td></tr><tr><th>status</th><td>stable</td></tr><tr><th>lang</th><td>en</td></tr><tr><th>origin</th><td>native</td></tr><tr><th>generated</th><td>by=opencode-go/deepseek-v4-flash, at=2026-08-18T16:00:00Z</td></tr><tr><th>sources</th><td>{&#x27;id&#x27;: &#x27;concepts-index&#x27;, &#x27;resource&#x27;: &#x27;https://github.com/evaluchat/knowledge/blob/main/concepts/index.md&#x27;, &#x27;title&#x27;: &#x27;Concepts — the platform documentation index&#x27;}, {&#x27;id&#x27;: &#x27;platform-capabilities&#x27;, &#x27;resource&#x27;: &#x27;https://github.com/evaluchat/knowledge/blob/main/concepts/platform-capabilities.en.md&#x27;, &#x27;title&#x27;: &#x27;Platform capabilities — public-beta runtime contract&#x27;}, {&#x27;id&#x27;: &#x27;research-catalog&#x27;, &#x27;resource&#x27;: &#x27;https://github.com/evaluchat/research&#x27;, &#x27;title&#x27;: &#x27;Evaluchat research catalog&#x27;}</td></tr></table>
+
+<article class="body"><h1 id="platform-documentation-overview">Platform documentation — overview</h1>
+<p>Welcome to the Evaluchat <strong>platform documentation</strong>. This is the user-facing
+reference for what Evaluchat does and how it works — the features, the
+confidentiality and integrity model, and the research layer that turns
+classroom writing work into accountable, reproducible evidence.</p>
+<p>Everything on this site is <strong>product truth</strong>: it describes Evaluchat as it is
+built and shipped, not a wish list. Research questions and claims live in the
+<a href="https://github.com/evaluchat/research">research catalog</a>, not here.</p>
+<h2 id="what-evaluchat-is">What Evaluchat is</h2>
+<p>Evaluchat is an <strong>open-source, AI-native writing workspace</strong> built for
+education. Students work through constrained, conversational assignments on a
+split-screen canvas; the AI acts as a writing coach rather than a ghostwriter.
+The writing process — prompts, drafting choices, and the finished work — doubles
+as <strong>language evidence</strong>, and reviewed research apparatuses let educators and
+researchers run structured classroom writing workflows whose outputs are
+accountable and reproducible.</p>
+<p>Three ideas run through everything here:</p>
+<ol>
+<li><strong>Proportional assistance</strong> — the AI does less when the student
+   contributes less. Drafting support is gated behind the student's own ideas,
+   evidence, questions, and language (the <a href="https://github.com/evaluchat/knowledge/blob/main/concepts/essays-workflow.en.md">CAMDLE</a> mechanism).</li>
+<li><strong>Honest integrity, not surveillance</strong> — Evaluchat records <em>process signals</em>
+   (engagement, drafts) as context for human judgement. It produces no
+   "cheating" score and does no proctoring.</li>
+<li><strong>Research with a spine</strong> — every published method names the levers it
+   uses and requires an evidence contract, so that anything claimed is backed
+   by what actually ran.</li>
+</ol>
+<h2 id="where-to-start">Where to start</h2>
+<p>Depending on what you are trying to do, jump straight to the right document:</p>
+<p><strong>You are a teacher or administrator setting up classroom writing work</strong>
+- <a href="https://github.com/evaluchat/knowledge/blob/main/concepts/essays-workflow.en.md">Essays workflow — proportional drafting unlock</a> — how the essays
+  feature actually behaves for students, session by session.
+- <a href="https://github.com/evaluchat/knowledge/blob/main/concepts/platform-capabilities.en.md">Platform capabilities — public-beta runtime contract</a> — the
+  AI modes, drafting gates, and telemetry you can configure.</p>
+<p><strong>You are a researcher planning or running a study</strong>
+- <a href="https://github.com/evaluchat/knowledge/blob/main/concepts/research-method.en.md">Research method — how methods use platform capabilities and levers</a>
+  — how a Research catalog method selects named levers documented here.
+- <a href="https://github.com/evaluchat/knowledge/blob/main/concepts/evidence-contribution.en.md">Evidence contribution — filing a concluded run to research</a> —
+  how to turn a concluded classroom run into a consent-checked, revertible
+  evidence contribution via a bot-authored pull request.</p>
+<p><strong>You are self-hosting or evaluating the product</strong>
+- Review the <a href="https://github.com/evaluchat/knowledge/blob/main/concepts/platform-capabilities.en.md">capabilities contract</a> to know what the runtime
+  guarantees, including the telemetry boundary.</p>
+<h2 id="browsing-the-rest-of-this-site">Browsing the rest of this site</h2>
+<p>The site mirrors the GitHub repository tree, section by section:</p>
+<table>
+<thead>
+<tr>
+<th>Section</th>
+<th>What it is</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong><a href="https://github.com/evaluchat/knowledge/tree/main/concepts/concepts/index.html">Concepts</a></strong></td>
+<td>What the platform is and how its features work — you are here.</td>
+</tr>
+<tr>
+<td><strong><a href="https://github.com/evaluchat/knowledge/tree/main/concepts/designs/index.html">Designs</a></strong></td>
+<td>Decision notes for platform features — marked <em>draft</em> until the feature ships (some graduate to a Concept once shipped).</td>
+</tr>
+<tr>
+<td><strong><a href="https://github.com/evaluchat/knowledge/tree/main/concepts/playbooks/index.html">Playbooks</a></strong></td>
+<td>How to specify a Method on Canvas capabilities.</td>
+</tr>
+<tr>
+<td><strong>Research catalog</strong></td>
+<td>Research truth — questions, theory, methods, evidence, findings (<a href="https://github.com/evaluchat/research">evaluchat/research</a>).</td>
+</tr>
+</tbody>
+</table>
+<p>Each concept page carries a small reference block (type, status, versions) at
+the top and the human explanation below; <code>status: draft</code> means a document is a
+design/under revision and describes intent rather than shipped behaviour.</p>
+<h2 id="version-note">Version note</h2>
+<p>This overview is intentionally <strong>version-independent</strong>: it is a navigation and
+positioning page, not a description of any single Canvas build. Each concept it
+links to carries its own <code>applies_to</code> pin (the Canvas version whose behaviour it
+describes), so behaviour-specific truth always resolves at the leaf, never in
+this aggregate. Treat this page as current until a linked concept is deprecated.</p>
+<h2 id="contributing">Contributing</h2>
+<p>This documentation is open. Corrections and additions are made through pull
+requests to the <a href="https://github.com/evaluchat/knowledge">knowledge repository</a>;
+see <code>CONTRIBUTING.md</code> there for the house rules (product truth only, provenance
+recorded, no fabricated verification).</p></article>
+
+  </article>
+</main>
+<footer class="site-footer">
+  <p>
+    <a href="https://evaluchat.org">evaluchat.com</a>
+    &middot; Knowledge catalog
+    &middot; <a href="https://github.com/evaluchat/knowledge">GitHub</a>
+    &middot; <a href="mailto:hello@evaluchat.com">hello@evaluchat.com</a>
+  </p>
+  <p class="copyright">© 2026 Evaluchat · Open Knowledge Format</p>
+</footer>
+</body>
+</html>

@@ -23,6 +23,17 @@
     "canonical_resource": "https://github.com/evaluchat/knowledge/blob/main/concepts/essays-workflow.en.md"
   },
   {
+    "id": "evidence-contribution",
+    "type": "Concept",
+    "languages": [
+      "en"
+    ],
+    "status": "stable",
+    "description": "How the Evaluchat workspace Evidence action turns a concluded method run into an owned canvas thread, captures frozen-run provenance beside typed owner judgements, and files a single consent-checked Evidence Contribution into the research catalog via a bot-authored PR — as shipped.",
+    "updated": "2026-08-18T15:00:00+00:00",
+    "canonical_resource": "https://github.com/evaluchat/knowledge/blob/main/concepts/evidence-contribution.en.md"
+  },
+  {
     "id": "evidence-publishing",
     "type": "Concept",
     "languages": [
@@ -65,6 +76,17 @@
     "description": "How evaluchat/evaluchat GitHub issues and the Evaluchat Board are managed: issues are user-reported bugs and enhancement feature requests only (the public roadmap); internal notes and tech debt live on the project board as drafts; board columns, automations and quirks.",
     "updated": "2026-08-13T08:34:45+00:00",
     "canonical_resource": "https://github.com/evaluchat/knowledge/blob/main/playbooks/oss-issues-board-policy.en.md"
+  },
+  {
+    "id": "overview",
+    "type": "Concept",
+    "languages": [
+      "en"
+    ],
+    "status": "stable",
+    "description": "A reader-facing starting point for the Evaluchat platform documentation: what this knowledge site is, who it is for, and where to start depending on what you are trying to do.",
+    "updated": "2026-08-18T16:00:00+00:00",
+    "canonical_resource": "https://github.com/evaluchat/knowledge/blob/main/concepts/overview.en.md"
   },
   {
     "id": "platform-capabilities",
