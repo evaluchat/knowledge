@@ -8,8 +8,8 @@ origin: native
 status: draft
 tags: [design, findings, evidence-ledger, research, ai-assistance, human-review, okf]
 applies_to: 0.5.9
-timestamp: 2026-08-18T12:31:15Z
-generated: { by: codex/gpt-5, at: 2026-08-18T12:31:15Z }
+timestamp: 2026-08-19T09:14:38Z
+generated: { by: codex/gpt-5, at: 2026-08-19T09:14:38Z }
 sources:
   - id: evidence-publishing
     resource: https://github.com/evaluchat/knowledge/blob/main/designs/evidence-publishing.en.md
@@ -77,6 +77,9 @@ the finding’s scope remain accountable human research decisions.
 6. **Protocol still governs publication.** The deterministic claim checker and
    the Research review protocol determine formal completeness and routing. A
    ledger cannot promote a tier, approve a claim, or substitute for review.
+7. **Ledger and Finding links are structural.** A ledger tabulates one Method's
+   evidence under that Method's template; a Finding declares one or more
+   research questions and cites one or more published ledgers that serve them.
 
 ## 3. The two artifacts
 
@@ -167,10 +170,11 @@ The author opens a second canvas document from either:
 - a **revision copy** of an existing finding, with a visible predecessor link
   and no mutation of the published source.
 
-The finding starts with a reference to the chosen ledger, but this reference
-does not assert that the ledger supports any particular claim. The human must
-write the claim, define the scope, decide which evidence is comparable, explain
-their interpretation, and choose whether to seek review or publication.
+The finding starts with references to one or more chosen published ledgers, but
+those references do not assert that any ledger supports a particular claim. The
+human must write the claim, define the scope, decide which evidence is
+comparable, explain their interpretation, and choose whether to seek review or
+publication.
 
 ### 4.1 Assistant contract
 
