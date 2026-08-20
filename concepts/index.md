@@ -2,6 +2,7 @@
 
 ## Concept
 
+- [Evidence Ledger and Finding workflow](/concepts/evidence-ledger-and-finding-workflow.en.md) — Draft user-facing overview of the Ledger Snapshot and light Finding flow on the dev environment.
 - [Research method — how methods use platform capabilities and levers](/concepts/research-method.en.md) — two-catalog story (Knowledge = product truth; Research = questions → methods → evidence → findings); Method selects levers documented here (draft, applies to 0.5.9).
 - [Essays workflow — proportional drafting unlock](/concepts/essays-workflow.en.md) — How the Evaluchat essays feature gates drafting support behind dialogic contribution (CAMDLE), as implemented in Canvas (applies to 0.5.9). Implementation SoT for the `ai-assisted-essay` method.
 - [Platform capabilities — public-beta runtime contract](/concepts/platform-capabilities.en.md) — typed capabilities, levers, telemetry, and immutable profile semantics pinned to Canvas 0.5.9.

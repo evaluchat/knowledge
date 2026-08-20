@@ -1,5 +1,8 @@
 # Knowledge Catalog — Update Log
 
+## 2026-08-20
+* **Draft**: Added [Evidence Ledger and Finding workflow](/concepts/evidence-ledger-and-finding-workflow.en.md) and [Researcher workflow: from Evidence Ledger to Finding](/playbooks/evidence-ledger-to-finding.en.md), documenting the functionality shipped on dev at commit `649268e` for the next usability and design-planning round.
+
 ## 2026-08-19
 * **Design correction**: Evidence Ledger creation is now scoped only to one selected Method version, its resolved evidence template, and declared fact filters. It neither selects nor records a research question. A Finding instead independently requires one-or-more research questions and one-or-more published ledgers; its human-authored scope explains their relationship, with no enforced ledger/question mapping.
 
