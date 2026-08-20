@@ -1,6 +1,7 @@
 # Knowledge Catalog — Update Log
 
 ## 2026-08-20
+* **Update**: Reframed [Evaluchat — open research infrastructure for AI in education](/concepts/overview.en.md) around the current theory → research question → Method/evidence template → evidence → Ledger → human-authored Finding cycle. The overview now positions CAMDLE and `ai-assisted-essay` as the first complex supported workflow, not a core platform feature, and distinguishes the primary research purpose from the Workspace's standalone Markdown and classroom uses.
 * **Draft**: Added [Evidence Ledger and Finding workflow](/concepts/evidence-ledger-and-finding-workflow.en.md) and [Researcher workflow: from Evidence Ledger to Finding](/playbooks/evidence-ledger-to-finding.en.md), documenting the functionality shipped on dev at commit `649268e` for the next usability and design-planning round.
 
 ## 2026-08-19

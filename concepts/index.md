@@ -6,9 +6,9 @@ okf_version: "0.2"
 
 The platform documentation for Evaluchat — what the product is and how its
 features work, as shipped. Start with the
-[**Overview — platform documentation**](/concepts/overview.en.md) for a
-reader-facing guide and where-to-start pointers for teachers, researchers, and
-self-hosters. The reference list below is the complete index.
+[**Evaluchat — open research infrastructure for AI in education**](/concepts/overview.en.md)
+for a reader-facing explanation of the research cycle and where to start. The
+reference list below is the complete index.
 
 ## Concepts
 
