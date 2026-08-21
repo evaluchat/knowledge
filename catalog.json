@@ -34,6 +34,28 @@
     "canonical_resource": "https://github.com/evaluchat/knowledge/blob/main/concepts/evidence-contribution.en.md"
   },
   {
+    "id": "evidence-ledger-and-finding-workflow",
+    "type": "Concept",
+    "languages": [
+      "en"
+    ],
+    "status": "draft",
+    "description": "Draft user-facing overview of creating a scoped Evidence Ledger Snapshot, publishing it, and using published ledgers in a human-authored Finding.",
+    "updated": "2026-08-20T10:10:33+02:00",
+    "canonical_resource": "https://github.com/evaluchat/knowledge/blob/main/concepts/evidence-ledger-and-finding-workflow.en.md"
+  },
+  {
+    "id": "evidence-ledger-to-finding",
+    "type": "Playbook",
+    "languages": [
+      "en"
+    ],
+    "status": "draft",
+    "description": "Draft task guide for selecting a Method, generating and publishing an Evidence Ledger Snapshot, and using it in a human-authored Finding.",
+    "updated": "2026-08-20T10:10:33+02:00",
+    "canonical_resource": "https://github.com/evaluchat/knowledge/blob/main/playbooks/evidence-ledger-to-finding.en.md"
+  },
+  {
     "id": "evidence-publishing",
     "type": "Concept",
     "languages": [
@@ -51,9 +73,20 @@
       "en"
     ],
     "status": "draft",
-    "description": "Design: an on-demand, immutable evidence ledger gives a finding author a source-linked descriptive analysis of a research-question snapshot, while the finding remains human-authored and AI is limited to non-editing advice and challenge checks.",
-    "updated": "2026-08-17T15:21:42+00:00",
+    "description": "Design: an on-demand, immutable evidence ledger gives a finding author a source-linked descriptive analysis of a Method evidence snapshot, while the finding remains human-authored and AI is limited to non-editing advice and challenge checks.",
+    "updated": "2026-08-19T09:32:32+00:00",
     "canonical_resource": "https://github.com/evaluchat/knowledge/blob/main/designs/finding-authoring.en.md"
+  },
+  {
+    "id": "finding-authoring-ux",
+    "type": "Concept",
+    "languages": [
+      "en"
+    ],
+    "status": "draft",
+    "description": "Design plan: Evidence Ledger as a workspace item with a template-rendered filter canvas, immutable source-linked snapshot, GitHub publication, and a deliberately light Finding starter that cites published ledgers.",
+    "updated": "2026-08-19T09:32:32+00:00",
+    "canonical_resource": "https://github.com/evaluchat/knowledge/blob/main/designs/finding-authoring-ux.en.md"
   },
   {
     "id": "method-recipe",
@@ -84,8 +117,8 @@
       "en"
     ],
     "status": "stable",
-    "description": "A reader-facing starting point for the Evaluchat platform documentation: what this knowledge site is, who it is for, and where to start depending on what you are trying to do.",
-    "updated": "2026-08-18T16:00:00+00:00",
+    "description": "A reader-facing introduction to Evaluchat: an open-source, Markdown-native workspace for defining, running, and inspecting research methods about AI in education, with human-authored findings.",
+    "updated": "2026-08-20T11:51:54+02:00",
     "canonical_resource": "https://github.com/evaluchat/knowledge/blob/main/concepts/overview.en.md"
   },
   {

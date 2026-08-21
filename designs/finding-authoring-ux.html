@@ -1,0 +1,671 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Evidence Ledger workspace and light Finding authoring</title>
+<link rel="icon" href="../favicon.ico" sizes="any"/>
+<link rel="stylesheet" href="../assets/style.css"/>
+</head>
+<body>
+<header class="site-header">
+  <div class="header-inner">
+    <div class="logo">
+      <a href="../index.html" aria-label="Knowledge catalog">
+        <img class="logo-mark" src="../assets/evaluchat.png" width="32" height="32" alt=""/>
+        evaluchat
+      </a>
+    </div>
+    <nav class="main-nav" aria-label="Primary navigation">
+      <a href="https://github.com/evaluchat/knowledge">GitHub</a>
+      <a href="https://github.com/evaluchat/knowledge/blob/main/README.md">README</a>
+      <a href="https://evaluchat.org/" class="nav-cta">Open evaluchat ↗</a>
+    </nav>
+  </div>
+</header>
+
+<main class="page-wrap">
+<p class="breadcrumb"><p class="breadcrumb"><a href="../index.html">Knowledge catalog</a><span class="sep">/</span><a href="index.html">Designs</a><span class="sep">/</span><span>Evidence Ledger workspace and light Finding authoring</span></p></p>
+  <article class="content">
+<h1>Evidence Ledger workspace and light Finding authoring</h1>
+<table class="facts"><tr><th>type</th><td>Concept</td></tr><tr><th>id</th><td>finding-authoring-ux</td></tr><tr><th>status</th><td>draft</td></tr><tr><th>lang</th><td>en</td></tr><tr><th>origin</th><td>native</td></tr><tr><th>generated</th><td>by=codex/gpt-5, at=2026-08-19T09:32:32Z</td></tr><tr><th>sources</th><td>{&#x27;id&#x27;: &#x27;finding-authoring&#x27;, &#x27;resource&#x27;: &#x27;https://github.com/evaluchat/knowledge/blob/main/designs/finding-authoring.en.md&#x27;, &#x27;title&#x27;: &#x27;Finding authoring — evidence ledgers and human-controlled claims&#x27;}, {&#x27;id&#x27;: &#x27;evidence-publishing&#x27;, &#x27;resource&#x27;: &#x27;https://github.com/evaluchat/knowledge/blob/main/designs/evidence-publishing.en.md&#x27;, &#x27;title&#x27;: &#x27;Evidence publishing mechanics — the workspace Evidence action&#x27;}, {&#x27;id&#x27;: &#x27;review-protocol&#x27;, &#x27;resource&#x27;: &#x27;https://github.com/evaluchat/research/blob/main/governance/review-protocol.en.md&#x27;, &#x27;title&#x27;: &#x27;Claim governance — review protocol for findings&#x27;}, {&#x27;id&#x27;: &#x27;github-protected-branches&#x27;, &#x27;resource&#x27;: &#x27;https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/managing-protected-branches&#x27;, &#x27;title&#x27;: &#x27;Managing protected branches — GitHub Docs&#x27;}, {&#x27;id&#x27;: &#x27;github-pr-reviews&#x27;, &#x27;resource&#x27;: &#x27;https://docs.github.com/en/pull-requests/reference/pull-request-reviews&#x27;, &#x27;title&#x27;: &#x27;Pull request reviews — GitHub Docs&#x27;}</td></tr></table>
+
+<article class="body"><h1 id="evidence-ledger-workspace-and-light-finding-authoring">Evidence Ledger workspace and light Finding authoring</h1>
+<blockquote>
+<p>Proposed V1 product specification (2026-08-18; draft). This is a
+concreteisation of the <a href="finding-authoring.html">finding-authoring decision record</a>.
+It keeps the product Markdown-native: versioned evidence templates define the
+available facts, a deterministic resolver creates ledgers, and GitHub stores
+the published artifacts. It does not describe a shipped feature or establish a
+research finding.</p>
+</blockquote>
+<h2 id="1-v1-decisions">1. V1 decisions</h2>
+<p>The Evidence Ledger—not a Finding editor—is the first research synthesis
+surface to build. It makes a declared slice of already public, accepted evidence
+inspectable and citable without becoming a data-mining system or an AI verdict.</p>
+<table>
+<thead>
+<tr>
+<th>Decision</th>
+<th>V1 product behaviour</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Entry point</td>
+<td><strong>Create workspace item</strong> offers existing <strong>Templates</strong> and <strong>Methods</strong>, plus new <strong>Evidence Ledger</strong>. The new item opens a ledger-configuration Canvas, not a blank document.</td>
+</tr>
+<tr>
+<td>Method selection</td>
+<td>The first required choice is one published <strong>Method version</strong> that has an evidence template and at least one accepted contribution. The method card exposes its template version and accepted-evidence count. One method version per ledger keeps V1's schema and comparability boundary clear.</td>
+</tr>
+<tr>
+<td>Ledger boundary</td>
+<td>An Evidence Ledger tabulates contributions from exactly one Method version and its one resolved evidence-template version. Its published frontmatter records both identities; it has no research-question field.</td>
+</tr>
+<tr>
+<td>Schema source</td>
+<td>The resolved <code>evidence-template.en.md</code> versions declare the small set of typed, factual fields that can be used as ledger dimensions. No separate query language or warehouse schema is introduced.</td>
+</tr>
+<tr>
+<td>Filter UI</td>
+<td>Declared enumerations render as multi-select controls; declared numbers and dates render as inclusive min/max controls (a slider may be used as a convenience, but exact endpoints are always visible).</td>
+</tr>
+<tr>
+<td>Scope</td>
+<td>After method selection, the default is all accepted evidence for that exact method version. Filters can only narrow that set by declared facts and are locked once the configuration is generated. There is no prose, keyword, outcome, sentiment, or “supporting evidence” filter.</td>
+</tr>
+<tr>
+<td>AI in configuration</td>
+<td>The assistant can explain a field, clarify its <code>unknown</code> value, compare safe filter options, and describe the resulting preview. It cannot write filters, generate a ledger, or publish; every filter change is an explicit human action.</td>
+</tr>
+<tr>
+<td>Generate</td>
+<td><strong>Generate ledger</strong> deterministically creates a new, read-only Ledger Snapshot Canvas context. The configuration remains editable; the snapshot never is.</td>
+</tr>
+<tr>
+<td>AI in snapshot</td>
+<td>The assistant can navigate and describe the sealed ledger with source citations, surface counterevidence and gaps, and explain why a comparison may be invalid. It cannot amend the snapshot, choose a finding claim, or publish.</td>
+</tr>
+<tr>
+<td>Publish</td>
+<td>A human GitHub collaborator explicitly publishes a selected snapshot through a PR to public <code>evaluchat/research</code>. On merge, it is a citable, immutable <code>Evidence Ledger</code> at <code>evidence-ledgers/&lt;ledger-id&gt;.en.md</code>.</td>
+</tr>
+<tr>
+<td>Finding V1</td>
+<td>A normal Canvas <strong>Finding starter</strong> is a recommended Markdown template plus OKF/Research validation. It must declare one or more research questions and cite one or more <em>published</em> ledgers. It does not yet introduce a separate Finding workbench, claim-authoring AI, tier workflow, or reviewer-management UI.</td>
+</tr>
+</tbody>
+</table>
+<p>The public repository is the only V1 destination. A connected GitHub account
+with current collaborator/write access is required for the platform's ledger or
+finding publication flow; invitation and revocation remain GitHub operations.
+This gates the platform workflow, not unsolicited fork PRs made outside it.</p>
+<h2 id="2-the-workspace-journey">2. The workspace journey</h2>
+<pre><code class="language-text">Create workspace item
+        │
+        ▼
+Select Method version
+        │
+        ▼
+Evidence Ledger configuration Canvas  (editable, human-controlled)
+        │  Generate ledger
+        ▼
+Ledger Snapshot Canvas context       (read-only, source-linked)
+        │  Publish selected snapshot
+        ▼
+GitHub PR → merged Evidence Ledger   (immutable, citable source)
+        │
+        ▼
+Finding starter links published ledger(s) (human-authored, light V1)
+</code></pre>
+<h3 id="21-select-a-ledger-ready-method-version">2.1 Select a ledger-ready Method version</h3>
+<p>The user selects <strong>Evidence Ledger</strong> in <strong>Create workspace item</strong>. The opening
+Canvas first shows <strong>Select a Method</strong>. It lists only published Method versions
+that have a resolved <code>evidence-template.en.md</code> and accepted evidence. A card
+displays:</p>
+<table>
+<thead>
+<tr>
+<th>Card field</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Method title, ID, and exact version</td>
+<td>The fixed intervention/evidence contract for this ledger</td>
+</tr>
+<tr>
+<td>Evidence-template ID and version</td>
+<td>The schema that will render the filter controls</td>
+</tr>
+<tr>
+<td>Accepted-evidence count</td>
+<td>The current number of ledger candidates before fact filters</td>
+</tr>
+<tr>
+<td>Status</td>
+<td><strong>Ledger ready</strong> or a mechanical reason it cannot be selected</td>
+</tr>
+</tbody>
+</table>
+<p>The version is an explicit selector, not an implicit “latest”. The chosen Method
+version and its resolved template form the baseline scope; changing the Method
+version clears downstream filters and preview, while prior generated snapshots
+remain unchanged. A research question is not an input to ledger creation: the
+ledger is a factual extract of evidence for its Method, which a later Finding
+may use for one or more declared questions.</p>
+<p>V1 creates a ledger for exactly one Method version and its resolved evidence
+template version. A researcher wanting to inspect two Methods creates two
+ledgers, each with its own template semantics, then compares them as separate
+sources in a later Finding. A cross-method ledger is deferred until the platform
+can define compatible fields, missingness treatment, and comparability rules
+explicitly rather than pretending different templates are one schema.</p>
+<p>The Canvas then renders the structured configuration in this order:</p>
+<ol>
+<li><strong>Selected Method version</strong> — fixed canonical Method and exact
+   evidence-template version that provides the dimensions.</li>
+<li><strong>All accepted evidence for this Method version</strong> — an uneditable baseline
+   count. This makes the initial scope visible before any narrowing filter is
+   applied.</li>
+<li><strong>Filter by declared facts</strong> — generated controls grouped as Context,
+   Intervention profile, and Collection date. A field unavailable in historical
+   evidence remains visible as <code>unavailable</code>, not silently inferred.</li>
+<li><strong>Scope preview</strong> — server-calculated included count, excluded count by
+   mechanical reason, count missing each chosen dimension, and the exact
+   predicate that will be sealed.</li>
+<li><strong>Generate ledger</strong> — the only action that creates a snapshot.</li>
+</ol>
+<p>If the catalog has no ledger-ready Methods, the empty state says <strong>No Methods
+with accepted evidence yet</strong> and links to the relevant Method's Evidence action.
+If a published Method has a missing template or no accepted evidence, it is
+shown only in an unavailable section with that mechanical reason and no
+<strong>Select</strong> action. The user cannot bypass this by pasting a Method ID.</p>
+<p>The initial Canvas is a workspace item like existing form-aware threads: it is
+owned through existing workspace ownership metadata and keeps its configuration
+in the Canvas. It is neither a Finding nor a repository artifact, and it is not
+listed as evidence in the Research catalog.</p>
+<h3 id="22-template-declared-dimensions">2.2 Template-declared dimensions</h3>
+<p>An evidence template opts a field into ledger filtering. Only factual Context,
+method, or collection fields may opt in; owner judgements, Results, narrative
+observations, reflections, limitations, and model-generated classifications may
+not. The template also fixes the field's ID, type, allowed values, and missing
+semantics for its version.</p>
+<pre><code class="language-yaml">fields:
+  education_level:
+    type: select
+    options: [k12, tertiary, adult, other, unknown]
+    ledger_dimension:
+      role: context
+      control: multi-select
+  country_code:
+    type: select
+    options: [US, ZA, GB, other, unknown]
+    ledger_dimension:
+      role: context
+      control: multi-select
+  collection_date:
+    type: date
+    ledger_dimension:
+      role: collection
+      control: range
+</code></pre>
+<p>The platform catalog generator mirrors this metadata with the selected evidence
+template version, as it does the template itself. The client renders the
+metadata; the server remains the sole resolver and validates that a requested
+predicate uses only fields and values declared by that fixed template version.</p>
+<p>For a selected filter, <code>unknown</code> is a real recorded value. Evidence whose
+template predates the field is separately <code>unavailable</code>. Neither state may be
+mapped to a guessed value, discarded from the baseline, or rewritten by an AI.</p>
+<h3 id="23-filter-behaviour-and-safe-assistance">2.3 Filter behaviour and safe assistance</h3>
+<p>The configuration Canvas uses controls rather than a general-purpose query
+builder:</p>
+<table>
+<thead>
+<tr>
+<th>Dimension type</th>
+<th>Canvas control</th>
+<th>Canonical predicate</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>select</code></td>
+<td>multi-select dropdown</td>
+<td><code>in: [k12]</code></td>
+</tr>
+<tr>
+<td><code>date</code> / <code>number</code></td>
+<td>inclusive minimum and maximum inputs; optional paired slider</td>
+<td><code>gte: …</code>, <code>lte: …</code></td>
+</tr>
+<tr>
+<td>declared intervention profile</td>
+<td>multi-select dropdown</td>
+<td><code>in: [profile-id]</code></td>
+</tr>
+<tr>
+<td>unavailable, narrative, outcome, or AI-derived value</td>
+<td>no filter control</td>
+<td>not expressible</td>
+</tr>
+</tbody>
+</table>
+<p>For example, a K–12 US extract is persisted as an exact fact predicate, not a
+natural-language label:</p>
+<pre><code class="language-yaml">filters:
+  context.education_level: { in: [k12] }
+  context.country_code: { in: [US] }
+</code></pre>
+<p>The configuration assistant can answer questions such as “What does <code>unknown</code>
+mean here?”, “Which countries have evidence?”, or “How would this filter change
+the count?” It receives the template schema and server-produced aggregate
+preview only. If it suggests a predicate, it presents it as text plus the
+anticipated count; the human must select the values through the Canvas controls.
+There is no assistant edit, Apply, save, generate, commit, or publish tool.</p>
+<p>The scope preview always shows the all-eligible baseline for the selected Method
+version, plus an accounting table:</p>
+<table>
+<thead>
+<tr>
+<th>Bucket</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Included</td>
+<td>Matches every declared predicate</td>
+</tr>
+<tr>
+<td>Outside declared scope</td>
+<td>Has a known value that does not match a predicate</td>
+</tr>
+<tr>
+<td>Unknown</td>
+<td>Has the selected field but recorded <code>unknown</code></td>
+</tr>
+<tr>
+<td>Unavailable</td>
+<td>Uses a template version that does not contain the selected field</td>
+</tr>
+<tr>
+<td>Resolver exclusion</td>
+<td>Wrong Method version, invalid provenance, inaccessible, or not accepted</td>
+</tr>
+</tbody>
+</table>
+<p>This distinguishes a fact-based slice from cherry-picking. It also gives a
+critic or an AI agent enough information to identify what the slice cannot say.</p>
+<h3 id="24-generate-a-read-only-ledger-snapshot">2.4 Generate a read-only Ledger Snapshot</h3>
+<p><strong>Generate ledger</strong> is enabled only after the Method and template resolve and
+the preview is current. It stores a canonical, sorted manifest and creates a new
+read-only Canvas context named <strong>Ledger Snapshot</strong>. The configuration item
+remains open for changes; any changed Method, filter, source commit, template
+version, or input hash creates another snapshot rather than altering the prior
+one.</p>
+<p>The snapshot header displays its ledger ID, Method and template versions,
+canonical predicate, source commit, resolver/render versions, input fingerprint,
+creation time, and every bucket count. Its content has five read-only views:</p>
+<table>
+<thead>
+<tr>
+<th>View</th>
+<th>Required material</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Scope</strong></td>
+<td>baseline, predicate, inclusion/exclusion accounting, and unavailable/unknown counts</td>
+</tr>
+<tr>
+<td><strong>Evidence</strong></td>
+<td>every included contribution with source link, hash, method/version, and declared context values</td>
+</tr>
+<tr>
+<td><strong>Descriptive views</strong></td>
+<td>only deterministic distributions of versioned structured fields, retaining <code>not-applicable</code> and <code>insufficient-information</code></td>
+</tr>
+<tr>
+<td><strong>Comparability</strong></td>
+<td>method/version, resolved levers, contributor/context clustering, and explicit comparison warnings</td>
+</tr>
+<tr>
+<td><strong>Counterevidence and gaps</strong></td>
+<td>negative responses, contradictions, open challenges, alternative explanations, missingness, and questions the record cannot answer</td>
+</tr>
+</tbody>
+</table>
+<p>Counterevidence and gaps is always visible in the snapshot navigation and has a
+badge when non-empty. The renderer may not add a conclusion, confidence score,
+claim, or positive-pattern summary.</p>
+<p>The snapshot assistant sees only this sealed manifest, rendered values, and
+manifest-linked source records. It may explain a source, locate a distribution,
+identify a gap, or test whether a proposed <em>fact description</em> matches the
+snapshot. Every factual answer cites ledger source IDs and is labelled
+<strong>descriptive</strong>, <strong>challenge</strong>, <strong>insufficient evidence</strong>, or <strong>human decision
+required</strong>. It cannot write to the snapshot or use unbounded repository/web
+search.</p>
+<h3 id="25-publish-a-snapshot">2.5 Publish a snapshot</h3>
+<p>The snapshot's <strong>Publish</strong> action is distinct from Generate. It first checks
+that the GitHub account connected to the workspace still has collaborator/write
+access to <code>evaluchat/research</code>; otherwise it reports the missing access and
+creates no branch or PR.</p>
+<p>For an eligible user, Publish presents a read-only diff containing one file:</p>
+<pre><code class="language-text">evidence-ledgers/&lt;ledger-id&gt;.en.md
+</code></pre>
+<p>It reapplies consent and anonymisation validation before any public write. The
+human confirms destination, source commit, fingerprint, public-data declaration,
+and file contents. The platform then creates a draft PR under the connected
+user's GitHub identity. A snapshot is <strong>published</strong> only once that PR merges;
+until then it is an unpublished workspace artifact and cannot be selected as a
+Finding source.</p>
+<p>The published file contains the immutable scope and provenance needed to
+reconstruct its extract:</p>
+<pre><code class="language-yaml">---
+type: Evidence Ledger
+id: &lt;ledger-slug&gt;
+lang: en
+origin: native
+status: stable
+title: &lt;human-readable scope title&gt;
+description: Source-linked descriptive ledger for one Method and declared evidence scope.
+method:
+  id: &lt;Method ID&gt;
+  version: &lt;Method version&gt;
+evidence_template:
+  id: &lt;evidence-template ID&gt;
+  version: &lt;evidence-template version&gt;
+scope: &lt;canonical predicate&gt;
+source_commit: &lt;Research repository SHA&gt;
+input_fingerprint: sha256:&lt;canonical-manifest hash&gt;
+render_hash: sha256:&lt;rendered-ledger hash&gt;
+resolver_version: &lt;semver&gt;
+generated: { by: evaluchat-ledger-service/&lt;version&gt;, at: &lt;ISO timestamp&gt; }
+---
+</code></pre>
+<p>Its Markdown body contains the rendered source-linked views and a canonical
+manifest or link to one. A refresh always has a new ID and path; Git history and
+the fingerprint preserve the old scope exactly. A ledger can be published before
+any Finding exists and can be cited by more than one Finding.</p>
+<h2 id="3-light-finding-authoring">3. Light Finding authoring</h2>
+<p>V1 deliberately does not build another specialised authoring application. A
+human starts from a <strong>Finding starter</strong> in the normal Templates workflow and
+writes in an ordinary Markdown Canvas. The starter supplies a recommended body
+shape and the Research fields that existing validation needs; it does not offer
+claim suggestion, tier recommendation, or AI document editing.</p>
+<pre><code class="language-yaml">---
+type: Finding
+id: &lt;finding-slug&gt;
+lang: en
+origin: native
+status: provisional
+title: &lt;human-written English title&gt;
+description: &lt;human-written English summary&gt;
+authors:
+  - name: &lt;human author&gt;
+claim: &lt;human-written falsifiable claim&gt;
+confidence: low
+research_questions:
+  - resource: &lt;canonical Research-question URL and version&gt;
+evidence_ledgers:
+  - id: &lt;published-ledger-slug&gt;
+    path: /evidence-ledgers/&lt;published-ledger-slug&gt;.en.md
+    method: { id: &lt;Method ID&gt;, version: &lt;Method version&gt; }
+    evidence_template: { id: &lt;evidence-template ID&gt;, version: &lt;evidence-template version&gt; }
+    source_commit: &lt;Research repository SHA&gt;
+    input_fingerprint: sha256:&lt;canonical-manifest hash&gt;
+---
+</code></pre>
+<pre><code class="language-markdown"># &lt;human-written title&gt;
+
+## Claim
+
+## Research questions
+
+## Evidence ledgers
+
+## Declared scope
+
+## Interpretation
+
+## Counterevidence and alternative explanations
+
+## Limitations
+</code></pre>
+<p>The ledger picker resolves only merged artifacts in <code>evidence-ledgers/</code>. A
+Finding must add at least one ledger; it may add more than one, including
+ledgers from different Methods. Each selected ledger inserts a read-only
+reference card and an <code>evidence_ledgers</code> entry; it does not write the claim or
+interpretation. Research questions are selected independently in the Finding;
+the picker never adds or derives them from a ledger.</p>
+<p>The user may still edit all human-authored Finding content. A later Finding PR
+runs existing OKF and claim checks plus linked-ledger validation:</p>
+<ol>
+<li><code>research_questions</code> and <code>evidence_ledgers</code> are non-empty lists;</li>
+<li>every ledger path resolves to a merged <code>type: Evidence Ledger</code> artifact;</li>
+<li>its source commit and input fingerprint match the entry in the Finding;</li>
+<li>each ledger's one Method and evidence-template identities are present and
+   match the published ledger; and</li>
+<li>every declared research-question resource resolves to a published
+   <code>type: Research Question</code> artifact.</li>
+</ol>
+<p>This allows a human to make a Finding across multiple Methods without allowing a
+ledger itself to conceal a cross-method schema merge. The Finding's scope and
+body make the human-authored relationship between its questions and ledgers
+inspectable; V1 does not invent a one-to-one mapping.</p>
+<p>The public GitHub PR remains the human-review surface. The existing deterministic
+claim checker reports form and routing only; a <code>checks-pass</code> label must never be
+shown as human approval. Any required approver cohort, quorum, independence rule,
+or <code>CODEOWNERS</code> configuration remains an explicit Research governance decision,
+not a platform role.</p>
+<h2 id="4-verification-by-critics-and-agents">4. Verification by critics and agents</h2>
+<p>A published ledger is an inexpensive verification surface: a critic or bounded
+AI agent can read one immutable Markdown artifact, inspect its canonical scope,
+and follow its source links. It can also generate a new fact-based extract from
+the same source commit when it needs to test a different scope.</p>
+<p>The verifier must state which of these it did:</p>
+<table>
+<thead>
+<tr>
+<th>Mode</th>
+<th>Permitted conclusion</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Exact-ledger verification</strong></td>
+<td>Whether the Finding's linked ledger exists, is unmodified, and contains the stated descriptive fact/citation</td>
+</tr>
+<tr>
+<td><strong>Alternative-scope extract</strong></td>
+<td>What a different, declared fact predicate contains; it is not confirmation or refutation of the Finding's original scope</td>
+</tr>
+<tr>
+<td><strong>Insufficient data</strong></td>
+<td>A field is unknown/unavailable, the source commit is unavailable, or the requested question cannot be answered from the ledger</td>
+</tr>
+</tbody>
+</table>
+<p>The verifier must not infer missing classifications, invoke unlisted sources,
+hide counterevidence, or decide whether the human claim is true. This makes
+partial-data checks fast while preserving the distinction between an extract and
+a research judgement.</p>
+<h2 id="5-minimal-components-and-contracts">5. Minimal components and contracts</h2>
+<table>
+<thead>
+<tr>
+<th>Component</th>
+<th>Responsibility</th>
+<th>Deliberately absent</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Evidence-template catalog</td>
+<td>publishes <code>ledger_dimension</code> metadata with each versioned template</td>
+<td>universal data schema</td>
+</tr>
+<tr>
+<td>Ledger configuration renderer</td>
+<td>turns those fields into Canvas controls and previews the exact scope</td>
+<td>free-form search/query language</td>
+</tr>
+<tr>
+<td>Deterministic resolver</td>
+<td>reads public accepted evidence, creates sorted manifest, counts buckets, and hashes the result</td>
+<td>weighting, ranking, statistical/causal inference</td>
+</tr>
+<tr>
+<td>Ledger snapshot renderer</td>
+<td>builds read-only, source-linked Markdown/Canvas views</td>
+<td>finding, verdict, confidence, or AI prose synthesis</td>
+</tr>
+<tr>
+<td>Bounded ledger assistant</td>
+<td>schema navigation and source-cited descriptive/challenge help</td>
+<td>canvas write, PR, publish, tier, or review tools</td>
+</tr>
+<tr>
+<td>GitHub publish service</td>
+<td>validates public-safety preconditions and creates human-confirmed ledger PRs</td>
+<td>private repository destinations, auto-merge, or bot approval</td>
+</tr>
+<tr>
+<td>Finding starter</td>
+<td>supplies Markdown and validated fields, selecting published ledger references</td>
+<td>a second specialised Finding editor</td>
+</tr>
+</tbody>
+</table>
+<p>The derived index may be a small build-time or resolver-time map of declared
+dimension values from public Markdown evidence. It is not a new analytics
+database: its only rows are evidence ID/path, template version, declared
+filterable field values, and source hash. Markdown evidence remains the source
+of truth.</p>
+<h2 id="6-acceptance-criteria">6. Acceptance criteria</h2>
+<table>
+<thead>
+<tr>
+<th>Scenario</th>
+<th>Required result</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>User creates Evidence Ledger item</td>
+<td>Canvas first lists ledger-ready Method versions, then exposes their all-eligible baseline and dimensions declared by the selected template version.</td>
+</tr>
+<tr>
+<td>No ledger-ready Method exists</td>
+<td>Canvas shows the mechanical absence reason and the Evidence-collection path; it never offers a blank or manually entered Method scope.</td>
+</tr>
+<tr>
+<td>User selects K–12 and US</td>
+<td>Preview shows an exact predicate, included count, outside-scope count, <code>unknown</code>, <code>unavailable</code>, and resolver exclusions.</td>
+</tr>
+<tr>
+<td>User tries prose/outcome filtering</td>
+<td>No control or API predicate exists; server rejects a forged request.</td>
+</tr>
+<tr>
+<td>Assistant suggests a scope</td>
+<td>It supplies explanation/text only; values change only through an explicit human Canvas action.</td>
+</tr>
+<tr>
+<td>User changes configuration after Generate</td>
+<td>Prior snapshot stays readable and hashed; a new snapshot is created.</td>
+</tr>
+<tr>
+<td>Snapshot contains contradictory evidence</td>
+<td>It appears in Counterevidence and gaps and is available to the snapshot assistant.</td>
+</tr>
+<tr>
+<td>GitHub access is lost</td>
+<td>Publish is denied before branch/PR creation; private workspace snapshot remains unchanged.</td>
+</tr>
+<tr>
+<td>Ledger PR merges</td>
+<td>Artifact is selectable by the Finding starter and exposes its immutable path, commit, and fingerprint.</td>
+</tr>
+<tr>
+<td>Ledger PR has not merged</td>
+<td>It cannot be selected as a Finding source.</td>
+</tr>
+<tr>
+<td>Finding has no question or no ledger</td>
+<td>Validation fails before a PR can be created.</td>
+</tr>
+<tr>
+<td>Finding cites one or more ledgers</td>
+<td>Validator resolves every entry and rejects a missing, wrong-type, wrong-Method/template, wrong-commit, or wrong-fingerprint target.</td>
+</tr>
+<tr>
+<td>Finding declares questions and ledgers</td>
+<td>Validator requires both lists to be non-empty and resolves every question and ledger independently; it does not impose a ledger/question correspondence.</td>
+</tr>
+<tr>
+<td>Critic asks for a different slice</td>
+<td>System produces a separately labelled, reproducible extract; it does not claim to verify the original Finding scope.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="7-delivery-sequence">7. Delivery sequence</h2>
+<ol>
+<li><strong>Method availability and template contract</strong> — derive ledger-ready Method
+   versions from published Method/template/evidence links; add and
+   validate <code>ledger_dimension</code> metadata, taxonomy values,
+   <code>unknown</code>/<code>unavailable</code> semantics, and version compatibility using synthetic
+   evidence templates.</li>
+<li><strong>Workspace item</strong> — add <strong>Evidence Ledger</strong> to Create workspace item,
+   render the Method-version selector, then render the editable configuration
+   Canvas with deterministic preview counts.</li>
+<li><strong>Snapshots</strong> — implement manifest hashing, immutable read-only Ledger
+   Snapshot contexts, source-linked views, configuration history, and bounded
+   assistant access.</li>
+<li><strong>Ledger publication</strong> — define <code>evidence-ledgers/</code> in Research, create the
+   GitHub collaborator-gated publish PR, and validate public consent/privacy,
+   OKF fields, one-Method/template identity, source commit, and hashes.</li>
+<li><strong>Light Finding starter</strong> — add the template, published-ledger picker, and
+   independent one-or-more question/ledger and ledger-integrity checks to the
+   existing Research validation path.</li>
+<li><strong>Review governance</strong> — separately decide the GitHub reviewer cohort, quorum,
+   branch rule, and relationship to provisional/tentative auto-routing before
+   requiring approvals for Finding PRs.</li>
+<li><strong>Controlled pilot</strong> — use synthetic, contradictory, incomplete, and
+   cross-template fixtures before any classroom evidence; monitor resolver,
+   publication, and validation failures, never “positive findings”.</li>
+</ol>
+<h2 id="8-out-of-scope">8. Out of scope</h2>
+<ul>
+<li>an arbitrary data-mining or SQL-like query platform;</li>
+<li>filtering evidence by apparent conclusion, free-text narrative, or AI-created
+  classifications;</li>
+<li>editing an immutable snapshot or reusing a fingerprint after inputs change;</li>
+<li>raw student work, raw transcripts, private analytics, or unpublished evidence;</li>
+<li>AI-authored Findings, automatic claim selection, tier choice, approval, or
+  merge; and</li>
+<li>a private-repository destination, reviewer roster, or <code>CODEOWNERS</code> policy.</li>
+</ul>
+<h1 id="citations">Citations</h1>
+<p>[1] <a href="finding-authoring.html">Finding authoring — evidence ledgers and human-controlled claims</a></p>
+<p>[2] <a href="evidence-publishing.html">Evidence publishing mechanics</a></p>
+<p>[3] <a href="https://github.com/evaluchat/research/blob/main/governance/review-protocol.en.md">Claim governance — review protocol for findings</a></p>
+<p>[4] <a href="https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/managing-protected-branches">Managing protected branches — GitHub Docs</a></p>
+<p>[5] <a href="https://docs.github.com/en/pull-requests/reference/pull-request-reviews">Pull request reviews — GitHub Docs</a></p></article>
+
+  </article>
+</main>
+<footer class="site-footer">
+  <p>
+    <a href="https://evaluchat.org">evaluchat.com</a>
+    &middot; Knowledge catalog
+    &middot; <a href="https://github.com/evaluchat/knowledge">GitHub</a>
+    &middot; <a href="mailto:hello@evaluchat.com">hello@evaluchat.com</a>
+  </p>
+  <p class="copyright">© 2026 Evaluchat · Open Knowledge Format</p>
+</footer>
+</body>
+</html>

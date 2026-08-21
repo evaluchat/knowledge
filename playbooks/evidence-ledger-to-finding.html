@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Researcher workflow: from Evidence Ledger to Finding</title>
+<link rel="icon" href="../favicon.ico" sizes="any"/>
+<link rel="stylesheet" href="../assets/style.css"/>
+</head>
+<body>
+<header class="site-header">
+  <div class="header-inner">
+    <div class="logo">
+      <a href="../index.html" aria-label="Knowledge catalog">
+        <img class="logo-mark" src="../assets/evaluchat.png" width="32" height="32" alt=""/>
+        evaluchat
+      </a>
+    </div>
+    <nav class="main-nav" aria-label="Primary navigation">
+      <a href="https://github.com/evaluchat/knowledge">GitHub</a>
+      <a href="https://github.com/evaluchat/knowledge/blob/main/README.md">README</a>
+      <a href="https://evaluchat.org/" class="nav-cta">Open evaluchat ↗</a>
+    </nav>
+  </div>
+</header>
+
+<main class="page-wrap">
+<p class="breadcrumb"><p class="breadcrumb"><a href="../index.html">Knowledge catalog</a><span class="sep">/</span><a href="index.html">Playbooks</a><span class="sep">/</span><span>Researcher workflow: from Evidence Ledger to Finding</span></p></p>
+  <article class="content">
+<h1>Researcher workflow: from Evidence Ledger to Finding</h1>
+<table class="facts"><tr><th>type</th><td>Playbook</td></tr><tr><th>id</th><td>evidence-ledger-to-finding</td></tr><tr><th>status</th><td>draft</td></tr><tr><th>lang</th><td>en</td></tr><tr><th>origin</th><td>native</td></tr><tr><th>generated</th><td>by=codex/gpt-5, at=2026-08-20T10:10:33+02:00</td></tr></table>
+
+<article class="body"><h1 id="researcher-workflow-from-evidence-ledger-to-finding">Researcher workflow: from Evidence Ledger to Finding</h1>
+<blockquote>
+<p>Draft task guide for the Evaluchat <code>dev</code> environment. The screens and
+labels described here correspond to commit <code>649268e</code>; production has not yet
+been promoted to this version.</p>
+</blockquote>
+<h2 id="before-you-start">Before you start</h2>
+<p>To create a useful Ledger, you need a published Method version with a resolved
+evidence template and accepted evidence. If you intend to publish, make sure
+you have the required repository access and can make the consent and
+anonymisation confirmations truthfully.</p>
+<p>Keep your research questions separate. Choose them independently for the later
+Finding; the Ledger flow will not choose or suggest them as part of generation.</p>
+<h2 id="1-create-an-evidence-ledger">1. Create an Evidence Ledger</h2>
+<ol>
+<li>Open <strong>Create workspace item</strong>.</li>
+<li>Choose <strong>Evidence Ledger</strong>.</li>
+<li>Select a Method card marked <strong>Ledger ready</strong>.</li>
+<li>Confirm the Method version, evidence-template version, and accepted-evidence
+   baseline count.</li>
+</ol>
+<p>If a Method is unavailable, read the reason shown on its card. You cannot
+bypass the selector by entering a Method ID, and a missing template or empty
+accepted-evidence set cannot produce a Ledger.</p>
+<h2 id="2-configure-and-check-the-scope">2. Configure and check the scope</h2>
+<p>The configuration Canvas shows the fixed Method/template identity and controls
+for the template's declared ledger dimensions.</p>
+<ol>
+<li>Choose values in the multi-select controls, or enter inclusive minimum and
+   maximum values for declared date/number fields.</li>
+<li>Treat <code>unknown</code> as an explicit value when it is offered.</li>
+<li>Read <code>unavailable</code> as “this field was not present in that historical
+   evidence,” not as a value to guess.</li>
+<li>Review the <strong>Scope preview</strong> and its exact predicate.</li>
+<li>Check the count in every bucket before generating.</li>
+</ol>
+<p>The preview accounts for <strong>Included</strong>, <strong>Outside declared scope</strong>, <strong>Unknown</strong>,
+<strong>Unavailable</strong>, and <strong>Resolver exclusion</strong>. If the preview is stale after a
+filter change, <strong>Generate ledger</strong> remains unavailable until the server has
+recomputed it.</p>
+<p>Do not expect controls for narrative prose, outcomes, sentiment, or
+AI-generated classifications. They are outside this Ledger's declared scope.</p>
+<h2 id="3-generate-and-inspect-the-snapshot">3. Generate and inspect the snapshot</h2>
+<p>Select <strong>Generate ledger</strong> once the preview represents the scope you want. The
+result is a sealed, read-only Ledger Snapshot.</p>
+<p>Work through the five views:</p>
+<table>
+<thead>
+<tr>
+<th>View</th>
+<th>Check</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Scope</td>
+<td>Does the predicate and bucket accounting describe the intended slice?</td>
+</tr>
+<tr>
+<td>Evidence</td>
+<td>Can you follow the included contributions back to their sources?</td>
+</tr>
+<tr>
+<td>Descriptive views</td>
+<td>What distributions or patterns are actually present?</td>
+</tr>
+<tr>
+<td>Comparability</td>
+<td>Which differences make a comparison unsafe or limited?</td>
+</tr>
+<tr>
+<td>Counterevidence &amp; gaps</td>
+<td>What contradicts a simple reading, and what remains unanswered?</td>
+</tr>
+</tbody>
+</table>
+<p>Also check the sealed header for the Method/template versions, source commit,
+input fingerprint, resolver/render versions, and generation time. These values
+help you identify exactly which evidence the snapshot describes.</p>
+<p>Remember that the snapshot is not a conclusion, claim, confidence score,
+causal result, or integrity verdict. There are no edit controls because the
+snapshot is immutable.</p>
+<h2 id="4-publish-the-selected-snapshot">4. Publish the selected snapshot</h2>
+<ol>
+<li>Select <strong>Publish</strong> from the snapshot.</li>
+<li>On the dedicated Publish page, review the breadcrumb and full-page status.</li>
+<li>Complete the access, consent, and anonymisation confirmations.</li>
+<li>Select <strong>Create draft PR</strong>.</li>
+<li>Follow the publication status until it is <strong>Merged</strong> if you want to use the
+   Ledger in the Finding picker.</li>
+</ol>
+<p>The flow may auto-approve and auto-merge an eligible system-generated Ledger
+after its integrity checks pass. Otherwise, the publication remains a draft PR
+for human merge. Only a merged Ledger is available to the Finding picker.</p>
+<p>If a previous PR was closed, use the publication flow to create a new one.</p>
+<h2 id="5-start-the-finding-draft">5. Start the Finding draft</h2>
+<p>Create a Finding using the light Finding starter. Write the human-controlled
+parts yourself:</p>
+<ol>
+<li>State the claim you want to examine.</li>
+<li>Select one or more published research questions.</li>
+<li>Use the published-ledger picker to add one or more merged Ledgers.</li>
+<li>Describe the declared scope and how it relates to the questions.</li>
+<li>Write your interpretation.</li>
+<li>Record counterevidence, alternative explanations, and limitations.</li>
+</ol>
+<p>The picker inserts a reference card and the Ledger's identity, path,
+Method/template identity, source commit, and input fingerprint. It does not
+turn the reference into support for your claim automatically. There is no
+required one-to-one mapping between research questions and Ledgers in this
+light flow; explain the relationship in your own scope and interpretation.</p>
+<h2 id="6-resolve-validation-messages">6. Resolve validation messages</h2>
+<p>Before a Finding can be published, linking validation checks the references you
+selected:</p>
+<ul>
+<li>a Ledger path must resolve to a merged <code>type: Evidence Ledger</code> artifact;</li>
+<li>its Method and evidence-template identity must match the reference;</li>
+<li>its <code>source_commit</code> and <code>input_fingerprint</code> must be present and matching; and</li>
+<li>each declared research question must resolve to a published Research
+  Question artifact.</li>
+</ul>
+<p>If validation fails, return to the publication status or picker rather than
+editing provenance by hand. A Ledger that has not merged is not yet a published
+source.</p>
+<h2 id="expected-boundaries">Expected boundaries</h2>
+<p>The workflow keeps scope and publication decisions explicit. It does not let
+an assistant change filters, generate or publish a Ledger, choose your Finding
+claim, derive research questions, or decide a review outcome.</p>
+<h2 id="related-documentation">Related documentation</h2>
+<ul>
+<li><a href="https://github.com/evaluchat/knowledge/blob/main/playbooks/concepts/evidence-ledger-and-finding-workflow.en.md">Evidence Ledger and Finding workflow</a></li>
+<li><a href="https://github.com/evaluchat/knowledge/blob/main/playbooks/designs/finding-authoring-ux.en.md">Evidence Ledger workspace and light Finding authoring</a></li>
+</ul></article>
+
+  </article>
+</main>
+<footer class="site-footer">
+  <p>
+    <a href="https://evaluchat.org">evaluchat.com</a>
+    &middot; Knowledge catalog
+    &middot; <a href="https://github.com/evaluchat/knowledge">GitHub</a>
+    &middot; <a href="mailto:hello@evaluchat.com">hello@evaluchat.com</a>
+  </p>
+  <p class="copyright">© 2026 Evaluchat · Open Knowledge Format</p>
+</footer>
+</body>
+</html>
