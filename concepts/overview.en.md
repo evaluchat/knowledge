@@ -4,110 +4,171 @@ id: overview
 lang: en
 origin: native
 status: stable
-title: 'Platform documentation — overview'
-description: 'A reader-facing starting point for the Evaluchat platform documentation: what this knowledge site is, who it is for, and where to start depending on what you are trying to do.'
-tags: [evaluchat, documentation, overview, concepts, platform]
+title: 'Evaluchat — open research infrastructure for AI in education'
+description: 'A reader-facing introduction to Evaluchat: an open-source, Markdown-native workspace for defining, running, and inspecting research methods about AI in education, with human-authored findings.'
+tags: [evaluchat, documentation, overview, research, ai-in-education, open-source]
+timestamp: 2026-08-20T11:51:54+02:00
 generated:
-  by: opencode-go/deepseek-v4-flash
-  at: 2026-08-18T16:00:00Z
+  by: codex/gpt-5
+  at: 2026-08-20T11:51:54+02:00
 sources:
-  - id: concepts-index
-    resource: https://github.com/evaluchat/knowledge/blob/main/concepts/index.md
-    title: 'Concepts — the platform documentation index'
-  - id: platform-capabilities
-    resource: https://github.com/evaluchat/knowledge/blob/main/concepts/platform-capabilities.en.md
-    title: 'Platform capabilities — public-beta runtime contract'
+  - id: evaluchat-dev-site
+    resource: https://dev.evaluchat.org/
+    title: 'Evaluchat dev site'
   - id: research-catalog
-    resource: https://github.com/evaluchat/research
+    resource: https://research.evaluchat.org/
     title: 'Evaluchat research catalog'
+  - id: research-method
+    resource: https://github.com/evaluchat/knowledge/blob/main/concepts/research-method.en.md
+    title: 'Research method — how methods use platform capabilities and levers'
+  - id: evidence-ledger-and-finding-workflow
+    resource: https://github.com/evaluchat/knowledge/blob/main/concepts/evidence-ledger-and-finding-workflow.en.md
+    title: 'Evidence Ledger and Finding workflow'
 ---
 
-# Platform documentation — overview
+# Evaluchat — open research infrastructure for AI in education
 
-Welcome to the Evaluchat **platform documentation**. This is the user-facing
-reference for what Evaluchat does and how it works — the features, the
-confidentiality and integrity model, and the research layer that turns
-classroom writing work into accountable, reproducible evidence.
+Evaluchat is an **open-source research platform for AI in education**. It is a
+Markdown-native workspace where researchers, teachers, builders, and
+policymakers can define, run, inspect, and improve methods for investigating
+how education changes when AI is available.
 
-Everything on this site is **product truth**: it describes Evaluchat as it is
-built and shipped, not a wish list. Research questions and claims live in the
-[research catalog][research-catalog], not here.
+When AI is part of the work, a completed answer is not enough evidence on its
+own. It may not show what someone understood, decided, explained, or could do
+without assistance. Evaluchat does not prescribe an answer to those questions.
+It makes competing approaches visible, testable, and open to challenge.
 
-## What Evaluchat is
+Methods, their settings, and the evidence they generate are versioned and
+inspectable. People—not the platform or an AI assistant—remain responsible for
+research questions, interpretation, findings, and review. The goal is public,
+collaborative, and accessible research infrastructure that lets evidence travel
+between classrooms, research, policy, and product work.
 
-Evaluchat is an **open-source, AI-native writing workspace** built for
-education. Students work through constrained, conversational assignments on a
-split-screen canvas; the AI acts as a writing coach rather than a ghostwriter.
-The writing process — prompts, drafting choices, and the finished work — doubles
-as **language evidence**, and reviewed research apparatuses let educators and
-researchers run structured classroom writing workflows whose outputs are
-accountable and reproducible.
+## The research cycle
 
-Three ideas run through everything here:
+Evaluchat supports a continuing research cycle rather than a one-way data
+pipeline:
 
-1. **Proportional assistance** — the AI does less when the student
-   contributes less. Drafting support is gated behind the student's own ideas,
-   evidence, questions, and language (the [CAMDLE][essays] mechanism).
-2. **Honest integrity, not surveillance** — Evaluchat records *process signals*
-   (engagement, drafts) as context for human judgement. It produces no
-   "cheating" score and does no proctoring.
-3. **Research with a spine** — every published method names the levers it
-   uses and requires an evidence contract, so that anything claimed is backed
-   by what actually ran.
+```text
+Theory
+  → Research question
+    → Method + evidence template
+      → Evidence generation
+        → Evidence Ledger
+          → Human-authored findings
+            → Research questions and theory
+```
+
+Each stage has a distinct job:
+
+| Stage | Role in the cycle |
+| --- | --- |
+| **Theory** | Offers constructs and possible explanations. It remains open to challenge rather than becoming a platform assumption. |
+| **Research question** | States what is being investigated. Questions belong in the [research catalog][research-catalog], not in a workspace configuration. |
+| **Method + evidence template** | A versioned Method specifies an intervention using platform capabilities; its evidence template defines the structured record needed when a run concludes. Together they make the investigation inspectable before evidence is collected. |
+| **Evidence generation** | A Method runs in the workspace. Its frozen run provenance and a contributor's typed observations can become a consent-checked [Evidence Contribution][evidence-contribution] in the research catalog. |
+| **Evidence Ledger** | Accepted evidence for one exact Method and evidence-template version can be scoped into a source-linked, immutable [Ledger Snapshot][ledger-workflow]. A Ledger is descriptive material, not a conclusion. |
+| **Human-authored findings** | A person selects published Ledgers and research questions, writes the claim, scope, interpretation, counterevidence, and limitations, then submits it to the applicable review process. |
+| **Research questions and theory** | Findings, challenges, replications, and negative results can refine a question or theory and begin the next pass through the cycle. |
+
+The arrows do not impose a hidden one-to-one mapping. In particular, a Ledger
+has no research-question field: it records a reproducible scope for one
+Method/template pair. A Finding independently declares one or more research
+questions and cites one or more published Ledgers; its human author explains
+their relationship.
+
+## The workspace's role
+
+The Evaluchat Workspace is the common surface on which this work can happen. It
+is Markdown-native, supports AI assistance when wanted, and keeps documents,
+method settings, and provenance available for inspection. A Method selects the
+specific platform capabilities it needs; Evaluchat is not limited to one kind
+of classroom activity or one theory of learning.
+
+The Workspace is also useful by itself: people can use it for ordinary Markdown
+work, classroom activities, or other collaborative tasks without collecting
+research evidence. Those uses are welcome, but they are incidental to
+Evaluchat's primary purpose: making AI-in-education research methods easier to
+create, run, share, scrutinise, and improve.
+
+## Assistance without outsourcing judgement
+
+AI assistance can lower the barrier to participating in the research process:
+it can help people work with Markdown, understand a Method or template, explain
+declared evidence-scope options, and surface gaps or counterevidence in a
+Ledger. That assistance is bounded. It does not choose a research question,
+change a Ledger's filters, generate or publish a Ledger, write a Finding,
+approve a claim, or make a research decision on a person's behalf.
+
+This separation keeps the practical plumbing accessible without confusing AI
+help with evidence, interpretation, authorship, or review.
+
+## The first complex workflow is an example, not the platform
+
+The CAMDLE-related [AI-assisted essay method][ai-assisted-essay] is the first
+complex workflow supported by Evaluchat. Its corresponding [Essays workflow][essays]
+shows one way a Method can compose workspace capabilities for a particular
+research question. CAMDLE is a theory under investigation in the research
+catalogue—not a core Evaluchat feature, a default method, or the purpose of the
+platform.
+
+Future methods can use different interventions, activities, measurements, and
+evidence contracts. Their differences are part of what the platform is designed
+to make public and comparable.
 
 ## Where to start
 
-Depending on what you are trying to do, jump straight to the right document:
+**You want to explore or contribute research**
 
-**You are a teacher or administrator setting up classroom writing work**
-- [Essays workflow — proportional drafting unlock][essays] — how the essays
-  feature actually behaves for students, session by session.
-- [Platform capabilities — public-beta runtime contract][capabilities] — the
-  AI modes, drafting gates, and telemetry you can configure.
+- Start with the [research catalog][research-catalog] for theories, questions,
+  published Methods, evidence, governance, and findings.
+- Read [Research method][research-method] to see how a Method uses documented
+  platform capabilities and carries an evidence contract.
+- Follow the [Evidence Ledger to Finding playbook][ledger-playbook] when a
+  Method has accepted evidence ready to inspect.
 
-**You are a researcher planning or running a study**
-- [Research method — how methods use platform capabilities and levers][method]
-  — how a Research catalog method selects named levers documented here.
-- [Evidence contribution — filing a concluded run to research][evidence] —
-  how to turn a concluded classroom run into a consent-checked, revertible
-  evidence contribution via a bot-authored pull request.
+**You are planning or running an educational activity**
 
-**You are self-hosting or evaluating the product**
-- Review the [capabilities contract][capabilities] to know what the runtime
-  guarantees, including the telemetry boundary.
+- Use a published Method as the accountable way to run an investigation, then
+  use the [Evidence Contribution workflow][evidence-contribution] to record a
+  concluded run when consent and publication conditions are met.
+- Consult the [platform capabilities][capabilities] to understand the
+  configurable behaviour and telemetry boundary a Method may select.
 
-## Browsing the rest of this site
+**You are building, evaluating, or governing AI-in-education work**
 
-The site mirrors the GitHub repository tree, section by section:
+- Inspect the open methods, provenance, Ledgers, findings, and review trail in
+  the [research catalog][research-catalog].
+- Use the documentation and design records to understand what the platform
+  currently does, what remains a design decision, and how to contribute an
+  improvement.
 
-| Section | What it is |
-|---------|------------|
-| **[Concepts](/concepts/index.html)** | What the platform is and how its features work — you are here. |
-| **[Designs](/designs/index.html)** | Decision notes for platform features — marked *draft* until the feature ships (some graduate to a Concept once shipped). |
-| **[Playbooks](/playbooks/index.html)** | How to specify a Method on Canvas capabilities. |
-| **Research catalog** | Research truth — questions, theory, methods, evidence, findings ([evaluchat/research][research-catalog]). |
+## Browse this documentation
 
-Each concept page carries a small reference block (type, status, versions) at
-the top and the human explanation below; `status: draft` means a document is a
-design/under revision and describes intent rather than shipped behaviour.
+| Section | What it covers |
+| --- | --- |
+| **[Concepts](/concepts/index.html)** | Shipped product truth: Workspace capabilities and user-facing workflows. |
+| **[Designs](/designs/index.html)** | Draft decisions and intended mechanics for platform features; consult the linked Concept when a design has graduated to shipped behaviour. |
+| **[Playbooks](/playbooks/index.html)** | Practical guides for specifying Methods and moving from evidence to a Finding. |
+| **[Research catalog][research-catalog]** | Research truth: theory, questions, Methods, evidence, Ledgers, findings, and governance. |
 
-## Version note
-
-This overview is intentionally **version-independent**: it is a navigation and
-positioning page, not a description of any single Canvas build. Each concept it
-links to carries its own `applies_to` pin (the Canvas version whose behaviour it
-describes), so behaviour-specific truth always resolves at the leaf, never in
-this aggregate. Treat this page as current until a linked concept is deprecated.
+Behaviour-specific Concepts carry their own version and release-context fields.
+This overview intentionally describes the platform's purpose and research model;
+follow those linked records for the exact behaviour of a particular dev build.
 
 ## Contributing
 
-This documentation is open. Corrections and additions are made through pull
-requests to the [knowledge repository](https://github.com/evaluchat/knowledge);
-see `CONTRIBUTING.md` there for the house rules (product truth only, provenance
-recorded, no fabricated verification).
+Evaluchat's knowledge and research are open for inspection and contribution.
+Corrections and platform-documentation updates are made through pull requests to
+the [knowledge repository](https://github.com/evaluchat/knowledge). Research
+questions, evidence, findings, and their review belong in the
+[research catalog][research-catalog].
 
-[essays]: https://github.com/evaluchat/knowledge/blob/main/concepts/essays-workflow.en.md
-[capabilities]: https://github.com/evaluchat/knowledge/blob/main/concepts/platform-capabilities.en.md
-[method]: https://github.com/evaluchat/knowledge/blob/main/concepts/research-method.en.md
-[evidence]: https://github.com/evaluchat/knowledge/blob/main/concepts/evidence-contribution.en.md
-[research-catalog]: https://github.com/evaluchat/research
+[research-catalog]: https://research.evaluchat.org/
+[research-method]: /concepts/research-method.en.md
+[evidence-contribution]: /concepts/evidence-contribution.en.md
+[ledger-workflow]: /concepts/evidence-ledger-and-finding-workflow.en.md
+[ledger-playbook]: /playbooks/evidence-ledger-to-finding.en.md
+[capabilities]: /concepts/platform-capabilities.en.md
+[essays]: /concepts/essays-workflow.en.md
+[ai-assisted-essay]: https://research.evaluchat.org/methods/ai-assisted-essay/index.html

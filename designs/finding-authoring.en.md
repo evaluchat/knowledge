@@ -2,14 +2,14 @@
 type: Concept
 id: finding-authoring
 title: Finding authoring — evidence ledgers and human-controlled claims
-description: "Design: an on-demand, immutable evidence ledger gives a finding author a source-linked descriptive analysis of a research-question snapshot, while the finding remains human-authored and AI is limited to non-editing advice and challenge checks."
+description: "Design: an on-demand, immutable evidence ledger gives a finding author a source-linked descriptive analysis of a Method evidence snapshot, while the finding remains human-authored and AI is limited to non-editing advice and challenge checks."
 lang: en
 origin: native
 status: draft
 tags: [design, findings, evidence-ledger, research, ai-assistance, human-review, okf]
 applies_to: 0.5.9
-timestamp: 2026-08-17T15:21:42Z
-generated: { by: codex/gpt-5, at: 2026-08-17T15:21:42Z }
+timestamp: 2026-08-19T09:32:32Z
+generated: { by: codex/gpt-5, at: 2026-08-19T09:32:32Z }
 sources:
   - id: evidence-publishing
     resource: https://github.com/evaluchat/knowledge/blob/main/designs/evidence-publishing.en.md
@@ -32,6 +32,10 @@ sources:
 > turns a set of filed evidence contributions into an inspectable analysis
 > surface without allowing an AI assistant to author or approve a finding.
 
+The concrete interaction, state, archive, and delivery plan is specified in
+[Finding-authoring UX plan](finding-authoring-ux.en.md). This document remains
+the rationale and governance boundary for that plan.
+
 ## 1. Problem
 
 Evidence filing makes individual, bounded reports public and comparable. It
@@ -53,8 +57,8 @@ the finding’s scope remain accountable human research decisions.
 ## 2. Decisions
 
 1. **Ledger before finding.** A finding-authoring session starts from a dated,
-   immutable Evidence Ledger for a selected research question. The ledger is a
-   descriptive analysis record, never a finding.
+   immutable Evidence Ledger for a selected Method and its evidence template.
+   The ledger is a descriptive analysis record, never a finding.
 2. **On-demand and freshness-gated.** A user explicitly creates a ledger. The
    platform offers the latest ledger only when its input fingerprint matches;
    if any eligible evidence was added, removed, or changed, it offers a new
@@ -73,6 +77,10 @@ the finding’s scope remain accountable human research decisions.
 6. **Protocol still governs publication.** The deterministic claim checker and
    the Research review protocol determine formal completeness and routing. A
    ledger cannot promote a tier, approve a claim, or substitute for review.
+7. **Ledger and Finding links are structural.** A ledger tabulates one Method's
+   evidence under that Method's template. A Finding independently declares one
+   or more research questions and cites one or more published ledgers; its
+   human-authored scope explains their relationship.
 
 ## 3. The two artifacts
 
@@ -82,7 +90,7 @@ the finding’s scope remain accountable human research decisions.
 | **Finding draft** | A human’s claim, scope, interpretation, limitations, and review request | Human author | Human-editable only; a published finding is revised by copy | Candidate Research finding, subject to the existing protocol |
 
 ```text
-Accepted evidence indexed by question
+Accepted evidence indexed by Method/template
         │
         ▼
 Deterministic scope + input fingerprint ── unchanged ──► reopen latest ledger
@@ -100,21 +108,21 @@ Claim checker + human review + PR workflow
 
 ### 3.1 Evidence Ledger
 
-The platform creates a ledger from public, indexed evidence that resolves to
-the selected research question. It may include twenty evidence contributions
-or any other number; no arbitrary count is a substitute for the contribution
-ladder’s tier and independence requirements.
+The platform creates a ledger from public, indexed, accepted evidence for the
+selected Method version and its resolved evidence-template version. It may
+include twenty evidence contributions or any other number; no arbitrary count
+is a substitute for the contribution ladder’s tier and independence requirements.
 
 The ledger has a timestamped identity and an **input fingerprint** over a
 canonical, sorted manifest. At minimum the manifest records:
 
 | Ledger field | Purpose |
 | --- | --- |
-| `research_question` and question version/path | Declares the question the ledger serves |
+| Method and exact version; evidence-template and exact version | Declares the one evidence contract and schema the ledger tabulates |
 | `created_at`, repository commit, resolver and ledger-template versions | Reproduces the time, source state, and mechanism |
 | Included contributions | Path/ID, content or Git blob hash, method/version, stage, contributor/context grouping, and applicable resolved levers |
-| Excluded candidates | Path/ID and mechanical reason: unlinked question, invalid/missing provenance, out-of-scope filter, inaccessible, or not yet accepted |
-| Query and scope | Method, version, date, stage, language, and context filters; no hidden ranking or relevance filter |
+| Excluded candidates | Path/ID and mechanical reason: wrong Method version, invalid/missing provenance, out-of-scope fact filter, inaccessible, or not yet accepted |
+| Query and scope | Declared fact filters from the fixed Method/template; no hidden ranking or relevance filter |
 | Input fingerprint | Detects additions, removals, or changes after the ledger was made |
 | Prompt and model policy versions | Makes AI-assisted rendering inspectable without treating it as verification |
 
@@ -140,7 +148,7 @@ record(s), calculation, or explicit `insufficient evidence` state.
 
 Ledger creation is on-demand, not a background auto-publication job. Before
 opening the session, the resolver recomputes the canonical manifest for the
-requested question and scope.
+requested Method version and declared fact scope.
 
 - **Same fingerprint:** reopen the existing ledger, preserving its timestamp.
 - **Different fingerprint:** show that evidence has changed and offer a new
@@ -148,12 +156,11 @@ requested question and scope.
 - **No eligible evidence:** create no analytic summary; explain what is missing
   and link the author back to the evidence collection path.
 
-The live ledger is a protected canvas thread owned by the author and their
-organisation. When a human submits a finding for review, the exact ledger
-manifest and rendered ledger are attached to the review packet or exported as
-a timestamped, source-linked analysis artifact. The repository placement for
-that archival copy is an implementation decision, but its content and input
-fingerprint must not change after the finding review begins.
+The live ledger is a protected Canvas context owned by the author and their
+organisation. In the public-Research-repository V1, the author publishes a
+selected immutable snapshot as `evidence-ledgers/<ledger-id>.en.md`; a later
+Finding links to that already published ledger. Its content and input fingerprint
+must not change after publication.
 
 ## 4. Finding-authoring session
 
@@ -164,10 +171,11 @@ The author opens a second canvas document from either:
 - a **revision copy** of an existing finding, with a visible predecessor link
   and no mutation of the published source.
 
-The finding starts with a reference to the chosen ledger, but this reference
-does not assert that the ledger supports any particular claim. The human must
-write the claim, define the scope, decide which evidence is comparable, explain
-their interpretation, and choose whether to seek review or publication.
+The finding starts with references to one or more chosen published ledgers, but
+those references do not assert that any ledger supports a particular claim. The
+human must write the claim, define the scope, decide which evidence is
+comparable, explain their interpretation, and choose whether to seek review or
+publication.
 
 ### 4.1 Assistant contract
 
@@ -249,10 +257,11 @@ make its requirements easier to inspect, not duplicate or override them.
 2. Implement protected, timestamped ledger threads and source-linked
    descriptive renderer.
 3. Add freshness detection and the no-new-evidence/reopen-latest decision.
-4. Implement a human-only Finding skeleton/revision canvas and read-only AI
-   advice surface.
-5. Add citation, counterevidence, and stale-ledger checks to the claim-review
-   packet; decide the Research archival location for ledger snapshots.
+4. Implement a light, human-only Finding starter that selects published ledgers
+   and relies on the existing OKF/Research validation path.
+5. Add citation, counterevidence, stale-ledger, and linked-ledger checks to the
+   GitHub PR flow; publish V1 snapshots under `evidence-ledgers/` in the
+   Research repository.
 6. Test with synthetic evidence sets containing contradictory, missing,
    non-comparable, and clustered contributions before using classroom evidence.
 
