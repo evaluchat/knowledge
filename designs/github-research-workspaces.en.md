@@ -12,8 +12,8 @@ timestamp: 2026-08-22T00:00:00Z
 generated: { by: cursor/composer-2.5, at: 2026-08-22T00:00:00Z }
 sources:
   - id: github-research-threat-model
-    resource: https://github.com/evaluchat/research/blob/main/governance/github-research-threat-model.en.md
-    title: GitHub research workspaces — threat model (research catalog)
+    resource: https://github.com/evaluchat/knowledge/blob/main/designs/github-research-threat-model.en.md
+    title: GitHub research workspaces — threat model (knowledge catalog)
   - id: research-repository-contract
     resource: https://github.com/evaluchat/evaluchat/blob/feat/v08-01-contract/packages/shared/src/research-repository.ts
     title: v1 GitHub research repository contract (Zod schemas)
@@ -25,7 +25,7 @@ sources:
 > through ADR-0005 for Evaluchat v0.8 private GitHub research workspaces. Design
 > intent and platform guarantees — not contributor setup. Threat model and
 > verification obligations live in
-> [github-research-threat-model.en.md](https://github.com/evaluchat/research/blob/main/governance/github-research-threat-model.en.md).
+> [github-research-threat-model.en.md](/designs/github-research-threat-model.en.md).
 
 ## 1. Problem
 
@@ -177,7 +177,7 @@ does not continue with guessed or partially updated credentials.
 - Storage work must use compare-and-swap or equivalent serialization to
   prevent concurrent refreshes from overwriting the newest rotated token.
 - Revocation and rotation failure behavior is expanded in the
-  [research threat model](https://github.com/evaluchat/research/blob/main/governance/github-research-threat-model.en.md).
+  [threat model](/designs/github-research-threat-model.en.md).
 
 ## 5. No server-side content retention (ADR-0004)
 
@@ -284,7 +284,7 @@ not by themselves assert that both user tokens are invalid.
 ## 7. What this design does NOT do
 
 - Does not replace the
-  [research threat model](https://github.com/evaluchat/research/blob/main/governance/github-research-threat-model.en.md)
+  [threat model](/designs/github-research-threat-model.en.md)
   — leak vectors, verification obligations, and rotation failure modes are
   documented there.
 - Does not describe contributor local setup — see the canvas repo
